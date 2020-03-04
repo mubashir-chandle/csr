@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.csrapp.csrbeta.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_streamSelectionFragment"
+            app:destination="@id/streamSelectionFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_mainFragment_to_testStepSelectonFragment"
+            app:destination="@id/testStepSelectonFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/streamSelectionFragment"
+        android:name="com.csrapp.csrbeta.StreamSelectionFragment"
+        android:label="fragment_stream_selection"
+        tools:layout="@layout/fragment_stream_selection">
+        <action
+            android:id="@+id/action_streamSelectionFragment_to_jobSelectionFragment"
+            app:destination="@id/jobSelectionFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/jobSelectionFragment"
+        android:name="com.csrapp.csrbeta.JobSelectionFragment"
+        android:label="fragment_job_selection"
+        tools:layout="@layout/fragment_job_selection">
+        <action
+            android:id="@+id/action_jobSelectionFragment_to_jobDetailFragment"
+            app:destination="@id/jobDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/jobDetailFragment"
+        android:name="com.csrapp.csrbeta.JobDetailFragment"
+        android:label="fragment_job_detail"
+        tools:layout="@layout/fragment_job_detail" />
+    <fragment
+        android:id="@+id/testStepSelectonFragment"
+        android:name="com.csrapp.csrbeta.TestStepSelectonFragment"
+        android:label="fragment_test_step_selecton"
+        tools:layout="@layout/fragment_test_step_selecton">
+        <action
+            android:id="@+id/action_testStepSelectonFragment_to_aptitudeTestFragment"
+            app:destination="@id/aptitudeTestFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_testStepSelectonFragment_to_personalityTestFragment"
+            app:destination="@id/personalityTestFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_testStepSelectonFragment_to_resultFragment"
+            app:destination="@id/resultFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/aptitudeTestFragment"
+        android:name="com.csrapp.csrbeta.AptitudeTestFragment"
+        android:label="fragment_aptitude_test"
+        tools:layout="@layout/fragment_aptitude_test">
+        <action
+            android:id="@+id/action_aptitudeTestFragment_to_personalityTestFragment"
+            app:destination="@id/personalityTestFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/personalityTestFragment"
+        android:name="com.csrapp.csrbeta.PersonalityTestFragment"
+        android:label="fragment_personality_test"
+        tools:layout="@layout/fragment_personality_test">
+        <action
+            android:id="@+id/action_personalityTestFragment_to_resultFragment"
+            app:destination="@id/resultFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.csrapp.csrbeta.ResultFragment"
+        android:label="fragment_result"
+        tools:layout="@layout/fragment_result">
+        <action
+            android:id="@+id/action_resultFragment_to_jobSelectionFragment"
+            app:destination="@id/jobSelectionFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+</navigation>
