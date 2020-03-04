@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.csrapp.csrbeta.MainFragment"
+        android:name="com.csrapp.csr.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main">
         <action
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/streamSelectionFragment"
-        android:name="com.csrapp.csrbeta.StreamSelectionFragment"
+        android:name="com.csrapp.csr.StreamSelectionFragment"
         android:label="fragment_stream_selection"
         tools:layout="@layout/fragment_stream_selection">
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/jobSelectionFragment"
-        android:name="com.csrapp.csrbeta.JobSelectionFragment"
+        android:name="com.csrapp.csr.JobSelectionFragment"
         android:label="fragment_job_selection"
         tools:layout="@layout/fragment_job_selection">
         <action
@@ -53,12 +53,12 @@
     </fragment>
     <fragment
         android:id="@+id/jobDetailFragment"
-        android:name="com.csrapp.csrbeta.JobDetailFragment"
+        android:name="com.csrapp.csr.JobDetailFragment"
         android:label="fragment_job_detail"
         tools:layout="@layout/fragment_job_detail" />
     <fragment
         android:id="@+id/testStepSelectonFragment"
-        android:name="com.csrapp.csrbeta.TestStepSelectonFragment"
+        android:name="com.csrapp.csr.TestStepSelectonFragment"
         android:label="fragment_test_step_selecton"
         tools:layout="@layout/fragment_test_step_selecton">
         <action
@@ -85,7 +85,7 @@
     </fragment>
     <fragment
         android:id="@+id/aptitudeTestFragment"
-        android:name="com.csrapp.csrbeta.AptitudeTestFragment"
+        android:name="com.csrapp.csr.AptitudeTestFragment"
         android:label="fragment_aptitude_test"
         tools:layout="@layout/fragment_aptitude_test">
         <action
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/personalityTestFragment"
-        android:name="com.csrapp.csrbeta.PersonalityTestFragment"
+        android:name="com.csrapp.csr.PersonalityTestFragment"
         android:label="fragment_personality_test"
         tools:layout="@layout/fragment_personality_test">
         <action
@@ -111,7 +111,7 @@
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.csrapp.csrbeta.ResultFragment"
+        android:name="com.csrapp.csr.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result">
         <action
