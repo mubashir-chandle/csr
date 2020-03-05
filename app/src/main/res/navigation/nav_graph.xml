@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.csrapp.csr.MainFragment"
-        android:label="fragment_main"
+        android:label="CSR"
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_streamSelectionFragment"
@@ -28,7 +28,7 @@
     <fragment
         android:id="@+id/streamSelectionFragment"
         android:name="com.csrapp.csr.StreamSelectionFragment"
-        android:label="fragment_stream_selection"
+        android:label="Select a Stream"
         tools:layout="@layout/fragment_stream_selection">
         <action
             android:id="@+id/action_streamSelectionFragment_to_jobSelectionFragment"
@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/jobSelectionFragment"
         android:name="com.csrapp.csr.JobSelectionFragment"
-        android:label="fragment_job_selection"
+        android:label="Select a Job"
         tools:layout="@layout/fragment_job_selection">
         <action
             android:id="@+id/action_jobSelectionFragment_to_jobDetailFragment"
@@ -54,12 +54,12 @@
     <fragment
         android:id="@+id/jobDetailFragment"
         android:name="com.csrapp.csr.JobDetailFragment"
-        android:label="fragment_job_detail"
+        android:label="Job Details"
         tools:layout="@layout/fragment_job_detail" />
     <fragment
         android:id="@+id/testStepSelectonFragment"
         android:name="com.csrapp.csr.TestStepSelectonFragment"
-        android:label="fragment_test_step_selecton"
+        android:label="Test"
         tools:layout="@layout/fragment_test_step_selecton">
         <action
             android:id="@+id/action_testStepSelectonFragment_to_aptitudeTestFragment"
@@ -86,7 +86,7 @@
     <fragment
         android:id="@+id/aptitudeTestFragment"
         android:name="com.csrapp.csr.AptitudeTestFragment"
-        android:label="fragment_aptitude_test"
+        android:label="Aptitude Test"
         tools:layout="@layout/fragment_aptitude_test">
         <action
             android:id="@+id/action_aptitudeTestFragment_to_personalityTestFragment"
@@ -99,7 +99,7 @@
     <fragment
         android:id="@+id/personalityTestFragment"
         android:name="com.csrapp.csr.PersonalityTestFragment"
-        android:label="fragment_personality_test"
+        android:label="Personality Test"
         tools:layout="@layout/fragment_personality_test">
         <action
             android:id="@+id/action_personalityTestFragment_to_resultFragment"
@@ -112,7 +112,7 @@
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.csrapp.csr.ResultFragment"
-        android:label="fragment_result"
+        android:label="Test Result"
         tools:layout="@layout/fragment_result">
         <action
             android:id="@+id/action_resultFragment_to_jobSelectionFragment"

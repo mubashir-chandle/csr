@@ -8,6 +8,11 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.csrapp.csr.streams.SpacingItemDecoration
+import com.csrapp.csr.streams.StreamDataSource
+import com.csrapp.csr.streams.StreamRecyclerAdapter
+import kotlinx.android.synthetic.main.fragment_stream_selection.*
 
 class StreamSelectionFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
@@ -25,6 +30,20 @@ class StreamSelectionFragment : Fragment(), View.OnClickListener {
 
         navController = Navigation.findNavController(view)
         view.findViewById<Button>(R.id.btnViewJobs).setOnClickListener(this)
+
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        val streamAdapter = StreamRecyclerAdapter()
+        val streams = StreamDataSource.getStreamData()
+        streamAdapter.populateWithData(streams)
+
+        streamRecyclerView.apply {
+            adapter = streamAdapter
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(SpacingItemDecoration(32))
+        }
     }
 
     override fun onClick(v: View?) {
