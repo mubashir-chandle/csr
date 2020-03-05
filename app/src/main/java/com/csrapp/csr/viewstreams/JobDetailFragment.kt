@@ -1,10 +1,11 @@
-package com.csrapp.csr
+package com.csrapp.csr.viewstreams
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.csrapp.csr.R
 
 class JobDetailFragment : Fragment() {
 

@@ -1,4 +1,4 @@
-package com.csrapp.csr.streams
+package com.csrapp.csr.viewstreams.streamselection
 
 data class Stream(
     val title: String,

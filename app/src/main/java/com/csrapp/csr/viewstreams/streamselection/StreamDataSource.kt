@@ -1,4 +1,4 @@
-package com.csrapp.csr.streams
+package com.csrapp.csr.viewstreams.streamselection
 
 import com.csrapp.csr.R
 

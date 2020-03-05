@@ -1,4 +1,4 @@
-package com.csrapp.csr
+package com.csrapp.csr.taketest
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.csrapp.csr.R
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
@@ -30,7 +31,9 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.btnPersonalityTest -> navController.navigate(R.id.action_aptitudeTestFragment_to_personalityTestFragment)
+            R.id.btnPersonalityTest -> navController.navigate(
+                R.id.action_aptitudeTestFragment_to_personalityTestFragment
+            )
             R.id.btnGoBackToTestSelection -> activity!!.onBackPressed()
         }
     }

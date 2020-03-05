@@ -1,4 +1,4 @@
-package com.csrapp.csr
+package com.csrapp.csr.viewstreams
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.csrapp.csr.streams.SpacingItemDecoration
-import com.csrapp.csr.streams.StreamDataSource
-import com.csrapp.csr.streams.StreamRecyclerAdapter
+import com.csrapp.csr.R
+import com.csrapp.csr.viewstreams.streamselection.SpacingItemDecoration
+import com.csrapp.csr.viewstreams.streamselection.StreamDataSource
+import com.csrapp.csr.viewstreams.streamselection.StreamRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_stream_selection.*
 
 class StreamSelectionFragment : Fragment() {
