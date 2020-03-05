@@ -43,6 +43,7 @@
         android:name="com.csrapp.csr.viewstreams.JobSelectionFragment"
         android:label="Select a Job"
         tools:layout="@layout/fragment_job_selection">
+        <argument android:name="streamId" />
         <action
             android:id="@+id/action_jobSelectionFragment_to_jobDetailFragment"
             app:destination="@id/jobDetailFragment"
@@ -55,7 +56,11 @@
         android:id="@+id/jobDetailFragment"
         android:name="com.csrapp.csr.viewstreams.JobDetailFragment"
         android:label="Job Details"
-        tools:layout="@layout/fragment_job_detail" />
+        tools:layout="@layout/fragment_job_detail">
+        <argument
+            android:name="job"
+            app:argType="com.csrapp.csr.viewstreams.jobmodel.Job" />
+    </fragment>
     <fragment
         android:id="@+id/testStepSelectonFragment"
         android:name="com.csrapp.csr.taketest.TestStepSelectonFragment"

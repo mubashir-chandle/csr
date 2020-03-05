@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
+import com.csrapp.csr.viewstreams.jobmodel.JobRecyclerAdapter
+import kotlinx.android.synthetic.main.fragment_job_selection.*
 
-class JobSelectionFragment : Fragment(), View.OnClickListener {
+class JobSelectionFragment : Fragment() {
     private lateinit var navController: NavController
+    private lateinit var streamId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,15 +29,20 @@ class JobSelectionFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         navController = Navigation.findNavController(view)
-        view.findViewById<Button>(R.id.btnViewJobDetail).setOnClickListener(this)
+
+        streamId = arguments!!.getString("streamId")!!
+        initRecyclerView(streamId)
     }
 
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            R.id.btnViewJobDetail -> navController.navigate(
-                R.id.action_jobSelectionFragment_to_jobDetailFragment
-            )
+    private fun initRecyclerView(streamId: String) {
+        val jobAdapter = JobRecyclerAdapter()
+        jobAdapter.populateJobs(streamId)
+        jobAdapter.setUpNavController(navController)
+
+        jobRecyclerView.apply {
+            adapter = jobAdapter
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         }
     }
-
 }

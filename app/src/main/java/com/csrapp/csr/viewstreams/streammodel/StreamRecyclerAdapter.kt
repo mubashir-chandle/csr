@@ -1,8 +1,9 @@
-package com.csrapp.csr.viewstreams.streamselection
+package com.csrapp.csr.viewstreams.streammodel
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.csrapp.csr.R
@@ -44,6 +45,7 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class StreamViewHolder(itemView: View, val navController: NavController) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        lateinit var streamId: String
         var streamTitle = itemView.streamTitle
         var streamImage = itemView.streamImage
 
@@ -54,10 +56,15 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(stream: Stream) {
             streamTitle.text = stream.title
             streamImage.setImageResource(stream.image)
+            streamId = stream.streamId
         }
 
         override fun onClick(v: View?) {
-            navController.navigate(R.id.action_streamSelectionFragment_to_jobSelectionFragment)
+            val bundle = bundleOf("streamId" to streamId)
+            navController.navigate(
+                R.id.action_streamSelectionFragment_to_jobSelectionFragment,
+                bundle
+            )
         }
     }
 }
