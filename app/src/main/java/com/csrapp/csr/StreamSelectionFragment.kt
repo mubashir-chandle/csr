@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -14,7 +13,7 @@ import com.csrapp.csr.streams.StreamDataSource
 import com.csrapp.csr.streams.StreamRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_stream_selection.*
 
-class StreamSelectionFragment : Fragment(), View.OnClickListener {
+class StreamSelectionFragment : Fragment() {
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -29,7 +28,6 @@ class StreamSelectionFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         navController = Navigation.findNavController(view)
-        view.findViewById<Button>(R.id.btnViewJobs).setOnClickListener(this)
 
         initRecyclerView()
     }
@@ -38,17 +36,12 @@ class StreamSelectionFragment : Fragment(), View.OnClickListener {
         val streamAdapter = StreamRecyclerAdapter()
         val streams = StreamDataSource.getStreamData()
         streamAdapter.populateWithData(streams)
+        streamAdapter.setUpNavController(navController)
 
         streamRecyclerView.apply {
             adapter = streamAdapter
             layoutManager = LinearLayoutManager(activity)
             addItemDecoration(SpacingItemDecoration(32))
-        }
-    }
-
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            R.id.btnViewJobs -> navController.navigate(R.id.action_streamSelectionFragment_to_jobSelectionFragment)
         }
     }
 }

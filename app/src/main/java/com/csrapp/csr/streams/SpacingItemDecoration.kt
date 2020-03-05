@@ -13,9 +13,12 @@ class SpacingItemDecoration(private val padding: Int) : RecyclerView.ItemDecorat
     ) {
         super.getItemOffsets(outRect, view, parent, state)
 
-        outRect.top = padding
-        outRect.bottom = padding
-        outRect.right = padding
-        outRect.left = padding
+        with(outRect) {
+            if (parent.getChildAdapterPosition(view) == 0)
+                top = padding
+            bottom = padding
+            right = padding
+            left = padding
+        }
     }
 }

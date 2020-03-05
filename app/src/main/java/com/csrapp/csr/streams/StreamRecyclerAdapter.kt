@@ -3,12 +3,14 @@ package com.csrapp.csr.streams
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.csrapp.csr.R
 import kotlinx.android.synthetic.main.list_item_stream.view.*
 
 class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var streams: ArrayList<Stream>
+    private lateinit var navController: NavController
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return StreamViewHolder(
@@ -16,7 +18,7 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 R.layout.list_item_stream,
                 parent,
                 false
-            )
+            ), navController
         )
     }
 
@@ -36,13 +38,26 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         streams = streamData
     }
 
-    class StreamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    fun setUpNavController(streamNavController: NavController) {
+        navController = streamNavController
+    }
+
+    class StreamViewHolder(itemView: View, val navController: NavController) :
+        RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var streamTitle = itemView.streamTitle
         var streamImage = itemView.streamImage
+
+        init {
+            itemView.setOnClickListener(this)
+        }
 
         fun bind(stream: Stream) {
             streamTitle.text = stream.title
             streamImage.setImageResource(stream.image)
+        }
+
+        override fun onClick(v: View?) {
+            navController.navigate(R.id.action_streamSelectionFragment_to_jobSelectionFragment)
         }
     }
 }
