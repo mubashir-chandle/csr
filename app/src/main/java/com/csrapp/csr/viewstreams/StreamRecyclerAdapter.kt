@@ -1,16 +1,20 @@
-package com.csrapp.csr.viewstreams.streammodel
+package com.csrapp.csr.viewstreams
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.csrapp.csr.R
+import com.csrapp.csr.data.StreamEntity
 import kotlinx.android.synthetic.main.list_item_stream.view.*
 
 class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private lateinit var streams: ArrayList<Stream>
+    private lateinit var streams: List<StreamEntity>
     private lateinit var navController: NavController
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -19,7 +23,9 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 R.layout.list_item_stream,
                 parent,
                 false
-            ), navController
+            ),
+            navController,
+            parent.context
         )
     }
 
@@ -35,7 +41,7 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return streams.size
     }
 
-    fun populateWithData(streamData: ArrayList<Stream>) {
+    fun populateWithData(streamData: List<StreamEntity>) {
         streams = streamData
     }
 
@@ -43,24 +49,30 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         navController = streamNavController
     }
 
-    class StreamViewHolder(itemView: View, val navController: NavController) :
+    class StreamViewHolder(itemView: View, val navController: NavController, val context: Context) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        lateinit var streamId: String
-        var streamTitle = itemView.streamTitle
-        var streamImage = itemView.streamImage
+        private lateinit var stream: String
+        private var streamTitle: TextView = itemView.streamTitle
+        private var streamImage: ImageView = itemView.streamImage
 
         init {
             itemView.setOnClickListener(this)
         }
 
-        fun bind(stream: Stream) {
-            streamTitle.text = stream.title
-            streamImage.setImageResource(stream.image)
-            streamId = stream.streamId
+        fun bind(streamEntity: StreamEntity) {
+            streamTitle.text = streamEntity.title
+            val identifier = context.resources.getIdentifier(
+                "placeholder",
+                "mipmap",
+                context.packageName
+            )
+
+            streamImage.setImageResource(identifier)
+            stream = streamEntity.id
         }
 
         override fun onClick(v: View?) {
-            val bundle = bundleOf("streamId" to streamId)
+            val bundle = bundleOf("stream" to stream)
             navController.navigate(
                 R.id.action_streamSelectionFragment_to_jobSelectionFragment,
                 bundle

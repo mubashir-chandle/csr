@@ -9,9 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
-import com.csrapp.csr.viewstreams.streammodel.SpacingItemDecoration
-import com.csrapp.csr.viewstreams.streammodel.StreamDataSource
-import com.csrapp.csr.viewstreams.streammodel.StreamRecyclerAdapter
+import com.csrapp.csr.data.StreamDataSource
 import kotlinx.android.synthetic.main.fragment_stream_selection.*
 
 class StreamSelectionFragment : Fragment() {
@@ -35,7 +33,7 @@ class StreamSelectionFragment : Fragment() {
 
     private fun initRecyclerView() {
         val streamAdapter = StreamRecyclerAdapter()
-        val streams = StreamDataSource.getStreamData()
+        val streams = StreamDataSource.getStreamData(activity!!)
         streamAdapter.populateWithData(streams)
         streamAdapter.setUpNavController(navController)
 

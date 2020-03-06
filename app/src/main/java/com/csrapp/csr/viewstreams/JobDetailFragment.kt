@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.csrapp.csr.R
-import com.csrapp.csr.viewstreams.jobmodel.Job
+import com.csrapp.csr.data.AppDatabase
+import com.csrapp.csr.data.JobEntity
 import kotlinx.android.synthetic.main.fragment_job_detail.*
 
 class JobDetailFragment : Fragment() {
-    private lateinit var job: Job
+    private var jobId: Int = 0
+    private lateinit var job: JobEntity
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,7 +25,11 @@ class JobDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        job = arguments!!.getParcelable<Job>("job")!!
+        jobId = arguments!!.getInt("jobId")
+
+        val db = AppDatabase(activity!!)
+        job = db.jobDao().getJobById(jobId)[0]
+
         jobTitle.text = job.title
         jobDescription.text = job.description
     }

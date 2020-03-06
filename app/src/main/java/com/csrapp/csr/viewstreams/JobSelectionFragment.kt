@@ -10,12 +10,12 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
-import com.csrapp.csr.viewstreams.jobmodel.JobRecyclerAdapter
+import com.csrapp.csr.data.JobDataSource
 import kotlinx.android.synthetic.main.fragment_job_selection.*
 
 class JobSelectionFragment : Fragment() {
     private lateinit var navController: NavController
-    private lateinit var streamId: String
+    private lateinit var stream: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,13 +30,15 @@ class JobSelectionFragment : Fragment() {
 
         navController = Navigation.findNavController(view)
 
-        streamId = arguments!!.getString("streamId")!!
-        initRecyclerView(streamId)
+        stream = arguments!!.getString("stream")!!
+        initRecyclerView(stream)
+        println("debug: JobSelectionFragment: stream=$stream")
     }
 
-    private fun initRecyclerView(streamId: String) {
+    private fun initRecyclerView(stream: String) {
         val jobAdapter = JobRecyclerAdapter()
-        jobAdapter.populateJobs(streamId)
+        val jobs = JobDataSource.getJobs(stream, activity!!)
+        jobAdapter.populateJobs(jobs)
         jobAdapter.setUpNavController(navController)
 
         jobRecyclerView.apply {
