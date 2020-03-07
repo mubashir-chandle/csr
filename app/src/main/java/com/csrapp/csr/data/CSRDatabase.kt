@@ -6,19 +6,19 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [StreamEntity::class, JobEntity::class], version = 1, exportSchema = true)
-abstract class AppDatabase : RoomDatabase() {
+abstract class CSRDatabase : RoomDatabase() {
     abstract fun streamDao(): StreamDao
     abstract fun jobDao(): JobDao
 
     companion object {
-        private var instance: AppDatabase? = null
+        private var instance: CSRDatabase? = null
 
         operator fun invoke(context: Context) = instance
             ?: buildDatabase(context)
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(
                 context,
-                AppDatabase::class.java,
+                CSRDatabase::class.java,
                 "csr_data.db"
             )
             .allowMainThreadQueries()

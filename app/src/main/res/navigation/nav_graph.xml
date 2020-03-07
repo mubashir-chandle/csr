@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.csrapp.csr.MainFragment"
+        android:name="com.csrapp.csr.ui.MainFragment"
         android:label="CSR"
         tools:layout="@layout/fragment_main">
         <action
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/streamSelectionFragment"
-        android:name="com.csrapp.csr.viewstreams.StreamSelectionFragment"
+        android:name="com.csrapp.csr.ui.viewstreams.StreamSelectionFragment"
         android:label="Select a Stream"
         tools:layout="@layout/fragment_stream_selection">
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/jobSelectionFragment"
-        android:name="com.csrapp.csr.viewstreams.JobSelectionFragment"
+        android:name="com.csrapp.csr.ui.viewstreams.JobSelectionFragment"
         android:label="Select a Job"
         tools:layout="@layout/fragment_job_selection">
         <argument
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/jobDetailFragment"
-        android:name="com.csrapp.csr.viewstreams.JobDetailFragment"
+        android:name="com.csrapp.csr.ui.viewstreams.JobDetailFragment"
         android:label="Job Details"
         tools:layout="@layout/fragment_job_detail">
         <argument
@@ -65,9 +65,9 @@
     </fragment>
     <fragment
         android:id="@+id/testStepSelectonFragment"
-        android:name="com.csrapp.csr.taketest.TestStepSelectonFragment"
+        android:name="com.csrapp.csr.ui.taketest.TestStepSelectionFragment"
         android:label="Test"
-        tools:layout="@layout/fragment_test_step_selecton">
+        tools:layout="@layout/fragment_test_step_selection">
         <action
             android:id="@+id/action_testStepSelectonFragment_to_aptitudeTestFragment"
             app:destination="@id/aptitudeTestFragment"
@@ -92,7 +92,7 @@
     </fragment>
     <fragment
         android:id="@+id/aptitudeTestFragment"
-        android:name="com.csrapp.csr.taketest.AptitudeTestFragment"
+        android:name="com.csrapp.csr.ui.taketest.AptitudeTestFragment"
         android:label="Aptitude Test"
         tools:layout="@layout/fragment_aptitude_test">
         <action
@@ -105,7 +105,7 @@
     </fragment>
     <fragment
         android:id="@+id/personalityTestFragment"
-        android:name="com.csrapp.csr.taketest.PersonalityTestFragment"
+        android:name="com.csrapp.csr.ui.taketest.PersonalityTestFragment"
         android:label="Personality Test"
         tools:layout="@layout/fragment_personality_test">
         <action
@@ -120,7 +120,7 @@
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.csrapp.csr.taketest.ResultFragment"
+        android:name="com.csrapp.csr.ui.taketest.ResultFragment"
         android:label="Test Result"
         tools:layout="@layout/fragment_result">
         <action

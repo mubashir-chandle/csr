@@ -1,4 +1,4 @@
-package com.csrapp.csr.taketest
+package com.csrapp.csr.ui.taketest
 
 import android.os.Bundle
 import android.view.LayoutInflater

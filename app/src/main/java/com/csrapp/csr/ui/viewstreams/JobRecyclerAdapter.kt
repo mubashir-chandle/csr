@@ -1,4 +1,4 @@
-package com.csrapp.csr.viewstreams
+package com.csrapp.csr.ui.viewstreams
 
 import android.view.LayoutInflater
 import android.view.View

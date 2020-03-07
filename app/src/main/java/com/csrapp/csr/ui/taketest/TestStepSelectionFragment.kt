@@ -1,4 +1,4 @@
-package com.csrapp.csr.taketest
+package com.csrapp.csr.ui.taketest
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
 
-class TestStepSelectonFragment : Fragment(), View.OnClickListener {
+class TestStepSelectionFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -18,7 +18,7 @@ class TestStepSelectonFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_test_step_selecton, container, false)
+        return inflater.inflate(R.layout.fragment_test_step_selection, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.csrapp.csr.viewstreams
+package com.csrapp.csr.ui.viewstreams
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.csrapp.csr.R
-import com.csrapp.csr.data.AppDatabase
+import com.csrapp.csr.data.CSRDatabase
 import com.csrapp.csr.data.JobEntity
 import kotlinx.android.synthetic.main.fragment_job_detail.*
 
@@ -27,7 +27,7 @@ class JobDetailFragment : Fragment() {
 
         jobId = arguments!!.getInt("jobId")
 
-        val db = AppDatabase(activity!!)
+        val db = CSRDatabase(activity!!)
         job = db.jobDao().getJobById(jobId)[0]
 
         jobTitle.text = job.title

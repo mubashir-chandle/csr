@@ -1,4 +1,4 @@
-package com.csrapp.csr.viewstreams
+package com.csrapp.csr.ui.viewstreams
 
 import android.graphics.Rect
 import android.view.View

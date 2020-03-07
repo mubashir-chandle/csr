@@ -1,4 +1,4 @@
-package com.csrapp.csr.viewstreams
+package com.csrapp.csr.ui.viewstreams
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
-import com.csrapp.csr.data.StreamDataSource
+import com.csrapp.csr.data.CSRRepository
 import kotlinx.android.synthetic.main.fragment_stream_selection.*
 
 class StreamSelectionFragment : Fragment() {
@@ -33,7 +33,7 @@ class StreamSelectionFragment : Fragment() {
 
     private fun initRecyclerView() {
         val streamAdapter = StreamRecyclerAdapter()
-        val streams = StreamDataSource.getStreamData(activity!!)
+        val streams = CSRRepository.getStreamData(activity!!)
         streamAdapter.populateWithData(streams)
         streamAdapter.setUpNavController(navController)
 

@@ -1,4 +1,4 @@
-package com.csrapp.csr.taketest
+package com.csrapp.csr.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
 
-class PersonalityTestFragment : Fragment(), View.OnClickListener {
+class MainFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -18,20 +18,24 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_personality_test, container, false)
+        return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         navController = Navigation.findNavController(view)
-        view.findViewById<Button>(R.id.btnViewResult).setOnClickListener(this)
+        view.findViewById<Button>(R.id.btnTakeTest).setOnClickListener(this)
+        view.findViewById<Button>(R.id.btnViewStreams).setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.btnViewResult -> navController.navigate(
-                R.id.action_personalityTestFragment_to_resultFragment
+            R.id.btnTakeTest -> navController.navigate(
+                R.id.action_mainFragment_to_testStepSelectonFragment
+            )
+            R.id.btnViewStreams -> navController.navigate(
+                R.id.action_mainFragment_to_streamSelectionFragment
             )
         }
     }

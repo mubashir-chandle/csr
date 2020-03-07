@@ -1,4 +1,4 @@
-package com.csrapp.csr.viewstreams
+package com.csrapp.csr.ui.viewstreams
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
-import com.csrapp.csr.data.JobDataSource
+import com.csrapp.csr.data.CSRRepository
 import kotlinx.android.synthetic.main.fragment_job_selection.*
 
 class JobSelectionFragment : Fragment() {
@@ -37,7 +37,7 @@ class JobSelectionFragment : Fragment() {
 
     private fun initRecyclerView(stream: String) {
         val jobAdapter = JobRecyclerAdapter()
-        val jobs = JobDataSource.getJobs(stream, activity!!)
+        val jobs = CSRRepository.getJobs(stream, activity!!)
         jobAdapter.populateJobs(jobs)
         jobAdapter.setUpNavController(navController)
 
