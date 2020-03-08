@@ -31,7 +31,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
         view.findViewById<Button>(R.id.btnGoBackToTestSelection).setOnClickListener(this)
 
         val categories = CSRRepository.getAptitudeCategories(activity!!)
-        println("debug: AptitudeTestFragment: onViewCreated: categories=$categories")
 
         val questions = mutableListOf<AptitudeQuestionEntity>()
         categories.forEach {
@@ -39,8 +38,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
             val selectedQuestions = categoryQuestions.shuffled().take(5)
             questions.addAll(selectedQuestions)
         }
-
-        println("debug: AptitudeTestFragment: onViewCreated: $questions")
     }
 
     override fun onClick(v: View?) {
@@ -51,5 +48,4 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
             R.id.btnGoBackToTestSelection -> activity!!.onBackPressed()
         }
     }
-
 }

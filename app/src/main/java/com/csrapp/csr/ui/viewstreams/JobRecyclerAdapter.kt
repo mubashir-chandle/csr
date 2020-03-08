@@ -39,7 +39,6 @@ class JobRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun populateJobs(streamJobs: List<JobEntity>) {
         jobs = streamJobs
-        println("debug: JobRecyclerAdapter: populateJobs: jobs=$jobs")
     }
 
     fun setUpNavController(jobNavController: NavController) {

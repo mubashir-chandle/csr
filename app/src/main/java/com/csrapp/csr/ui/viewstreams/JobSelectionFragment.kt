@@ -32,7 +32,6 @@ class JobSelectionFragment : Fragment() {
 
         stream = arguments!!.getString("stream")!!
         initRecyclerView(stream)
-        println("debug: JobSelectionFragment: stream=$stream")
     }
 
     private fun initRecyclerView(stream: String) {
