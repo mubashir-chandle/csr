@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -27,8 +26,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         navController = Navigation.findNavController(view)
-        view.findViewById<Button>(R.id.btnPersonalityTest).setOnClickListener(this)
-        view.findViewById<Button>(R.id.btnGoBackToTestSelection).setOnClickListener(this)
 
         val categories = CSRRepository.getAptitudeCategories(activity!!)
 
@@ -42,10 +39,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.btnPersonalityTest -> navController.navigate(
-                R.id.action_aptitudeTestFragment_to_personalityTestFragment
-            )
-            R.id.btnGoBackToTestSelection -> activity!!.onBackPressed()
         }
     }
 }
