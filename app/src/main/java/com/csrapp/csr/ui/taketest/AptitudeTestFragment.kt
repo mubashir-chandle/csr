@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
+import com.csrapp.csr.data.AptitudeQuestionEntity
 import com.csrapp.csr.data.CSRRepository
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener {
@@ -29,7 +30,16 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
         view.findViewById<Button>(R.id.btnPersonalityTest).setOnClickListener(this)
         view.findViewById<Button>(R.id.btnGoBackToTestSelection).setOnClickListener(this)
 
-        val questions = CSRRepository.getAllAptitudeQuestions(activity!!)
+        val categories = CSRRepository.getAptitudeCategories(activity!!)
+        println("debug: AptitudeTestFragment: onViewCreated: categories=$categories")
+
+        val questions = mutableListOf<AptitudeQuestionEntity>()
+        categories.forEach {
+            val categoryQuestions = CSRRepository.getAptitudeQuestionsByCategory(it, activity!!)
+            val selectedQuestions = categoryQuestions.shuffled().take(5)
+            questions.addAll(selectedQuestions)
+        }
+
         println("debug: AptitudeTestFragment: onViewCreated: $questions")
     }
 

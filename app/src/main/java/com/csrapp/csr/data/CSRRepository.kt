@@ -26,5 +26,10 @@ class CSRRepository {
             val db = CSRDatabase(context)
             return db.aptitudeQuestionDao().getAllAptitudeQuestions()
         }
+
+        fun getAptitudeCategories(context: Context): List<String> {
+            val db = CSRDatabase(context)
+            return db.aptitudeQuestionDao().getCategories()
+        }
     }
 }
