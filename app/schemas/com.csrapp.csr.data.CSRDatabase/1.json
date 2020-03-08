@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "78c770caf3742b30550af8f8dac770db",
+    "identityHash": "6d766214dc904692ead559e9d18d0f59",
     "entities": [
       {
         "tableName": "stream",
@@ -73,12 +73,74 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "aptitude_question",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `question` TEXT NOT NULL, `option_1` TEXT NOT NULL, `option_2` TEXT NOT NULL, `option_3` TEXT NOT NULL, `option_4` TEXT NOT NULL, `reference_image` TEXT, `category` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "question",
+            "columnName": "question",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "option1",
+            "columnName": "option_1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "option2",
+            "columnName": "option_2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "option3",
+            "columnName": "option_3",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "option4",
+            "columnName": "option_4",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "referenceImage",
+            "columnName": "reference_image",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '78c770caf3742b30550af8f8dac770db')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6d766214dc904692ead559e9d18d0f59')"
     ]
   }
 }

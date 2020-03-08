@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
+import com.csrapp.csr.data.CSRRepository
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
@@ -27,6 +28,9 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
         navController = Navigation.findNavController(view)
         view.findViewById<Button>(R.id.btnPersonalityTest).setOnClickListener(this)
         view.findViewById<Button>(R.id.btnGoBackToTestSelection).setOnClickListener(this)
+
+        val questions = CSRRepository.getAllAptitudeQuestions(activity!!)
+        println("debug: AptitudeTestFragment: onViewCreated: $questions")
     }
 
     override fun onClick(v: View?) {

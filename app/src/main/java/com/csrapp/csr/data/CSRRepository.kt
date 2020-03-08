@@ -13,5 +13,18 @@ class CSRRepository {
             val db = CSRDatabase(context)
             return db.jobDao().getJobsByStream(stream)
         }
+
+        fun getAptitudeQuestionsByCategory(
+            category: String,
+            context: Context
+        ): List<AptitudeQuestionEntity> {
+            val db = CSRDatabase(context)
+            return db.aptitudeQuestionDao().getAptitudeQuestionsByCategory(category)
+        }
+
+        fun getAllAptitudeQuestions(context: Context): List<AptitudeQuestionEntity> {
+            val db = CSRDatabase(context)
+            return db.aptitudeQuestionDao().getAllAptitudeQuestions()
+        }
     }
 }

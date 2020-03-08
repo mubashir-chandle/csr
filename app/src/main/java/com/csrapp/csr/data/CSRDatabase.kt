@@ -5,10 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [StreamEntity::class, JobEntity::class], version = 1, exportSchema = true)
+@Database(
+    entities = [StreamEntity::class, JobEntity::class, AptitudeQuestionEntity::class],
+    version = 1,
+    exportSchema = true
+)
 abstract class CSRDatabase : RoomDatabase() {
     abstract fun streamDao(): StreamDao
     abstract fun jobDao(): JobDao
+    abstract fun aptitudeQuestionDao(): AptitudeQuestionDao
 
     companion object {
         private var instance: CSRDatabase? = null
