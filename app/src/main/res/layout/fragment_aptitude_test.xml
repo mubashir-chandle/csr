@@ -39,8 +39,8 @@
             android:layout_width="196dp"
             android:layout_height="196dp"
             android:layout_marginTop="32dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/placeholder"
+            android:scaleType="fitXY"
+            android:src="@mipmap/no_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
