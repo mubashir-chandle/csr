@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6d766214dc904692ead559e9d18d0f59",
+    "identityHash": "cb0e4e0ef3c6498dd128ad2f2582975e",
     "entities": [
       {
         "tableName": "stream",
@@ -76,13 +76,19 @@
       },
       {
         "tableName": "aptitude_question",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `question` TEXT NOT NULL, `option_1` TEXT NOT NULL, `option_2` TEXT NOT NULL, `option_3` TEXT NOT NULL, `option_4` TEXT NOT NULL, `reference_image` TEXT, `category` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `category` TEXT NOT NULL, `question` TEXT NOT NULL, `option_1` TEXT NOT NULL, `option_2` TEXT NOT NULL, `option_3` TEXT NOT NULL, `option_4` TEXT NOT NULL, `correct_option` INTEGER NOT NULL, `reference_image` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "question",
@@ -115,16 +121,16 @@
             "notNull": true
           },
           {
+            "fieldPath": "correctOption",
+            "columnName": "correct_option",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "referenceImage",
             "columnName": "reference_image",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "category",
-            "columnName": "category",
-            "affinity": "TEXT",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -140,7 +146,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6d766214dc904692ead559e9d18d0f59')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb0e4e0ef3c6498dd128ad2f2582975e')"
     ]
   }
 }

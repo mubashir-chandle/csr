@@ -9,6 +9,9 @@ data class AptitudeQuestionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
 
+    @ColumnInfo(name = "category")
+    val category: String,
+
     @ColumnInfo(name = "question")
     val question: String,
 
@@ -24,9 +27,9 @@ data class AptitudeQuestionEntity(
     @ColumnInfo(name = "option_4")
     val option4: String,
 
-    @ColumnInfo(name = "reference_image")
-    val referenceImage: String?,
+    @ColumnInfo(name = "correct_option")
+    val correctOption: Int,
 
-    @ColumnInfo(name = "category")
-    val category: String
+    @ColumnInfo(name = "reference_image")
+    val referenceImage: String?
 )

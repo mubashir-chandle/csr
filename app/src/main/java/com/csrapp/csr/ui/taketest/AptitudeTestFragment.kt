@@ -38,7 +38,9 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
+        @Suppress("ControlFlowWithEmptyBody")
         when (v!!.id) {
+            // TODO
         }
     }
 }

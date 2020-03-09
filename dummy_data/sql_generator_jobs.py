@@ -11,7 +11,7 @@ streams = [
 ]
 
 counter = 1
-with open('generated_sql.txt', 'w') as f:
+with open('generated_sql_jobs.txt', 'w') as f:
     for stream in streams:
         for i in range(1, 26):
             stream_id = stream[0]
