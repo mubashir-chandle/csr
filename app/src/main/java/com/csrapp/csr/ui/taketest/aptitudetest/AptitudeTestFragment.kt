@@ -105,7 +105,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             referenceImage.setImageResource(identifier)
         }
 
-        layout.scrollTo(0, 0)
+        layout.smoothScrollTo(0, 0)
         optionGroup.clearCheck()
     }
 
