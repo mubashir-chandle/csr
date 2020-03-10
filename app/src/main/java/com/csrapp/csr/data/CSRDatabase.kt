@@ -22,9 +22,6 @@ abstract class CSRDatabase : RoomDatabase() {
             instance ?: buildDatabase(context)
         }
 
-//        operator fun invoke(context: Context) = instance
-//            ?: buildDatabase(context)
-
         private fun buildDatabase(context: Context) = Room.databaseBuilder(
                 context,
                 CSRDatabase::class.java,
