@@ -1,17 +1,18 @@
-package com.csrapp.csr.ui.taketest
+package com.csrapp.csr.ui.taketest.aptitudetest
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.data.AptitudeQuestionEntity
-import com.csrapp.csr.data.CSRRepository
+import com.csrapp.csr.utils.InjectorUtils
 
-class AptitudeTestFragment : Fragment(), View.OnClickListener {
+class AptitudeTestFragment : Fragment() {
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -24,22 +25,22 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         navController = Navigation.findNavController(view)
 
-        val categories = CSRRepository.getAptitudeCategories(activity!!)
-
-        val questions = mutableListOf<AptitudeQuestionEntity>()
-        categories.forEach {
-            val categoryQuestions = CSRRepository.getAptitudeQuestionsByCategory(it, activity!!)
-            val selectedQuestions = categoryQuestions.shuffled().take(5)
-            questions.addAll(selectedQuestions)
-        }
+        initUI()
     }
 
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            // TODO
+    private fun initUI() {
+        val factory = InjectorUtils.provideAptitudeTestViewModelFactory(activity!!)
+        val viewModel = ViewModelProvider(this, factory).get(AptitudeTestViewModel::class.java)
+
+        val categories = viewModel.getAptitudeCategories()
+
+        val questions = mutableListOf<AptitudeQuestionEntity>()
+        categories.forEach { category ->
+            val categoryQuestions = viewModel.getAptitudeQuestionsByCategory(category)
+            val selectedQuestions = categoryQuestions.shuffled().take(5)
+            questions.addAll(selectedQuestions)
         }
     }
 }

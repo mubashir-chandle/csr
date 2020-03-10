@@ -1,13 +1,14 @@
-package com.csrapp.csr.ui.viewstreams
+package com.csrapp.csr.ui.viewstreams.jobdetail
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.csrapp.csr.R
-import com.csrapp.csr.data.CSRDatabase
 import com.csrapp.csr.data.JobEntity
+import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_job_detail.*
 
 class JobDetailFragment : Fragment() {
@@ -25,10 +26,16 @@ class JobDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initUI()
+    }
+
+    private fun initUI() {
+        val factory = InjectorUtils.provideJobDetailViewModelFactory(activity!!)
+        val viewModel = ViewModelProvider(this, factory).get(JobDetailViewModel::class.java)
+
         jobId = arguments!!.getInt("jobId")
 
-        val db = CSRDatabase(activity!!)
-        job = db.jobDao().getJobById(jobId)[0]
+        job = viewModel.getJobById(jobId)[0]
 
         jobTitle.text = job.title
         jobDescription.text = job.description

@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/streamSelectionFragment"
-        android:name="com.csrapp.csr.ui.viewstreams.StreamSelectionFragment"
+        android:name="com.csrapp.csr.ui.viewstreams.streamselection.StreamSelectionFragment"
         android:label="Select a Stream"
         tools:layout="@layout/fragment_stream_selection">
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/jobSelectionFragment"
-        android:name="com.csrapp.csr.ui.viewstreams.JobSelectionFragment"
+        android:name="com.csrapp.csr.ui.viewstreams.jobselection.JobSelectionFragment"
         android:label="Select a Job"
         tools:layout="@layout/fragment_job_selection">
         <argument
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/jobDetailFragment"
-        android:name="com.csrapp.csr.ui.viewstreams.JobDetailFragment"
+        android:name="com.csrapp.csr.ui.viewstreams.jobdetail.JobDetailFragment"
         android:label="Job Details"
         tools:layout="@layout/fragment_job_detail">
         <argument
@@ -92,7 +92,7 @@
     </fragment>
     <fragment
         android:id="@+id/aptitudeTestFragment"
-        android:name="com.csrapp.csr.ui.taketest.AptitudeTestFragment"
+        android:name="com.csrapp.csr.ui.taketest.aptitudetest.AptitudeTestFragment"
         android:label="Aptitude Test"
         tools:layout="@layout/fragment_aptitude_test">
         <action

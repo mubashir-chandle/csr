@@ -12,5 +12,5 @@ interface AptitudeQuestionDao {
     fun getAptitudeQuestionsByCategory(category: String): List<AptitudeQuestionEntity>
 
     @Query("SELECT DISTINCT category FROM aptitude_question")
-    fun getCategories(): List<String>
+    fun getAptitudeCategories(): List<String>
 }

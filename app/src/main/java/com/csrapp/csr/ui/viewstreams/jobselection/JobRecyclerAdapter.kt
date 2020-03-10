@@ -1,4 +1,4 @@
-package com.csrapp.csr.ui.viewstreams
+package com.csrapp.csr.ui.viewstreams.jobselection
 
 import android.view.LayoutInflater
 import android.view.View

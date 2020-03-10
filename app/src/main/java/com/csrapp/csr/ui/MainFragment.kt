@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
+import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
@@ -23,10 +23,10 @@ class MainFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         navController = Navigation.findNavController(view)
-        view.findViewById<Button>(R.id.btnTakeTest).setOnClickListener(this)
-        view.findViewById<Button>(R.id.btnViewStreams).setOnClickListener(this)
+
+        btnTakeTest.setOnClickListener(this)
+        btnViewStreams.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {

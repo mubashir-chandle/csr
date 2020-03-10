@@ -1,15 +1,16 @@
-package com.csrapp.csr.ui.viewstreams
+package com.csrapp.csr.ui.viewstreams.streamselection
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
-import com.csrapp.csr.data.CSRRepository
+import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_stream_selection.*
 
 class StreamSelectionFragment : Fragment() {
@@ -25,22 +26,32 @@ class StreamSelectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         navController = Navigation.findNavController(view)
 
-        initRecyclerView()
+        initUI()
     }
 
-    private fun initRecyclerView() {
+    private fun initUI() {
+        val factory = InjectorUtils.provideStreamSelectionViewModelFactory(activity!!)
+        val viewModel = ViewModelProvider(this, factory).get(StreamSelectionViewModel::class.java)
+
+        initRecyclerView(viewModel)
+    }
+
+    private fun initRecyclerView(viewModel: StreamSelectionViewModel) {
         val streamAdapter = StreamRecyclerAdapter()
-        val streams = CSRRepository.getStreamData(activity!!)
+        val streams = viewModel.getStreams()
         streamAdapter.populateWithData(streams)
         streamAdapter.setUpNavController(navController)
 
         streamRecyclerView.apply {
             adapter = streamAdapter
             layoutManager = LinearLayoutManager(activity)
-            addItemDecoration(SpacingItemDecoration(32))
+            addItemDecoration(
+                SpacingItemDecoration(
+                    32
+                )
+            )
         }
     }
 }

@@ -1,16 +1,17 @@
-package com.csrapp.csr.ui.viewstreams
+package com.csrapp.csr.ui.viewstreams.jobselection
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
-import com.csrapp.csr.data.CSRRepository
+import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_job_selection.*
 
 class JobSelectionFragment : Fragment() {
@@ -27,16 +28,24 @@ class JobSelectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         navController = Navigation.findNavController(view)
 
-        stream = arguments!!.getString("stream")!!
-        initRecyclerView(stream)
+        initUI()
     }
 
-    private fun initRecyclerView(stream: String) {
-        val jobAdapter = JobRecyclerAdapter()
-        val jobs = CSRRepository.getJobs(stream, activity!!)
+    private fun initUI() {
+        stream = arguments!!.getString("stream")!!
+
+        val factory = InjectorUtils.provideJobSelectionViewModelFactory(activity!!)
+        val viewModel = ViewModelProvider(this, factory).get(JobSelectionViewModel::class.java)
+
+        initRecyclerView(stream, viewModel)
+    }
+
+    private fun initRecyclerView(stream: String, viewModel: JobSelectionViewModel) {
+        val jobAdapter =
+            JobRecyclerAdapter()
+        val jobs = viewModel.getJobsByStream(stream)
         jobAdapter.populateJobs(jobs)
         jobAdapter.setUpNavController(navController)
 

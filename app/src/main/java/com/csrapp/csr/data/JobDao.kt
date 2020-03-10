@@ -12,5 +12,5 @@ interface JobDao {
     fun getJobById(id: Int): List<JobEntity>
 
     @Query("SELECT * FROM job")
-    fun getAllJobs(): List<JobEntity>
+    fun getJobs(): List<JobEntity>
 }

@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
+import kotlinx.android.synthetic.main.fragment_test_step_selection.*
 
 class TestStepSelectionFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
@@ -23,11 +23,11 @@ class TestStepSelectionFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         navController = Navigation.findNavController(view)
-        view.findViewById<Button>(R.id.btnAptitudeTest).setOnClickListener(this)
-        view.findViewById<Button>(R.id.btnPersonalityTest).setOnClickListener(this)
-        view.findViewById<Button>(R.id.btnViewResult).setOnClickListener(this)
+
+        btnAptitudeTest.setOnClickListener(this)
+        btnPersonalityTest.setOnClickListener(this)
+        btnViewResult.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {

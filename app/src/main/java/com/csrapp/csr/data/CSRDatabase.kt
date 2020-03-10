@@ -18,8 +18,12 @@ abstract class CSRDatabase : RoomDatabase() {
     companion object {
         private var instance: CSRDatabase? = null
 
-        operator fun invoke(context: Context) = instance
-            ?: buildDatabase(context)
+        fun getInstance(context: Context) = instance ?: synchronized(this) {
+            instance ?: buildDatabase(context)
+        }
+
+//        operator fun invoke(context: Context) = instance
+//            ?: buildDatabase(context)
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(
                 context,
