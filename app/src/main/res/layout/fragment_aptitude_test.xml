@@ -9,6 +9,7 @@
     tools:context=".ui.taketest.aptitudetest.AptitudeTestFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -23,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/questionText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -35,18 +36,19 @@
             app:layout_constraintTop_toBottomOf="@+id/spinnerQuestions" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/referenceImage"
             android:layout_width="196dp"
             android:layout_height="196dp"
             android:layout_marginTop="32dp"
             android:scaleType="fitXY"
             android:src="@mipmap/no_image"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/questionText" />
 
         <RadioGroup
-            android:id="@+id/radioGroup"
+            android:id="@+id/optionGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -54,83 +56,69 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView">
+            app:layout_constraintTop_toBottomOf="@+id/referenceImage">
+
+            <RadioButton
+                android:id="@+id/option1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option 1" />
+
+            <RadioButton
+                android:id="@+id/option2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option 2" />
+
+            <RadioButton
+                android:id="@+id/option3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option 3" />
+
+            <RadioButton
+                android:id="@+id/option4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option 4" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <RadioButton
-                    android:id="@+id/radioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Option 1"
-                    app:layout_constraintEnd_toStartOf="@+id/radioButton2"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <RadioButton
-                    android:id="@+id/radioButton2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Option 2"
-                    app:layout_constraintBottom_toBottomOf="@+id/radioButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/radioButton" />
-
-                <RadioButton
-                    android:id="@+id/radioButton3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Option 3"
-                    app:layout_constraintStart_toStartOf="@+id/radioButton"
-                    app:layout_constraintTop_toBottomOf="@id/radioButton" />
-
-                <RadioButton
-                    android:id="@+id/radioButton4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Option 4"
-                    app:layout_constraintBottom_toBottomOf="@+id/radioButton3"
-                    app:layout_constraintStart_toStartOf="@+id/radioButton2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </RadioGroup>
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnMark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:text="Mark for Review and Next"
-            app:layout_constraintBaseline_toBaselineOf="@+id/button2"
-            app:layout_constraintEnd_toStartOf="@+id/button2"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btnNext"
+            app:layout_constraintEnd_toStartOf="@+id/btnNext"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btnNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="64dp"
             android:layout_marginEnd="16dp"
             android:text="Next"
-            app:layout_constraintBottom_toTopOf="@+id/button3"
+            app:layout_constraintBottom_toTopOf="@+id/btnSkip"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar"
+            app:layout_constraintStart_toEndOf="@+id/btnMark"
+            app:layout_constraintTop_toBottomOf="@+id/confidence"
             app:layout_constraintVertical_bias="1.0" />
 
         <SeekBar
-            android:id="@+id/seekBar"
+            android:id="@+id/confidence"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -151,10 +139,10 @@
             android:layout_marginTop="32dp"
             android:text="How confident are you about your answer (0-10)"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+            app:layout_constraintTop_toBottomOf="@+id/optionGroup" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btnSkip"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

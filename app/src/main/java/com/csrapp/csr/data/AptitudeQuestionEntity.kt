@@ -12,8 +12,8 @@ data class AptitudeQuestionEntity(
     @ColumnInfo(name = "category")
     val category: String,
 
-    @ColumnInfo(name = "question")
-    val question: String,
+    @ColumnInfo(name = "text")
+    val text: String,
 
     @ColumnInfo(name = "option_1")
     val option1: String,
