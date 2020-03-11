@@ -113,18 +113,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btnMark"
-            app:layout_constraintTop_toBottomOf="@+id/confidence"
+            app:layout_constraintTop_toBottomOf="@+id/confidenceSeekBar"
             app:layout_constraintVertical_bias="1.0" />
 
         <SeekBar
-            android:id="@+id/confidence"
+            android:id="@+id/confidenceSeekBar"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:max="10"
+            android:max="11"
             android:progress="3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:text="How confident are you about your answer (0-10)"
+            android:text="How confident are you about your answer (1-10)"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/optionGroup" />
 

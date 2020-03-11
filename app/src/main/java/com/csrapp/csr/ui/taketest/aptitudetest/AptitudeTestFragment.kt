@@ -23,8 +23,15 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private lateinit var questionResponses: MutableList<QuestionResponse>
     private var currentQuestionIndex = 0
 
-    enum class QuestionResponse {
-        ANSWERED, SKIPPED, MARKED
+
+    class QuestionResponse(
+        var responseType: QuestionResponseType,
+        var optionSelected: Int? = null,
+        var confidence: Int? = null
+    ) {
+        enum class QuestionResponseType {
+            ANSWERED, SKIPPED, MARKED
+        }
     }
 
     override fun onCreateView(
@@ -76,11 +83,11 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         val questions = mutableListOf<AptitudeQuestionEntity>()
         categories.forEach { category ->
             val categoryQuestions = viewModel.getAptitudeQuestionsByCategory(category)
-            val selectedQuestions = categoryQuestions.shuffled().take(5)
+            val selectedQuestions = categoryQuestions.shuffled().take(1)
             questions.addAll(selectedQuestions)
         }
 
-        return questions
+        return questions.shuffled()
     }
 
     private fun updateQuestion() {
@@ -90,7 +97,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         option2.text = question.option2
         option3.text = question.option3
         option4.text = question.option4
-        confidence.progress = 0
+        confidenceSeekBar.progress = 0
 
         if (question.referenceImage.isNullOrBlank()) {
             referenceImage.visibility = View.GONE
@@ -107,41 +114,60 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
         layout.smoothScrollTo(0, 0)
         optionGroup.clearCheck()
+        if (currentQuestionIndex == questions.size - 1) {
+            btnNext.text = "Finish"
+            btnMark.text = "Mark"
+            btnSkip.text = "Skip"
+        }
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnNext -> {
-                questionResponses.add(QuestionResponse.ANSWERED)
-
-                if (currentQuestionIndex + 2 == questions.size) {
-                    Toast.makeText(context!!, "Test Completed", Toast.LENGTH_SHORT).show()
-                    btnNext.isEnabled = false
-                    btnMark.isEnabled = false
-                    btnSkip.isEnabled = false
-                }
+                questionResponses.add(
+                    QuestionResponse(
+                        QuestionResponse.QuestionResponseType.ANSWERED,
+                        getSelectedOption(),
+                        getConfidence()
+                    )
+                )
             }
 
             R.id.btnMark -> {
-                questionResponses.add(QuestionResponse.MARKED)
+                questionResponses.add(
+                    QuestionResponse(
+                        QuestionResponse.QuestionResponseType.MARKED,
+                        getSelectedOption(),
+                        getConfidence()
+                    )
+                )
             }
 
             R.id.btnSkip -> {
-                questionResponses.add(QuestionResponse.SKIPPED)
+                questionResponses.add(QuestionResponse(QuestionResponse.QuestionResponseType.SKIPPED))
             }
         }
 
-        if (v.id in listOf(
-                R.id.btnNext,
-                R.id.btnMark,
-                R.id.btnSkip
-            )
-            && currentQuestionIndex != (questions.size - 1)
-        ) {
+        if (currentQuestionIndex + 1 == questions.size) {
+            finishTest()
+        } else if (v.id in listOf(R.id.btnNext, R.id.btnMark, R.id.btnSkip)) {
             currentQuestionIndex += 1
             updateQuestion()
             btnNext.isEnabled = false
             btnMark.isEnabled = false
+        }
+    }
+
+    private fun getSelectedOption(): Int? {
+        if (!optionGroup.isSelected)
+            return null
+
+        return when (optionGroup.checkedRadioButtonId) {
+            R.id.option1 -> 1
+            R.id.option2 -> 2
+            R.id.option3 -> 3
+            R.id.option4 -> 4
+            else -> throw Exception("Selected option invalid")
         }
     }
 
@@ -150,5 +176,61 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             btnNext.isEnabled = true
             btnMark.isEnabled = true
         }
+    }
+
+    private fun finishTest() {
+        btnNext.isEnabled = false
+        btnMark.isEnabled = false
+        btnSkip.isEnabled = false
+
+        val scores = calculateScores()
+        val category1Score = scores["category 1"]
+        val category2Score = scores["category 2"]
+        val category3Score = scores["category 3"]
+        val category4Score = scores["category 4"]
+
+        val message = "Test complete with scores:\nCategory 1: $category1Score\n" +
+                "Category 2: $category2Score \nCategory 3: $category3Score\n" +
+                "Category 4: $category4Score"
+
+        Toast.makeText(context!!, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun calculateScores(): Map<String, Double> {
+        var category1Score = 0.0
+        var category2Score = 0.0
+        var category3Score = 0.0
+        var category4Score = 0.0
+
+        for (i in questions.indices) {
+            if (questionResponses[i].responseType == QuestionResponse.QuestionResponseType.SKIPPED) {
+                continue
+            }
+
+            val questionScore =
+                if (questions[i].correctOption == questionResponses[i].optionSelected) {
+                    questionResponses[i].confidence!!
+                } else {
+                    -questionResponses[i].confidence!!
+                }
+            when (questions[i].category) {
+                "category 1" -> category1Score += questionScore
+                "category 2" -> category2Score += questionScore
+                "category 3" -> category3Score += questionScore
+                "category 4" -> category4Score += questionScore
+            }
+
+        }
+
+        return mapOf(
+            "category 1" to category1Score,
+            "category 2" to category2Score,
+            "category 3" to category3Score,
+            "category 4" to category4Score
+        )
+    }
+
+    private fun getConfidence(): Int {
+        return confidenceSeekBar.progress + 1
     }
 }
