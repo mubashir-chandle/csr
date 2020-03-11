@@ -20,7 +20,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var questions: List<AptitudeQuestionEntity>
-    private lateinit var questionResponses: MutableList<QuestionResponse>
+    private lateinit var questionResponses: Array<QuestionResponse?>
     private var currentQuestionIndex = 0
 
 
@@ -67,7 +67,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
     private fun initAptitudeTest() {
         questions = getRandomQuestions()
-        questionResponses = mutableListOf()
+        questionResponses = arrayOfNulls<QuestionResponse>(5)
 
         updateQuestion()
     }
@@ -124,27 +124,24 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnNext -> {
-                questionResponses.add(
-                    QuestionResponse(
-                        QuestionResponse.QuestionResponseType.ANSWERED,
-                        getSelectedOption(),
-                        getConfidence()
-                    )
+                questionResponses[currentQuestionIndex] = QuestionResponse(
+                    QuestionResponse.QuestionResponseType.ANSWERED,
+                    getSelectedOption(),
+                    getConfidence()
                 )
             }
 
             R.id.btnMark -> {
-                questionResponses.add(
-                    QuestionResponse(
-                        QuestionResponse.QuestionResponseType.MARKED,
-                        getSelectedOption(),
-                        getConfidence()
-                    )
+                questionResponses[currentQuestionIndex] = QuestionResponse(
+                    QuestionResponse.QuestionResponseType.MARKED,
+                    getSelectedOption(),
+                    getConfidence()
                 )
             }
 
             R.id.btnSkip -> {
-                questionResponses.add(QuestionResponse(QuestionResponse.QuestionResponseType.SKIPPED))
+                questionResponses[currentQuestionIndex] =
+                    (QuestionResponse(QuestionResponse.QuestionResponseType.SKIPPED))
             }
         }
 
@@ -205,15 +202,15 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         var category4Score = 0.0
 
         for (i in questions.indices) {
-            if (questionResponses[i].responseType == QuestionResponse.QuestionResponseType.SKIPPED) {
+            if (questionResponses[i]!!.responseType == QuestionResponse.QuestionResponseType.SKIPPED) {
                 continue
             }
 
             val questionScore =
-                if (questions[i].correctOption == questionResponses[i].optionSelected) {
-                    questionResponses[i].confidence!!
+                if (questions[i].correctOption == questionResponses[i]!!.optionSelected) {
+                    questionResponses[i]!!.confidence!!
                 } else {
-                    -questionResponses[i].confidence!!
+                    -questionResponses[i]!!.confidence!!
                 }
             when (questions[i].category) {
                 "category 1" -> category1Score += questionScore
