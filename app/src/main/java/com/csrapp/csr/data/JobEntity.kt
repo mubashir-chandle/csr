@@ -4,9 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "job"
-)
+@Entity(tableName = "job")
 data class JobEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
