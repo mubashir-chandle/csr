@@ -149,8 +149,10 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         }
 
         if (currentQuestionIndex + 1 == questions.size) {
-            finishTest()
-        } else if (v.id in listOf(R.id.btnNext, R.id.btnMark, R.id.btnSkip)) {
+            if (v.id != R.id.btnMark) {
+                finishTest()
+            }
+        } else {
             currentQuestionIndex += 1
             updateQuestion()
             btnNext.isEnabled = false
