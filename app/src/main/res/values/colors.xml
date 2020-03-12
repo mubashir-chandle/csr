@@ -3,4 +3,9 @@
     <color name="colorPrimary">#9C27B0</color>
     <color name="colorPrimaryDark">#8E24AA</color>
     <color name="colorAccent">#FF9800</color>
+
+    <color name="spinnerItemQuestionAnswered">#4CAF50</color>
+    <color name="spinnerItemQuestionSkipped">#F43636</color>
+    <color name="spinnerItemQuestionUnvisited">#505050</color>
+    <color name="spinnerItemQuestionMarked">#FFC107</color>
 </resources>

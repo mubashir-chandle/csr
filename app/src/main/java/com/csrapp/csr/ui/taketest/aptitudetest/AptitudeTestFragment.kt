@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -11,28 +12,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
-import com.csrapp.csr.data.AptitudeQuestionEntity
 import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_aptitude_test.*
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener,
-    CompoundButton.OnCheckedChangeListener {
+    CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
-    private lateinit var questions: List<AptitudeQuestionEntity>
-    private lateinit var questionResponses: Array<QuestionResponse?>
+    private lateinit var spinnerAdapter: SpinnerQuestionAdapter
     private var currentQuestionIndex = 0
-
-
-    class QuestionResponse(
-        var responseType: QuestionResponseType,
-        var optionSelected: Int? = null,
-        var confidence: Int? = null
-    ) {
-        enum class QuestionResponseType {
-            ANSWERED, SKIPPED, MARKED
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,9 +37,14 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         btnNext.isEnabled = false
         btnMark.isEnabled = false
 
-        initUI()
+        val factory = InjectorUtils.provideAptitudeTestViewModelFactory(activity!!)
+        viewModel = ViewModelProvider(this, factory).get(AptitudeTestViewModel::class.java)
+
+        spinnerAdapter = SpinnerQuestionAdapter(context!!, viewModel.getRandomQuestions())
+        spinnerQuestions.adapter = spinnerAdapter
+
         assignActionListeners()
-        initAptitudeTest()
+        updateQuestion()
     }
 
     private fun assignActionListeners() {
@@ -63,41 +56,36 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         option2.setOnCheckedChangeListener(this)
         option3.setOnCheckedChangeListener(this)
         option4.setOnCheckedChangeListener(this)
-    }
 
-    private fun initAptitudeTest() {
-        questions = getRandomQuestions()
-        questionResponses = arrayOfNulls<QuestionResponse>(5)
-
-        updateQuestion()
-    }
-
-    private fun initUI() {
-        val factory = InjectorUtils.provideAptitudeTestViewModelFactory(activity!!)
-        viewModel = ViewModelProvider(this, factory).get(AptitudeTestViewModel::class.java)
-    }
-
-    private fun getRandomQuestions(): List<AptitudeQuestionEntity> {
-        val categories = viewModel.getAptitudeCategories()
-
-        val questions = mutableListOf<AptitudeQuestionEntity>()
-        categories.forEach { category ->
-            val categoryQuestions = viewModel.getAptitudeQuestionsByCategory(category)
-            val selectedQuestions = categoryQuestions.shuffled().take(1)
-            questions.addAll(selectedQuestions)
-        }
-
-        return questions.shuffled()
+        spinnerQuestions.onItemSelectedListener = this
     }
 
     private fun updateQuestion() {
-        val question = questions[currentQuestionIndex]
+        spinnerQuestions.setSelection(currentQuestionIndex)
+
+        val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+        val question = questionHolder.question
         questionText.text = question.text
+
+        if (questionHolder.optionSelected == null)
+            optionGroup.clearCheck()
+        else {
+            when (questionHolder.optionSelected) {
+                1 -> optionGroup.check(R.id.option1)
+                2 -> optionGroup.check(R.id.option2)
+                3 -> optionGroup.check(R.id.option3)
+                4 -> optionGroup.check(R.id.option4)
+            }
+        }
         option1.text = question.option1
         option2.text = question.option2
         option3.text = question.option3
         option4.text = question.option4
-        confidenceSeekBar.progress = 0
+
+        if (questionHolder.confidence == null)
+            confidenceSeekBar.progress = 0
+        else
+            confidenceSeekBar.progress = questionHolder.confidence!! - 1
 
         if (question.referenceImage.isNullOrBlank()) {
             referenceImage.visibility = View.GONE
@@ -113,8 +101,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         }
 
         layout.smoothScrollTo(0, 0)
-        optionGroup.clearCheck()
-        if (currentQuestionIndex == questions.size - 1) {
+        if (currentQuestionIndex == spinnerAdapter.count - 1) {
             btnNext.text = "Finish"
             btnMark.text = "Mark"
             btnSkip.text = "Skip"
@@ -124,28 +111,28 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnNext -> {
-                questionResponses[currentQuestionIndex] = QuestionResponse(
-                    QuestionResponse.QuestionResponseType.ANSWERED,
-                    getSelectedOption(),
-                    getConfidence()
-                )
+                val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                questionHolder.responseType = QuestionHolder.QuestionResponseType.ANSWERED
+                questionHolder.optionSelected = getSelectedOption()
+                questionHolder.confidence = getConfidence()
             }
 
             R.id.btnMark -> {
-                questionResponses[currentQuestionIndex] = QuestionResponse(
-                    QuestionResponse.QuestionResponseType.MARKED,
-                    getSelectedOption(),
-                    getConfidence()
-                )
+                val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                questionHolder.responseType = QuestionHolder.QuestionResponseType.MARKED
+                questionHolder.optionSelected = getSelectedOption()
+                questionHolder.confidence = getConfidence()
             }
 
             R.id.btnSkip -> {
-                questionResponses[currentQuestionIndex] =
-                    (QuestionResponse(QuestionResponse.QuestionResponseType.SKIPPED))
+                val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                questionHolder.responseType = QuestionHolder.QuestionResponseType.SKIPPED
+                questionHolder.optionSelected = null
+                questionHolder.confidence = null
             }
         }
 
-        if (currentQuestionIndex + 1 == questions.size) {
+        if (currentQuestionIndex + 1 == spinnerAdapter.count) {
             if (v.id != R.id.btnMark) {
                 finishTest()
             }
@@ -158,7 +145,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     }
 
     private fun getSelectedOption(): Int? {
-        if (!optionGroup.isSelected)
+        if (optionGroup.checkedRadioButtonId == -1)
             return null
 
         return when (optionGroup.checkedRadioButtonId) {
@@ -201,18 +188,19 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         var category3Score = 0.0
         var category4Score = 0.0
 
-        for (i in questions.indices) {
-            if (questionResponses[i]!!.responseType == QuestionResponse.QuestionResponseType.SKIPPED) {
+        for (i in 0 until spinnerAdapter.count) {
+            val questionHolder = spinnerAdapter.getItem(i)!!
+            if (questionHolder.responseType == QuestionHolder.QuestionResponseType.SKIPPED) {
                 continue
             }
 
             val questionScore =
-                if (questions[i].correctOption == questionResponses[i]!!.optionSelected) {
-                    questionResponses[i]!!.confidence!!
+                if (questionHolder.question.correctOption == questionHolder.optionSelected) {
+                    questionHolder.confidence!!
                 } else {
-                    -questionResponses[i]!!.confidence!!
+                    -questionHolder.confidence!!
                 }
-            when (questions[i].category) {
+            when (questionHolder.question.category) {
                 "category 1" -> category1Score += questionScore
                 "category 2" -> category2Score += questionScore
                 "category 3" -> category3Score += questionScore
@@ -231,5 +219,14 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
     private fun getConfidence(): Int {
         return confidenceSeekBar.progress + 1
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        // Do Nothing.
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        currentQuestionIndex = position
+        updateQuestion()
     }
 }
