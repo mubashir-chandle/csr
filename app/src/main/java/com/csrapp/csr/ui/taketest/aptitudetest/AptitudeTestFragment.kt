@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.RadioGroup
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +17,8 @@ import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_aptitude_test.*
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener,
-    RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+    RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener,
+    AdapterView.OnItemSelectedListener {
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var spinnerAdapter: SpinnerQuestionAdapter
@@ -52,6 +54,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         optionGroup.setOnCheckedChangeListener(this)
 
         spinnerQuestions.onItemSelectedListener = this
+
+        confidenceSeekBar.setOnSeekBarChangeListener(this)
     }
 
     private fun updateUI() {
@@ -80,9 +84,10 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         option4.text = question.option4
 
         // Check if this question was answered previously.
-        if (questionHolder.optionSelected == null)
+        if (questionHolder.optionSelected == null) {
             optionGroup.clearCheck()
-        else {
+        } else {
+            updateConfidenceTextView()
             when (questionHolder.optionSelected) {
                 1 -> optionGroup.check(R.id.option1)
                 2 -> optionGroup.check(R.id.option2)
@@ -96,6 +101,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         else
             confidenceSeekBar.progress = questionHolder.confidence!! - 1
 
+        updateConfidenceTextView()
         updateButtons()
     }
 
@@ -106,6 +112,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             btnClear.isEnabled = false
         } else {
             confidenceSeekBar.isEnabled = true
+            updateConfidenceTextView()
             btnMark.isEnabled = true
             btnClear.isEnabled = true
         }
@@ -216,8 +223,11 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                 questionHolder.optionSelected = null
                 questionHolder.confidence = 0
 
-                confidenceSeekBar.progress = 0
                 optionGroup.clearCheck()
+
+                // Update to confidence TextView must be done after clearing option group.
+                confidenceSeekBar.progress = 0
+                updateConfidenceTextView()
 
                 // Change the color of question number in spinner.
                 spinnerAdapter.notifyDataSetChanged()
@@ -256,5 +266,27 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     // Answer option selected.
     override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
         updateButtons()
+    }
+
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        updateConfidenceTextView()
+    }
+
+    private fun updateConfidenceTextView() {
+        if (getSelectedOption() != null) {
+            textViewConfidence.visibility = View.VISIBLE
+            val percent = getConfidence() * 10
+            textViewConfidence.text = "${percent}%"
+        } else {
+            textViewConfidence.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        // Do Nothing.
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        // Do Nothing.
     }
 }
