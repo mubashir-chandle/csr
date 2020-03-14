@@ -9,6 +9,6 @@ class QuestionHolder(
     var confidence: Int? = null
 ) {
     enum class QuestionResponseType {
-        ANSWERED, SKIPPED, MARKED, UNVISITED
+        UNANSWERED, MARKED, ANSWERED
     }
 }

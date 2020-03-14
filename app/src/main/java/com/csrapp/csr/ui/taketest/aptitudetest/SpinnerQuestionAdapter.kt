@@ -18,7 +18,7 @@ class SpinnerQuestionAdapter(val context: Context, questions: List<AptitudeQuest
         for (i in questions.indices) {
             questionHolders[i] = QuestionHolder(
                 questions[i],
-                QuestionHolder.QuestionResponseType.UNVISITED
+                QuestionHolder.QuestionResponseType.UNANSWERED
             )
         }
     }
@@ -39,8 +39,7 @@ class SpinnerQuestionAdapter(val context: Context, questions: List<AptitudeQuest
         val color = when (questionHolders[position]!!.responseType) {
             QuestionHolder.QuestionResponseType.ANSWERED -> R.color.spinnerItemQuestionAnswered
             QuestionHolder.QuestionResponseType.MARKED -> R.color.spinnerItemQuestionMarked
-            QuestionHolder.QuestionResponseType.SKIPPED -> R.color.spinnerItemQuestionSkipped
-            QuestionHolder.QuestionResponseType.UNVISITED -> R.color.spinnerItemQuestionUnvisited
+            QuestionHolder.QuestionResponseType.UNANSWERED -> R.color.spinnerItemQuestionSkipped
         }
 
         val colorResource = context.resources.getColor(color)

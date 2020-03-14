@@ -47,7 +47,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private fun assignActionListeners() {
         btnNext.setOnClickListener(this)
         btnMark.setOnClickListener(this)
-        btnSkip.setOnClickListener(this)
+        btnClear.setOnClickListener(this)
 
         optionGroup.setOnCheckedChangeListener(this)
 
@@ -61,9 +61,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
         val question = questionHolder.question
         questionText.text = question.text
-
-        if (questionHolder.responseType == QuestionHolder.QuestionResponseType.UNVISITED)
-            questionHolder.responseType = QuestionHolder.QuestionResponseType.SKIPPED
 
         if (question.referenceImage.isNullOrBlank()) {
             referenceImage.visibility = View.GONE
@@ -103,33 +100,29 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     }
 
     private fun updateButtons() {
-        btnSkip.visibility = View.VISIBLE
-
         if (optionGroup.checkedRadioButtonId == -1) {
             confidenceSeekBar.isEnabled = false
-            btnNext.isEnabled = false
             btnMark.isEnabled = false
+            btnClear.isEnabled = false
         } else {
             confidenceSeekBar.isEnabled = true
-            btnNext.isEnabled = true
             btnMark.isEnabled = true
+            btnClear.isEnabled = true
         }
 
         if (currentQuestionIndex == spinnerAdapter.count - 1) {
             btnNext.text = "Finish"
             btnMark.text = "Mark"
-            btnSkip.text = "Clear"
         } else {
             btnNext.text = "Next"
             btnMark.text = "Mark and Next"
-            btnSkip.text = "Skip This Question"
         }
     }
 
     private fun finishTest() {
         btnNext.isEnabled = false
         btnMark.isEnabled = false
-        btnSkip.isEnabled = false
+        btnClear.isEnabled = false
 
         val scores = calculateScores()
         val category1Score = scores["category 1"]
@@ -152,11 +145,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
         for (i in 0 until spinnerAdapter.count) {
             val questionHolder = spinnerAdapter.getItem(i)!!
-            if (questionHolder.responseType == QuestionHolder.QuestionResponseType.SKIPPED ||
-                questionHolder.responseType == QuestionHolder.QuestionResponseType.UNVISITED
-            ) {
+            if (questionHolder.responseType == QuestionHolder.QuestionResponseType.UNANSWERED)
                 continue
-            }
 
             val questionScore =
                 if (questionHolder.question.correctOption == questionHolder.optionSelected) {
@@ -181,6 +171,60 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         )
     }
 
+    // Next/Mark/Skip Button clicked.
+    override fun onClick(v: View?) {
+        when (v!!.id) {
+            R.id.btnNext -> {
+                if (getSelectedOption() != null) {
+                    val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                    questionHolder.responseType = QuestionHolder.QuestionResponseType.ANSWERED
+                    questionHolder.optionSelected = getSelectedOption()
+                    questionHolder.confidence = getConfidence()
+
+                }
+
+                // If not the last question.
+                if (currentQuestionIndex != spinnerAdapter.count - 1) {
+                    currentQuestionIndex += 1
+                    updateUI()
+                } else {
+                    finishTest()
+                }
+            }
+
+            R.id.btnMark -> {
+                if (getSelectedOption() != null) {
+                    val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                    questionHolder.responseType = QuestionHolder.QuestionResponseType.MARKED
+                    questionHolder.optionSelected = getSelectedOption()
+                    questionHolder.confidence = getConfidence()
+                }
+
+                // If not the last question.
+                if (currentQuestionIndex != spinnerAdapter.count - 1) {
+                    currentQuestionIndex += 1
+                    updateUI()
+                } else {
+                    // Change the color of question number in spinner manually in the last question.
+                    spinnerAdapter.notifyDataSetChanged()
+                }
+            }
+
+            R.id.btnClear -> {
+                val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                questionHolder.responseType = QuestionHolder.QuestionResponseType.UNANSWERED
+                questionHolder.optionSelected = null
+                questionHolder.confidence = 0
+
+                confidenceSeekBar.progress = 0
+                optionGroup.clearCheck()
+
+                // Change the color of question number in spinner.
+                spinnerAdapter.notifyDataSetChanged()
+            }
+        }
+    }
+
     private fun getConfidence(): Int {
         return confidenceSeekBar.progress + 1
     }
@@ -198,7 +242,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         }
     }
 
-
     // Spinner item selected.
     override fun onNothingSelected(parent: AdapterView<*>?) {
         // Do Nothing.
@@ -213,43 +256,5 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     // Answer option selected.
     override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
         updateButtons()
-    }
-
-    // Next/Mark/Skip Button clicked.
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            R.id.btnNext -> {
-                val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
-                questionHolder.responseType = QuestionHolder.QuestionResponseType.ANSWERED
-                questionHolder.optionSelected = getSelectedOption()
-                questionHolder.confidence = getConfidence()
-            }
-
-            R.id.btnMark -> {
-                val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
-                questionHolder.responseType = QuestionHolder.QuestionResponseType.MARKED
-                questionHolder.optionSelected = getSelectedOption()
-                questionHolder.confidence = getConfidence()
-            }
-
-            R.id.btnSkip -> {
-                val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
-                questionHolder.responseType = QuestionHolder.QuestionResponseType.SKIPPED
-                questionHolder.optionSelected = null
-                questionHolder.confidence = null
-            }
-        }
-
-        if (currentQuestionIndex + 1 == spinnerAdapter.count) {
-            if (v.id == R.id.btnNext) {
-                finishTest()
-            } else if (v.id == R.id.btnSkip) {
-                optionGroup.clearCheck()
-                confidenceSeekBar.progress = 0
-            }
-        } else {
-            currentQuestionIndex += 1
-            updateUI()
-        }
     }
 }
