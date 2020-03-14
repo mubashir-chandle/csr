@@ -16,7 +16,7 @@
             android:id="@+id/spinnerQuestions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/dummy_question_numbers"
+            tools:entries="@array/dummy_question_numbers"
             android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="Question text"
+            tools:text="Question text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinnerQuestions" />
@@ -40,7 +40,7 @@
             android:layout_height="196dp"
             android:layout_marginTop="32dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/no_image"
+            tools:src="@mipmap/no_image"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,25 +61,25 @@
                 android:id="@+id/option1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Option 1" />
+                tools:text="Option 1" />
 
             <RadioButton
                 android:id="@+id/option2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Option 2" />
+                tools:text="Option 2" />
 
             <RadioButton
                 android:id="@+id/option3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Option 3" />
+                tools:text="Option 3" />
 
             <RadioButton
                 android:id="@+id/option4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Option 4" />
+                tools:text="Option 4" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -88,6 +88,30 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </RadioGroup>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:text="How confident are you about your answer (1-10)"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/optionGroup" />
+
+        <SeekBar
+            android:id="@+id/confidenceSeekBar"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:max="9"
+            android:progress="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <Button
             android:id="@+id/btnMark"
@@ -108,6 +132,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="64dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:text="Next"
             app:layout_constraintBottom_toTopOf="@+id/btnSkip"
             app:layout_constraintEnd_toEndOf="parent"
@@ -115,30 +140,6 @@
             app:layout_constraintStart_toEndOf="@+id/btnMark"
             app:layout_constraintTop_toBottomOf="@+id/confidenceSeekBar"
             app:layout_constraintVertical_bias="1.0" />
-
-        <SeekBar
-            android:id="@+id/confidenceSeekBar"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:max="9"
-            android:progress="3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:text="How confident are you about your answer (1-10)"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/optionGroup" />
 
         <Button
             android:id="@+id/btnSkip"

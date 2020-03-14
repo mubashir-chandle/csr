@@ -19,7 +19,7 @@ class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQues
         categories.forEach { category ->
             val categoryQuestions =
                 aptitudeQuestionRepository.getAptitudeQuestionsByCategory(category)
-            val selectedQuestions = categoryQuestions.shuffled().take(5)
+            val selectedQuestions = categoryQuestions.shuffled().take(1)
             questions.addAll(selectedQuestions)
         }
 
