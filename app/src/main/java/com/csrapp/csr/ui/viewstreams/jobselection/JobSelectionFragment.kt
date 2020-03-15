@@ -36,7 +36,7 @@ class JobSelectionFragment : Fragment() {
     private fun initUI() {
         stream = arguments!!.getString("stream")!!
 
-        val factory = InjectorUtils.provideJobSelectionViewModelFactory(activity!!)
+        val factory = InjectorUtils.provideJobSelectionViewModelFactory(requireContext())
         val viewModel = ViewModelProvider(this, factory).get(JobSelectionViewModel::class.java)
 
         initRecyclerView(stream, viewModel)

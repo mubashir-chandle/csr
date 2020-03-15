@@ -14,23 +14,26 @@ object InjectorUtils {
 
     fun provideAptitudeTestViewModelFactory(context: Context): AptitudeTestViewModelFactory {
         val repository = AptitudeQuestionRepository.getInstance(
-            CSRDatabase.getInstance(context).aptitudeQuestionDao()
+            CSRDatabase.getInstance(context.applicationContext).aptitudeQuestionDao()
         )
         return AptitudeTestViewModelFactory(repository)
     }
 
     fun provideStreamSelectionViewModelFactory(context: Context): StreamSelectionViewModelFactory {
-        val repository = StreamRepository.getInstance(CSRDatabase.getInstance(context).streamDao())
+        val repository =
+            StreamRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).streamDao())
         return StreamSelectionViewModelFactory(repository)
     }
 
     fun provideJobSelectionViewModelFactory(context: Context): JobSelectionViewModelFactory {
-        val repository = JobRepository.getInstance(CSRDatabase.getInstance(context).jobDao())
+        val repository =
+            JobRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).jobDao())
         return JobSelectionViewModelFactory(repository)
     }
 
     fun provideJobDetailViewModelFactory(context: Context): JobDetailViewModelFactory {
-        val repository = JobRepository.getInstance(CSRDatabase.getInstance(context).jobDao())
+        val repository =
+            JobRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).jobDao())
         return JobDetailViewModelFactory(repository)
     }
 }

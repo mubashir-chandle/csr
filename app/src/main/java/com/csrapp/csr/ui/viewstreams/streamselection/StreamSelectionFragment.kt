@@ -32,7 +32,7 @@ class StreamSelectionFragment : Fragment() {
     }
 
     private fun initUI() {
-        val factory = InjectorUtils.provideStreamSelectionViewModelFactory(activity!!)
+        val factory = InjectorUtils.provideStreamSelectionViewModelFactory(requireContext())
         val viewModel = ViewModelProvider(this, factory).get(StreamSelectionViewModel::class.java)
 
         initRecyclerView(viewModel)

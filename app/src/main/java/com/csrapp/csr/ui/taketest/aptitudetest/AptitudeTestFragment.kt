@@ -28,7 +28,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val backConfirmationDialog = AlertDialog.Builder(activity!!)
+        val backConfirmationDialog = AlertDialog.Builder(requireContext())
             .setTitle("Quit Test")
             .setMessage("Are you sure you want to quit the test?")
             .setPositiveButton("Yes") { _, _ ->
@@ -56,7 +56,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        val factory = InjectorUtils.provideAptitudeTestViewModelFactory(activity!!)
+        val factory = InjectorUtils.provideAptitudeTestViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory).get(AptitudeTestViewModel::class.java)
 
         spinnerAdapter = SpinnerQuestionAdapter(context!!, viewModel.getRandomQuestions())
@@ -161,7 +161,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                 "Category 2: $category2Score \nCategory 3: $category3Score\n" +
                 "Category 4: $category4Score"
 
-        val testCompletionDialog = AlertDialog.Builder(activity!!)
+        val testCompletionDialog = AlertDialog.Builder(requireContext())
             .setTitle("Aptitude Test Completed")
             .setMessage("You have successfully completed the first step of the test.\n\nYou can now start the second step whenever you are ready for it.")
             .setPositiveButton("Okay", null)

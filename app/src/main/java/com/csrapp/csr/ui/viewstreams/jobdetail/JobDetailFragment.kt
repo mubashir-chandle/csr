@@ -30,7 +30,7 @@ class JobDetailFragment : Fragment() {
     }
 
     private fun initUI() {
-        val factory = InjectorUtils.provideJobDetailViewModelFactory(activity!!)
+        val factory = InjectorUtils.provideJobDetailViewModelFactory(requireContext())
         val viewModel = ViewModelProvider(this, factory).get(JobDetailViewModel::class.java)
 
         jobId = arguments!!.getInt("jobId")
