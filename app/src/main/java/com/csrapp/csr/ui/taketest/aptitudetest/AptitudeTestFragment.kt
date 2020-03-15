@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.RadioGroup
 import android.widget.SeekBar
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -141,7 +141,13 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                 "Category 2: $category2Score \nCategory 3: $category3Score\n" +
                 "Category 4: $category4Score"
 
-        Toast.makeText(context!!, message, Toast.LENGTH_SHORT).show()
+        val testCompletionDialog = AlertDialog.Builder(activity!!)
+            .setTitle("Aptitude Test Completed")
+            .setMessage("You have successfully completed the first step of the test. You can now start the second step whenevery you are ready for it.")
+            .setPositiveButton("Okay", null)
+            .create()
+        testCompletionDialog.show()
+        navController.navigateUp()
     }
 
     private fun calculateScores(): Map<String, Double> {
