@@ -163,7 +163,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
         val testCompletionDialog = AlertDialog.Builder(activity!!)
             .setTitle("Aptitude Test Completed")
-            .setMessage("You have successfully completed the first step of the test. You can now start the second step whenevery you are ready for it.")
+            .setMessage("You have successfully completed the first step of the test.\n\nYou can now start the second step whenever you are ready for it.")
             .setPositiveButton("Okay", null)
             .create()
         testCompletionDialog.show()
