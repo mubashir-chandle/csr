@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.RadioGroup
 import android.widget.SeekBar
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +24,25 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var spinnerAdapter: SpinnerQuestionAdapter
     private var currentQuestionIndex = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val backConfirmationDialog = AlertDialog.Builder(activity!!)
+            .setTitle("Quit Test")
+            .setMessage("Are you sure you want to quit the test?")
+            .setPositiveButton("Yes") { _, _ ->
+                navController.navigateUp()
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                println("Cancel pressed")
+            }
+            .create()
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            backConfirmationDialog.show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
