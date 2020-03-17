@@ -105,7 +105,7 @@
     </fragment>
     <fragment
         android:id="@+id/personalityTestFragment"
-        android:name="com.csrapp.csr.ui.taketest.PersonalityTestFragment"
+        android:name="com.csrapp.csr.ui.taketest.personalitytest.PersonalityTestFragment"
         android:label="Personality Test"
         tools:layout="@layout/fragment_personality_test">
         <action

@@ -1,16 +1,17 @@
-package com.csrapp.csr.ui.taketest
+package com.csrapp.csr.ui.taketest.personalitytest
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import kotlinx.android.synthetic.main.fragment_personality_test.*
 
-class PersonalityTestFragment : Fragment(), View.OnClickListener {
+class PersonalityTestFragment : Fragment(), View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -25,14 +26,27 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        btnViewResult.setOnClickListener(this)
+        btnNext.setOnClickListener(this)
+        questionResponseSlider.setOnSeekBarChangeListener(this)
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.btnViewResult -> navController.navigate(
-                R.id.action_personalityTestFragment_to_resultFragment
-            )
+            R.id.btnNext -> TODO()
         }
+    }
+
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        sliderValue.text = "${getSliderValue()}%"
+    }
+
+    private fun getSliderValue() = (questionResponseSlider.progress + 1) * 10
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        // Do nothing.
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        // Do nothing.
     }
 }
