@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [StreamEntity::class, JobEntity::class, AptitudeQuestionEntity::class],
+    entities = [StreamEntity::class, JobEntity::class, AptitudeQuestionEntity::class, PersonalityQuestionEntity::class],
     version = 1,
     exportSchema = true
 )
@@ -14,6 +14,7 @@ abstract class CSRDatabase : RoomDatabase() {
     abstract fun streamDao(): StreamDao
     abstract fun jobDao(): JobDao
     abstract fun aptitudeQuestionDao(): AptitudeQuestionDao
+    abstract fun personalityQuestionDao(): PersonalityQuestionDao
 
     companion object {
         private var instance: CSRDatabase? = null
@@ -23,10 +24,10 @@ abstract class CSRDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(
-                context,
-                CSRDatabase::class.java,
-                "csr_data.db"
-            )
+            context,
+            CSRDatabase::class.java,
+            "csr_data.db"
+        )
             .allowMainThreadQueries()
             .createFromAsset("database/csr_data.db")
             .build()
