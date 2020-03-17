@@ -8,7 +8,6 @@
     tools:context=".ui.taketest.ResultFragment">
 
     <TextView
-        android:id="@+id/jobTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Result Fragment"
