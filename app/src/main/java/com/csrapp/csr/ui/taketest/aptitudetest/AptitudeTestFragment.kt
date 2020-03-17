@@ -1,6 +1,7 @@
 package com.csrapp.csr.ui.taketest.aptitudetest
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
@@ -23,6 +25,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var spinnerAdapter: SpinnerQuestionAdapter
+    private lateinit var timer: CountDownTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +64,19 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         spinnerAdapter = viewModel.getSpinnerAdapter(requireContext())
         spinnerQuestions.adapter = spinnerAdapter
 
+        viewModel.testFinished.observe(this) { testFinished ->
+            if (testFinished) {
+                println("testFinished -> $testFinished")
+                finishTestByTimer()
+            }
+        }
+
+        viewModel.timeRemaining.observe(this) {
+            val minutes = it / 60
+            val seconds = it % 60
+            remainingTime.text = "$minutes:$seconds"
+        }
+
         assignActionListeners()
         updateButtons()
     }
@@ -89,10 +105,10 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             referenceImage.visibility = View.GONE
         } else {
             referenceImage.visibility = View.VISIBLE
-            val identifier = context!!.resources.getIdentifier(
+            val identifier = requireContext().resources.getIdentifier(
                 question.referenceImage,
                 "mipmap",
-                context!!.packageName
+                requireContext().packageName
             )
             referenceImage.setImageResource(identifier)
         }
@@ -143,6 +159,20 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             btnNext.text = "Next"
             btnMark.text = "Mark and Next"
         }
+    }
+
+    private fun finishTestByTimer() {
+        btnNext.isEnabled = false
+        btnMark.isEnabled = false
+        btnClear.isEnabled = false
+
+        val testCompletionDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Aptitude Test Completed")
+            .setMessage("Your time for the aptitude test has finished.\n\nYou can now start the second step whenever you are ready for it.")
+            .setPositiveButton("Okay", null)
+            .create()
+        testCompletionDialog.show()
+        navController.navigateUp()
     }
 
     private fun finishTest() {
