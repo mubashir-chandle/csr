@@ -186,10 +186,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         val category3Score = scores["category 3"]
         val category4Score = scores["category 4"]
 
-        val message = "Test complete with scores:\nCategory 1: $category1Score\n" +
-                "Category 2: $category2Score \nCategory 3: $category3Score\n" +
-                "Category 4: $category4Score"
-
         val testCompletionDialog = AlertDialog.Builder(requireContext())
             .setTitle("Aptitude Test Completed")
             .setMessage("You have successfully completed the first step of the test.\n\nYou can now start the second step whenever you are ready for it.")
