@@ -23,7 +23,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var spinnerAdapter: SpinnerQuestionAdapter
-    private var currentQuestionIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +58,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         val factory = InjectorUtils.provideAptitudeTestViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory).get(AptitudeTestViewModel::class.java)
 
-        spinnerAdapter = SpinnerQuestionAdapter(context!!, viewModel.getRandomQuestions())
+        spinnerAdapter = viewModel.getSpinnerAdapter(requireContext())
         spinnerQuestions.adapter = spinnerAdapter
 
         assignActionListeners()
@@ -80,9 +79,9 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
     private fun updateUI() {
         layout.smoothScrollTo(0, 0)
-        spinnerQuestions.setSelection(currentQuestionIndex)
+        spinnerQuestions.setSelection(viewModel.currentQuestionIndex)
 
-        val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+        val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
         val question = questionHolder.question
         questionText.text = question.text
 
@@ -137,7 +136,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             btnClear.isEnabled = true
         }
 
-        if (currentQuestionIndex == spinnerAdapter.count - 1) {
+        if (viewModel.currentQuestionIndex == spinnerAdapter.count - 1) {
             btnNext.text = "Finish"
             btnMark.text = "Mark"
         } else {
@@ -209,7 +208,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         when (v!!.id) {
             R.id.btnNext -> {
                 if (getSelectedOption() != null) {
-                    val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                    val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
                     questionHolder.responseType = QuestionHolder.QuestionResponseType.ANSWERED
                     questionHolder.optionSelected = getSelectedOption()
                     questionHolder.confidence = getConfidence()
@@ -217,8 +216,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                 }
 
                 // If not the last question.
-                if (currentQuestionIndex != spinnerAdapter.count - 1) {
-                    currentQuestionIndex += 1
+                if (viewModel.currentQuestionIndex != spinnerAdapter.count - 1) {
+                    viewModel.currentQuestionIndex += 1
                     updateUI()
                 } else {
                     finishTest()
@@ -227,15 +226,15 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
             R.id.btnMark -> {
                 if (getSelectedOption() != null) {
-                    val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                    val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
                     questionHolder.responseType = QuestionHolder.QuestionResponseType.MARKED
                     questionHolder.optionSelected = getSelectedOption()
                     questionHolder.confidence = getConfidence()
                 }
 
                 // If not the last question.
-                if (currentQuestionIndex != spinnerAdapter.count - 1) {
-                    currentQuestionIndex += 1
+                if (viewModel.currentQuestionIndex != spinnerAdapter.count - 1) {
+                    viewModel.currentQuestionIndex += 1
                     updateUI()
                 } else {
                     // Change the color of question number in spinner manually in the last question.
@@ -244,7 +243,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             }
 
             R.id.btnClear -> {
-                val questionHolder = spinnerAdapter.getItem(currentQuestionIndex)!!
+                val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
                 questionHolder.responseType = QuestionHolder.QuestionResponseType.UNANSWERED
                 questionHolder.optionSelected = null
                 questionHolder.confidence = 0
@@ -285,7 +284,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
     // Spinner item selected.
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        currentQuestionIndex = position
+        viewModel.currentQuestionIndex = position
         updateUI()
     }
 
