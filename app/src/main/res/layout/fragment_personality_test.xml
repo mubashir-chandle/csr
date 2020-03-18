@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="personalityViewModel"
             type="com.csrapp.csr.ui.taketest.personalitytest.PersonalityTestViewModel" />
@@ -39,6 +41,7 @@
             android:gravity="start|top"
             android:hint="Enter your response"
             android:inputType="textMultiLine"
+            android:visibility="@{personalityViewModel.isTextualQuestion() ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/questionText" />
@@ -53,7 +56,9 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:max="9"
+            android:onProgressChanged="@{personalityViewModel.onSliderValueChanged}"
             android:progress="0"
+            android:visibility="@{personalityViewModel.isTextualQuestion() ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/btnNext"
             app:layout_constraintEnd_toStartOf="@+id/sliderValue"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,6 +69,8 @@
             android:layout_width="35sp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:text="@{personalityViewModel.sliderValue}"
+            android:visibility="@{personalityViewModel.isTextualQuestion() ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="@+id/questionResponseSlider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/questionResponseSlider"
@@ -74,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:onClick="@{() -> personalityViewModel.onButtonNextClicked()}"
+            android:onClick="@{() -> personalityViewModel.onButtonNextClicked() }"
             android:text="Next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
