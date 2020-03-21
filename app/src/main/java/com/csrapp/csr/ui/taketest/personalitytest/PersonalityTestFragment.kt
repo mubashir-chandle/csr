@@ -1,5 +1,6 @@
 package com.csrapp.csr.ui.taketest.personalitytest
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
@@ -37,5 +39,18 @@ class PersonalityTestFragment : Fragment() {
 
         binding.personalityViewModel = viewModel
         binding.lifecycleOwner = this
+
+        viewModel.testFinished.observe(this) { testFinished ->
+            if (testFinished) {
+                val testCompletionDialog = AlertDialog.Builder(requireContext())
+                    .setTitle("Personality Test Completed")
+                    .setMessage("You have successfully completed the second step of the test.\n\nYou can now view your result.")
+                    .setPositiveButton("Okay", null)
+                    .create()
+                testCompletionDialog.show()
+                navController.navigateUp()
+            }
+
+        }
     }
 }

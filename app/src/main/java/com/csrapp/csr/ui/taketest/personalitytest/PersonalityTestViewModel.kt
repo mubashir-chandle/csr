@@ -13,6 +13,10 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     val currentQuestionIndex: LiveData<Int>
         get() = _currentQuestionIndex
 
+    private var _testFinished = MutableLiveData(false)
+    val testFinished: LiveData<Boolean>
+        get() = _testFinished
+
     private var _sliderValueText = MutableLiveData<String>()
     val sliderValueText: LiveData<String>
         get() = _sliderValueText
@@ -37,7 +41,8 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             tempQuestionHolders.add(PersonalityQuestionAndResponseHolder(questions[i]))
         }
 
-        questionsAndResponses = tempQuestionHolders
+        // Use sublist for easier testing.
+        questionsAndResponses = tempQuestionHolders.subList(0, 10)
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
         _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
 
@@ -50,6 +55,11 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     }
 
     fun onButtonNextClicked() {
+        if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
+            _testFinished.value = true
+            return
+        }
+
         _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
         _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
