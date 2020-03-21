@@ -62,24 +62,7 @@ class PersonalityTestFragment : Fragment() {
 
         val testFinishObserver = Observer<Boolean> { testFinished ->
             if (testFinished) {
-                val result = mutableMapOf<String, Double>()
-                viewModel.getStreams().forEach { stream ->
-                    result[stream] = 0.0
-                }
-
-                val questionsAndResponses = viewModel.getQuestionsAndResponses()
-                questionsAndResponses.forEach { questionAndResponse ->
-                    val question = questionAndResponse.question
-                    if (question.type == "textual") {
-                        // TODO: Use sentiment analysis.
-                        val previousScore = result[question.stream]!!
-                        result[question.stream!!] = previousScore
-                    } else {
-                        val previousScore = result[question.stream]!!
-                        result[question.stream!!] =
-                            previousScore + questionAndResponse.responseValue!!
-                    }
-                }
+                generateResult()
 
                 val testCompletionDialog = AlertDialog.Builder(requireContext())
                     .setTitle("Personality Test Completed")
@@ -92,5 +75,28 @@ class PersonalityTestFragment : Fragment() {
         }
 
         viewModel.testFinished.observe(viewLifecycleOwner, testFinishObserver)
+    }
+
+    private fun generateResult(): Map<String, Double> {
+        val result = mutableMapOf<String, Double>()
+        viewModel.getStreams().forEach { stream ->
+            result[stream] = 0.0
+        }
+
+        val questionsAndResponses = viewModel.getQuestionsAndResponses()
+        questionsAndResponses.forEach { questionAndResponse ->
+            val question = questionAndResponse.question
+            if (question.type == "textual") {
+                // TODO: Use sentiment analysis.
+                val previousScore = result[question.stream]!!
+                result[question.stream!!] = previousScore
+            } else {
+                val previousScore = result[question.stream]!!
+                result[question.stream!!] =
+                    previousScore + questionAndResponse.responseValue!!
+            }
+        }
+
+        return result
     }
 }

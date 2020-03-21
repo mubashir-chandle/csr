@@ -13,6 +13,10 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     val currentQuestionIndex: LiveData<Int>
         get() = _currentQuestionIndex
 
+    private var _currentQuestionNumberDisplay = MutableLiveData<String>()
+    val currentQuestionNumberDisplay: LiveData<String>
+        get() = _currentQuestionNumberDisplay
+
     private var _testFinished = MutableLiveData(false)
     val testFinished: LiveData<Boolean>
         get() = _testFinished
@@ -55,6 +59,14 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             _sliderValueText.value = "${percent}%"
         }
         sliderValue.observeForever(sliderValueObserver)
+        _currentQuestionNumberDisplay.value = generateCurrentQuestionNumber()
+    }
+
+    fun generateCurrentQuestionNumber(): String {
+        val currentQuestionNumber = _currentQuestionIndex.value!! + 1
+        val totalQuestions = questionsAndResponses.size
+
+        return "Question $currentQuestionNumber/$totalQuestions"
     }
 
     fun onButtonNextClicked() {
@@ -70,6 +82,8 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         }
 
         _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
+        _currentQuestionNumberDisplay.value = generateCurrentQuestionNumber()
+
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
         _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
 
