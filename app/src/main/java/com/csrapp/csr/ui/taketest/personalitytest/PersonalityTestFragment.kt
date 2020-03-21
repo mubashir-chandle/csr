@@ -16,13 +16,16 @@ import com.csrapp.csr.utils.InjectorUtils
 class PersonalityTestFragment : Fragment() {
     private lateinit var navController: NavController
     private lateinit var viewModel: PersonalityTestViewModel
+    private lateinit var binding: FragmentPersonalityTestBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_personality_test, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_personality_test, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,13 +35,7 @@ class PersonalityTestFragment : Fragment() {
         val factory = InjectorUtils.providePersonalityTestViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory).get(PersonalityTestViewModel::class.java)
 
-        DataBindingUtil.setContentView<FragmentPersonalityTestBinding>(
-            this.requireActivity(),
-            R.layout.fragment_personality_test
-        )
-            .apply {
-                this.lifecycleOwner = this@PersonalityTestFragment
-                this.personalityViewModel = viewModel
-            }
+        binding.personalityViewModel = viewModel
+        binding.lifecycleOwner = this
     }
 }
