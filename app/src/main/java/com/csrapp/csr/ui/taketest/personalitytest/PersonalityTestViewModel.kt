@@ -58,16 +58,16 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     }
 
     fun onButtonNextClicked() {
-        if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
-            _testFinished.value = true
-            return
-        }
-
         if (currentQuestion.value!!.type == "textual")
             questionsAndResponses[currentQuestionIndex.value!!].responseString =
                 responseString.value
         else
             questionsAndResponses[currentQuestionIndex.value!!].responseValue = sliderValue.value
+
+        if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
+            _testFinished.value = true
+            return
+        }
 
         _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
