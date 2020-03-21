@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,6 +20,25 @@ class PersonalityTestFragment : Fragment() {
     private lateinit var navController: NavController
     private lateinit var viewModel: PersonalityTestViewModel
     private lateinit var binding: FragmentPersonalityTestBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val backConfirmationDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Quit Test")
+            .setMessage("Are you sure you want to quit the test?")
+            .setPositiveButton("Yes") { _, _ ->
+                navController.navigateUp()
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                println("Cancel pressed")
+            }
+            .create()
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            backConfirmationDialog.show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
