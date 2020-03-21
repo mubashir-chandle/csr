@@ -21,6 +21,10 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     val testFinished: LiveData<Boolean>
         get() = _testFinished
 
+    private var _btnNextText = MutableLiveData<String>("Next")
+    val btnNextText: LiveData<String>
+        get() = _btnNextText
+
     private var _sliderValueText = MutableLiveData<String>()
     val sliderValueText: LiveData<String>
         get() = _sliderValueText
@@ -62,7 +66,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         _currentQuestionNumberDisplay.value = generateCurrentQuestionNumber()
     }
 
-    fun generateCurrentQuestionNumber(): String {
+    private fun generateCurrentQuestionNumber(): String {
         val currentQuestionNumber = _currentQuestionIndex.value!! + 1
         val totalQuestions = questionsAndResponses.size
 
@@ -71,14 +75,16 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
     fun onButtonNextClicked() {
         if (currentQuestion.value!!.type == "textual")
-            questionsAndResponses[currentQuestionIndex.value!!].responseString =
+            questionsAndResponses[_currentQuestionIndex.value!!].responseString =
                 responseString.value
         else
-            questionsAndResponses[currentQuestionIndex.value!!].responseValue = sliderValue.value
+            questionsAndResponses[_currentQuestionIndex.value!!].responseValue = sliderValue.value
 
         if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
             _testFinished.value = true
             return
+        } else if (_currentQuestionIndex.value == questionsAndResponses.lastIndex - 1) {
+            _btnNextText.value = "Finish"
         }
 
         _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
@@ -96,6 +102,8 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     }
 
     fun getQuestionsAndResponses() = questionsAndResponses
+
+    fun getTotalQuestions() = questionsAndResponses.size
 
     fun getStreams() = personalityQuestionRepository.getStreams()
 
