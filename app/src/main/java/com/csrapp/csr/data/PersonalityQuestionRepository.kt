@@ -4,6 +4,8 @@ class PersonalityQuestionRepository private constructor(private val personalityQ
 
     fun getQuestions() = personalityQuestionDao.getQuestions()
 
+    fun getStreams() = personalityQuestionDao.getStreams()
+
     companion object {
         private var instance: PersonalityQuestionRepository? = null
 

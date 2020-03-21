@@ -27,11 +27,14 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     val currentQuestion: LiveData<PersonalityQuestionEntity>
         get() = _currentQuestion
 
+    var responseString = MutableLiveData<String>()
+
     private var _isTextualQuestion = MutableLiveData<Boolean>()
     val isTextualQuestion: LiveData<Boolean>
         get() = _isTextualQuestion
 
     private var questionsAndResponses: List<PersonalityQuestionAndResponseHolder>
+
     private var sliderValueObserver: Observer<Int>
 
     init {
@@ -48,7 +51,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
         sliderValue.value = 0
         sliderValueObserver = Observer {
-            val percent = (sliderValue.value!! + 1) * 10
+            val percent = sliderValue.value!! * 10
             _sliderValueText.value = "${percent}%"
         }
         sliderValue.observeForever(sliderValueObserver)
@@ -60,15 +63,27 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             return
         }
 
+        if (currentQuestion.value!!.type == "textual")
+            questionsAndResponses[currentQuestionIndex.value!!].responseString =
+                responseString.value
+        else
+            questionsAndResponses[currentQuestionIndex.value!!].responseValue = sliderValue.value
+
         _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
         _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
+
         sliderValue.value = 0
+        responseString.value = ""
     }
 
     private fun getRandomizedQuestions(): List<PersonalityQuestionEntity> {
         return personalityQuestionRepository.getQuestions().shuffled()
     }
+
+    fun getQuestionsAndResponses() = questionsAndResponses
+
+    fun getStreams() = personalityQuestionRepository.getStreams()
 
     override fun onCleared() {
         sliderValue.removeObserver(sliderValueObserver)

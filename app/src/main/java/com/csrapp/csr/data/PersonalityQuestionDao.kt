@@ -7,4 +7,7 @@ import androidx.room.Query
 interface PersonalityQuestionDao {
     @Query("SELECT * FROM personality_question")
     fun getQuestions(): List<PersonalityQuestionEntity>
+
+    @Query("SELECT DISTINCT stream FROM personality_question ORDER BY stream")
+    fun getStreams(): List<String>
 }

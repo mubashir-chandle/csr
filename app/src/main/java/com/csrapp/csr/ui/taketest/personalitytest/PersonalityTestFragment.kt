@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
@@ -40,8 +40,27 @@ class PersonalityTestFragment : Fragment() {
         binding.personalityViewModel = viewModel
         binding.lifecycleOwner = this
 
-        viewModel.testFinished.observe(this) { testFinished ->
+        val testFinishObserver = Observer<Boolean> { testFinished ->
             if (testFinished) {
+                val result = mutableMapOf<String, Double>()
+                viewModel.getStreams().forEach { stream ->
+                    result[stream] = 0.0
+                }
+
+                val questionsAndResponses = viewModel.getQuestionsAndResponses()
+                questionsAndResponses.forEach { questionAndResponse ->
+                    val question = questionAndResponse.question
+                    if (question.type == "textual") {
+                        // TODO: Use sentiment analysis.
+                        val previousScore = result[question.stream]!!
+                        result[question.stream!!] = previousScore
+                    } else {
+                        val previousScore = result[question.stream]!!
+                        result[question.stream!!] =
+                            previousScore + questionAndResponse.responseValue!!
+                    }
+                }
+
                 val testCompletionDialog = AlertDialog.Builder(requireContext())
                     .setTitle("Personality Test Completed")
                     .setMessage("You have successfully completed the second step of the test.\n\nYou can now view your result.")
@@ -50,7 +69,8 @@ class PersonalityTestFragment : Fragment() {
                 testCompletionDialog.show()
                 navController.navigateUp()
             }
-
         }
+
+        viewModel.testFinished.observe(viewLifecycleOwner, testFinishObserver)
     }
 }
