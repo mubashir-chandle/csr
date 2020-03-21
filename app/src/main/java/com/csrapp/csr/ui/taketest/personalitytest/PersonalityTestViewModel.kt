@@ -1,8 +1,8 @@
 package com.csrapp.csr.ui.taketest.personalitytest
 
-import android.widget.SeekBar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.csrapp.csr.data.PersonalityQuestionEntity
 import com.csrapp.csr.data.PersonalityQuestionRepository
@@ -13,14 +13,11 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     val currentQuestionIndex: LiveData<Int>
         get() = _currentQuestionIndex
 
-    private var _sliderValue = MutableLiveData<String>()
-    val sliderValue: LiveData<String>
-        get() = _sliderValue
+    private var _sliderValueText = MutableLiveData<String>()
+    val sliderValueText: LiveData<String>
+        get() = _sliderValueText
 
-    fun onSliderValueChanged(seekBar: SeekBar, progressValue: Int, fromUser: Boolean) {
-        val percent = (progressValue + 1) * 10
-        _sliderValue.value = "${percent}%"
-    }
+    var sliderValue = MutableLiveData<Int>()
 
     private var _currentQuestion = MutableLiveData<PersonalityQuestionEntity>()
     val currentQuestion: LiveData<PersonalityQuestionEntity>
@@ -31,6 +28,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         get() = _isTextualQuestion
 
     private var questionsAndResponses: List<PersonalityQuestionAndResponseHolder>
+    private var sliderValueObserver: Observer<Int>
 
     init {
         val questions = getRandomizedQuestions()
@@ -42,15 +40,28 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         questionsAndResponses = tempQuestionHolders
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
         _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
+
+        sliderValue.value = 0
+        sliderValueObserver = Observer {
+            val percent = (sliderValue.value!! + 1) * 10
+            _sliderValueText.value = "${percent}%"
+        }
+        sliderValue.observeForever(sliderValueObserver)
     }
 
     fun onButtonNextClicked() {
         _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
         _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
+        sliderValue.value = 0
     }
 
     private fun getRandomizedQuestions(): List<PersonalityQuestionEntity> {
         return personalityQuestionRepository.getQuestions().shuffled()
+    }
+
+    override fun onCleared() {
+        sliderValue.removeObserver(sliderValueObserver)
+        super.onCleared()
     }
 }
