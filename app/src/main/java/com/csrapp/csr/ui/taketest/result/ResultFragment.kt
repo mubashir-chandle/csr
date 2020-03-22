@@ -6,16 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.utils.InjectorUtils
-import kotlinx.android.synthetic.main.fragment_result.*
 
-class ResultFragment : Fragment(), View.OnClickListener {
+class ResultFragment : Fragment() {
     private val TAG = "ResultFragment"
 
     private lateinit var navController: NavController
@@ -36,8 +34,6 @@ class ResultFragment : Fragment(), View.OnClickListener {
         val factory = InjectorUtils.provideResultViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory).get(ResultViewModel::class.java)
 
-        btnViewJobs.setOnClickListener(this)
-
         val sharedPreferences = requireActivity().getSharedPreferences(
             getString(R.string.shared_preference_filename),
             Context.MODE_PRIVATE
@@ -47,34 +43,21 @@ class ResultFragment : Fragment(), View.OnClickListener {
         val isPersonalityTestCompleted =
             sharedPreferences.getBoolean("isPersonalityTestCompleted", false)
 
-        val aptitudeScores = mutableMapOf<String, Double>()
-        val personalityScores = mutableMapOf<String, Double>()
-
         if (isAptitudeTestCompleted && isPersonalityTestCompleted) {
+            val aptitudeScores = mutableListOf<ResultItem>()
             viewModel.getAptitudeCategories().forEach { category ->
-                aptitudeScores[category] = sharedPreferences.getFloat(category, 0f).toDouble()
+                val score = sharedPreferences.getFloat(category, 0f).toDouble()
+                aptitudeScores.add(ResultItem(category, score.toInt()))
             }
             Log.d(TAG, aptitudeScores.toString())
 
+            val personalityScores = mutableListOf<ResultItem>()
             viewModel.getAllStreams().forEach { streamEntity ->
                 val stream = streamEntity.id
-                personalityScores[stream] = sharedPreferences.getFloat(stream, 0f).toDouble()
+                val score = sharedPreferences.getFloat(stream, 0f).toDouble()
+                personalityScores.add(ResultItem(stream, score.toInt()))
             }
-
             Log.d(TAG, personalityScores.toString())
-        }
-    }
-
-    override fun onClick(v: View?) {
-//        TODO: Change hardcoded stream
-        when (v!!.id) {
-            R.id.btnViewJobs -> {
-                val bundle = bundleOf("stream" to "technical")
-                navController.navigate(
-                    R.id.action_resultFragment_to_jobSelectionFragment,
-                    bundle
-                )
-            }
         }
     }
 }
