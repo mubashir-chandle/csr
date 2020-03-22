@@ -191,10 +191,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     }
 
     private fun saveScores() {
-        var category1Score = 0.0
-        var category2Score = 0.0
-        var category3Score = 0.0
-        var category4Score = 0.0
+        val scores = mutableMapOf<String, Double>()
 
         for (i in 0 until spinnerAdapter.count) {
             val questionHolder = spinnerAdapter.getItem(i)!!
@@ -207,13 +204,9 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                 } else {
                     -questionHolder.confidence!!
                 }
-            when (questionHolder.question.category) {
-                "category 1" -> category1Score += questionScore
-                "category 2" -> category2Score += questionScore
-                "category 3" -> category3Score += questionScore
-                "category 4" -> category4Score += questionScore
-            }
 
+            val previousScore = scores[questionHolder.question.category] ?: 0.0
+            scores[questionHolder.question.category] = previousScore + questionScore
         }
 
         val sharedPreferences = requireActivity().getSharedPreferences(
@@ -222,10 +215,9 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         )
         with(sharedPreferences.edit()) {
             putBoolean("isAptitudeTestCompleted", true)
-            putFloat("category 1", category1Score.toFloat())
-            putFloat("category 2", category2Score.toFloat())
-            putFloat("category 3", category3Score.toFloat())
-            putFloat("category 4", category4Score.toFloat())
+            scores.forEach { (category, score) ->
+                putFloat(category, score.toFloat())
+            }
             commit()
         }
     }
