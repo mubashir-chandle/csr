@@ -4,4 +4,6 @@
     <string-array name="dummy_question_numbers">
         <item>Question 1</item>
     </string-array>
+
+    <string name="shared_preference_filename">shared_preferences</string>
 </resources>

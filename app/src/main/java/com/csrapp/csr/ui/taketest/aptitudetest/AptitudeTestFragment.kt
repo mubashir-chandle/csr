@@ -1,5 +1,6 @@
 package com.csrapp.csr.ui.taketest.aptitudetest
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -22,6 +23,9 @@ import kotlinx.android.synthetic.main.fragment_aptitude_test.*
 class AptitudeTestFragment : Fragment(), View.OnClickListener,
     RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener,
     AdapterView.OnItemSelectedListener {
+
+    private val TAG = "AptitudeTestFragment"
+
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var spinnerAdapter: SpinnerQuestionAdapter
@@ -66,8 +70,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
         viewModel.testFinished.observe(this) { testFinished ->
             if (testFinished) {
-                println("testFinished -> $testFinished")
-                finishTestByTimer()
+                finishTest(finishedByTimer = true)
             }
         }
 
@@ -161,41 +164,33 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    private fun finishTestByTimer() {
+    private fun finishTest(finishedByTimer: Boolean) {
         btnNext.isEnabled = false
         btnMark.isEnabled = false
         btnClear.isEnabled = false
 
+        saveScores()
+
+        val message = when (finishedByTimer) {
+            true -> "Your time for the aptitude test has finished.\n" +
+                    "\n" +
+                    "You can now start the second step whenever you are ready for it."
+
+            false -> "You have successfully completed the first step of the test.\n" +
+                    "\n" +
+                    "You can now start the second step whenever you are ready for it."
+        }
+
         val testCompletionDialog = AlertDialog.Builder(requireContext())
             .setTitle("Aptitude Test Completed")
-            .setMessage("Your time for the aptitude test has finished.\n\nYou can now start the second step whenever you are ready for it.")
+            .setMessage(message)
             .setPositiveButton("Okay", null)
             .create()
         testCompletionDialog.show()
         navController.navigateUp()
     }
 
-    private fun finishTest() {
-        btnNext.isEnabled = false
-        btnMark.isEnabled = false
-        btnClear.isEnabled = false
-
-        val scores = calculateScores()
-        val category1Score = scores["category 1"]
-        val category2Score = scores["category 2"]
-        val category3Score = scores["category 3"]
-        val category4Score = scores["category 4"]
-
-        val testCompletionDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Aptitude Test Completed")
-            .setMessage("You have successfully completed the first step of the test.\n\nYou can now start the second step whenever you are ready for it.")
-            .setPositiveButton("Okay", null)
-            .create()
-        testCompletionDialog.show()
-        navController.navigateUp()
-    }
-
-    private fun calculateScores(): Map<String, Double> {
+    private fun saveScores() {
         var category1Score = 0.0
         var category2Score = 0.0
         var category3Score = 0.0
@@ -221,12 +216,18 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
         }
 
-        return mapOf(
-            "category 1" to category1Score,
-            "category 2" to category2Score,
-            "category 3" to category3Score,
-            "category 4" to category4Score
+        val sharedPreferences = requireActivity().getSharedPreferences(
+            getString(R.string.shared_preference_filename),
+            MODE_PRIVATE
         )
+        with(sharedPreferences.edit()) {
+            putBoolean("isAptitudeTestCompleted", true)
+            putFloat("category 1", category1Score.toFloat())
+            putFloat("category 2", category2Score.toFloat())
+            putFloat("category 3", category3Score.toFloat())
+            putFloat("category 4", category4Score.toFloat())
+            commit()
+        }
     }
 
     // Next/Mark/Skip Button clicked.
@@ -246,7 +247,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                     viewModel.currentQuestionIndex += 1
                     updateUI()
                 } else {
-                    finishTest()
+                    finishTest(finishedByTimer = false)
                 }
             }
 
