@@ -6,6 +6,8 @@ class ResultRepository private constructor(private val resultDao: ResultDao) {
 
     fun getAllStreams() = resultDao.getAllStreams()
 
+    fun getStreamTitleFromId(id: String) = resultDao.getStreamTitleFromId(id)
+
     companion object {
         private var instance: ResultRepository? = null
 

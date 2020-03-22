@@ -6,12 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
 import com.csrapp.csr.utils.InjectorUtils
+import kotlinx.android.synthetic.main.fragment_result.*
 
 class ResultFragment : Fragment() {
     private val TAG = "ResultFragment"
@@ -43,21 +46,46 @@ class ResultFragment : Fragment() {
         val isPersonalityTestCompleted =
             sharedPreferences.getBoolean("isPersonalityTestCompleted", false)
 
-        if (isAptitudeTestCompleted && isPersonalityTestCompleted) {
-            val aptitudeScores = mutableListOf<ResultItem>()
-            viewModel.getAptitudeCategories().forEach { category ->
-                val score = sharedPreferences.getFloat(category, 0f).toDouble()
-                aptitudeScores.add(ResultItem(category, score.toInt()))
-            }
-            Log.d(TAG, aptitudeScores.toString())
+        if (!isAptitudeTestCompleted || !isPersonalityTestCompleted) {
+            Toast.makeText(
+                requireContext(),
+                "Please complete both the steps of the test first!",
+                Toast.LENGTH_SHORT
+            ).show()
+            navController.navigateUp()
+        }
 
-            val personalityScores = mutableListOf<ResultItem>()
-            viewModel.getAllStreams().forEach { streamEntity ->
-                val stream = streamEntity.id
-                val score = sharedPreferences.getFloat(stream, 0f).toDouble()
-                personalityScores.add(ResultItem(stream, score.toInt()))
-            }
-            Log.d(TAG, personalityScores.toString())
+        val aptitudeScores = mutableListOf<ResultItem>()
+        viewModel.getAptitudeCategories().forEach { category ->
+            val score = sharedPreferences.getFloat(category, 0f).toDouble()
+            aptitudeScores.add(ResultItem(category, score.toInt()))
+        }
+        Log.d(TAG, aptitudeScores.toString())
+        val aptitudeScoresAdapter = ResultAdapter()
+        aptitudeScoresAdapter.setUpItems(aptitudeScores)
+
+        recyclerViewAptitudeScores.apply {
+            adapter = aptitudeScoresAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            isNestedScrollingEnabled = false
+        }
+
+        val personalityScores = mutableListOf<ResultItem>()
+        viewModel.getAllStreams().forEach { streamEntity ->
+            val streamId = streamEntity.id
+            val streamTitle = viewModel.getStreamTitleFromId(streamId)
+            val score = sharedPreferences.getFloat(streamId, 0f).toDouble()
+
+            personalityScores.add(ResultItem(streamTitle, score.toInt()))
+        }
+        Log.d(TAG, personalityScores.toString())
+        val personalityScoresAdapter = ResultAdapter()
+        personalityScoresAdapter.setUpItems(personalityScores)
+
+        recyclerViewPersonalityScores.apply {
+            adapter = personalityScoresAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            isNestedScrollingEnabled = false
         }
     }
 }

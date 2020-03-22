@@ -7,5 +7,7 @@ class ResultViewModel(private val resultRepository: ResultRepository) : ViewMode
 
     fun getAptitudeCategories() = resultRepository.getAptitudeCategories()
 
+    fun getStreamTitleFromId(id: String) = resultRepository.getStreamTitleFromId(id)
+
     fun getAllStreams() = resultRepository.getAllStreams()
 }
