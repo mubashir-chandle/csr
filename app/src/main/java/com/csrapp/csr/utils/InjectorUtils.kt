@@ -4,6 +4,7 @@ import android.content.Context
 import com.csrapp.csr.data.*
 import com.csrapp.csr.ui.taketest.aptitudetest.AptitudeTestViewModelFactory
 import com.csrapp.csr.ui.taketest.personalitytest.PersonalityTestViewModelFactory
+import com.csrapp.csr.ui.taketest.result.ResultViewModelFactory
 import com.csrapp.csr.ui.viewstreams.jobdetail.JobDetailViewModelFactory
 import com.csrapp.csr.ui.viewstreams.jobselection.JobSelectionViewModelFactory
 import com.csrapp.csr.ui.viewstreams.streamselection.StreamSelectionViewModelFactory
@@ -22,6 +23,12 @@ object InjectorUtils {
             CSRDatabase.getInstance(context.applicationContext).personalityQuestionDao()
         )
         return PersonalityTestViewModelFactory(repository)
+    }
+
+    fun provideResultViewModelFactory(context: Context): ResultViewModelFactory {
+        val repository =
+            ResultRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).resultDao())
+        return ResultViewModelFactory(repository)
     }
 
     fun provideStreamSelectionViewModelFactory(context: Context): StreamSelectionViewModelFactory {

@@ -1,22 +1,24 @@
-package com.csrapp.csr.ui.taketest
+package com.csrapp.csr.ui.taketest.result
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
+import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_result.*
 
 class ResultFragment : Fragment(), View.OnClickListener {
     private val TAG = "ResultFragment"
 
     private lateinit var navController: NavController
+    private lateinit var viewModel: ResultViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +32,9 @@ class ResultFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
+        val factory = InjectorUtils.provideResultViewModelFactory(requireContext())
+        viewModel = ViewModelProvider(this, factory).get(ResultViewModel::class.java)
+
         btnViewJobs.setOnClickListener(this)
 
         val sharedPreferences = requireActivity().getSharedPreferences(
@@ -38,17 +43,12 @@ class ResultFragment : Fragment(), View.OnClickListener {
         )
 
         val isAptitudeTestCompleted = sharedPreferences.getBoolean("isAptitudeTestCompleted", false)
+        val scores = mutableMapOf<String, Double>()
 
         if (isAptitudeTestCompleted) {
-            val category1Score = sharedPreferences.getFloat("category 1", 0f).toDouble()
-            val category2Score = sharedPreferences.getFloat("category 2", 0f).toDouble()
-            val category3Score = sharedPreferences.getFloat("category 3", 0f).toDouble()
-            val category4Score = sharedPreferences.getFloat("category 4", 0f).toDouble()
-
-            Log.d(
-                TAG,
-                "Result of aptitude tests: $category1Score, $category2Score, $category3Score, $category4Score"
-            )
+            viewModel.getAptitudeCategories().forEach { category ->
+                scores[category] = sharedPreferences.getFloat(category, 0f).toDouble()
+            }
         }
     }
 

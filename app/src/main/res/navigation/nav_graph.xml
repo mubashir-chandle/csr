@@ -120,7 +120,7 @@
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.csrapp.csr.ui.taketest.ResultFragment"
+        android:name="com.csrapp.csr.ui.taketest.result.ResultFragment"
         android:label="Test Result"
         tools:layout="@layout/fragment_result">
         <action
