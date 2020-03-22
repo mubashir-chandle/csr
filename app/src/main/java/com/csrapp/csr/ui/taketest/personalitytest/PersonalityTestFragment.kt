@@ -1,6 +1,7 @@
 package com.csrapp.csr.ui.taketest.personalitytest
 
 import android.app.AlertDialog
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -95,6 +96,18 @@ class PersonalityTestFragment : Fragment() {
                 result[question.stream!!] =
                     previousScore + questionAndResponse.responseValue!!
             }
+        }
+
+        val sharedPreferences = requireActivity().getSharedPreferences(
+            getString(R.string.shared_preference_filename),
+            MODE_PRIVATE
+        )
+        with(sharedPreferences.edit()) {
+            putBoolean("isPersonalityTestCompleted", true)
+            result.forEach { (stream, score) ->
+                putFloat(stream, score.toFloat())
+            }
+            commit()
         }
 
         return result

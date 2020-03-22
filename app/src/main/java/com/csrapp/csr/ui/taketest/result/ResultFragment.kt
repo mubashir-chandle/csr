@@ -2,6 +2,7 @@ package com.csrapp.csr.ui.taketest.result
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,12 +44,24 @@ class ResultFragment : Fragment(), View.OnClickListener {
         )
 
         val isAptitudeTestCompleted = sharedPreferences.getBoolean("isAptitudeTestCompleted", false)
-        val scores = mutableMapOf<String, Double>()
+        val isPersonalityTestCompleted =
+            sharedPreferences.getBoolean("isPersonalityTestCompleted", false)
 
-        if (isAptitudeTestCompleted) {
+        val aptitudeScores = mutableMapOf<String, Double>()
+        val personalityScores = mutableMapOf<String, Double>()
+
+        if (isAptitudeTestCompleted && isPersonalityTestCompleted) {
             viewModel.getAptitudeCategories().forEach { category ->
-                scores[category] = sharedPreferences.getFloat(category, 0f).toDouble()
+                aptitudeScores[category] = sharedPreferences.getFloat(category, 0f).toDouble()
             }
+            Log.d(TAG, aptitudeScores.toString())
+
+            viewModel.getAllStreams().forEach { streamEntity ->
+                val stream = streamEntity.id
+                personalityScores[stream] = sharedPreferences.getFloat(stream, 0f).toDouble()
+            }
+
+            Log.d(TAG, personalityScores.toString())
         }
     }
 
