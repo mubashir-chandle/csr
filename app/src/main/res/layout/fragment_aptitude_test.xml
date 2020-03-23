@@ -90,19 +90,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:text="How confident are you about your answer"
+            android:text="How confident are you about your answer?"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/optionGroup" />
 
         <SeekBar
             android:id="@+id/confidenceSeekBar"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            style="@style/Widget.AppCompat.SeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:max="9"
-            android:progress="3"
+            android:max="100"
+            android:progress="70"
             app:layout_constraintEnd_toStartOf="@+id/textViewConfidence"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />

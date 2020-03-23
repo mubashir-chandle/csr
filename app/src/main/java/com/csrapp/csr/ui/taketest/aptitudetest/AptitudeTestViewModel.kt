@@ -11,6 +11,8 @@ import com.csrapp.csr.data.AptitudeQuestionRepository
 class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQuestionRepository) :
     ViewModel() {
 
+    val questionsPerCategory = 1
+
     private val TEST_TIME = 1 * 60 * 1000L                // 1 Minute
     private val questions = getRandomQuestions()
     private var spinnerAdapter: SpinnerQuestionAdapter? = null
@@ -59,7 +61,7 @@ class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQues
         categories.forEach { category ->
             val categoryQuestions =
                 aptitudeQuestionRepository.getAptitudeQuestionsByCategory(category)
-            val selectedQuestions = categoryQuestions.take(1)
+            val selectedQuestions = categoryQuestions.take(questionsPerCategory)
             questions.addAll(selectedQuestions)
         }
 

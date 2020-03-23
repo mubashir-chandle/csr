@@ -57,8 +57,8 @@ class ResultFragment : Fragment() {
 
         val aptitudeScores = mutableListOf<ResultItem>()
         viewModel.getAptitudeCategories().forEach { category ->
-            val score = sharedPreferences.getFloat(category, 0f).toDouble()
-            aptitudeScores.add(ResultItem(category, score.toInt()))
+            val score = sharedPreferences.getInt(category, 0)
+            aptitudeScores.add(ResultItem(category, score))
         }
         Log.d(TAG, aptitudeScores.toString())
         val aptitudeScoresAdapter = ResultAdapter()

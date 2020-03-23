@@ -40,7 +40,7 @@ class ResultAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(receivedItem: ResultItem) {
             itemView.textViewTitle.text = receivedItem.title
-            itemView.progressBar.progress = receivedItem.score
+            itemView.progressBar.progress = if (receivedItem.score > 0) receivedItem.score else 0
 
             itemView.textViewScore.text = "${receivedItem.score}%"
         }

@@ -3,6 +3,7 @@ package com.csrapp.csr.ui.taketest.aptitudetest
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_aptitude_test.*
+import kotlin.math.round
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener,
     RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener,
@@ -192,6 +194,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
     private fun saveScores() {
         val scores = mutableMapOf<String, Double>()
+        val questionsPerCategory = viewModel.questionsPerCategory
 
         for (i in 0 until spinnerAdapter.count) {
             val questionHolder = spinnerAdapter.getItem(i)!!
@@ -200,9 +203,10 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
             val questionScore =
                 if (questionHolder.question.correctOption == questionHolder.optionSelected) {
-                    questionHolder.confidence!!
+                    // Convert to double to avoid integer division.
+                    (questionHolder.confidence!!).toDouble() / questionsPerCategory
                 } else {
-                    -questionHolder.confidence!!
+                    (-questionHolder.confidence!!).toDouble() / questionsPerCategory
                 }
 
             val previousScore = scores[questionHolder.question.category] ?: 0.0
@@ -216,7 +220,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         with(sharedPreferences.edit()) {
             putBoolean("isAptitudeTestCompleted", true)
             scores.forEach { (category, score) ->
-                putFloat(category, score.toFloat())
+                putInt(category, round(score).toInt())
+                Log.d(TAG, "$category: ${round(score).toInt()}")
             }
             commit()
         }
@@ -230,7 +235,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                     val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
                     questionHolder.responseType = QuestionHolder.QuestionResponseType.ANSWERED
                     questionHolder.optionSelected = getSelectedOption()
-                    questionHolder.confidence = getConfidence()
+                    questionHolder.confidence = confidenceSeekBar.progress
 
                 }
 
@@ -248,7 +253,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                     val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
                     questionHolder.responseType = QuestionHolder.QuestionResponseType.MARKED
                     questionHolder.optionSelected = getSelectedOption()
-                    questionHolder.confidence = getConfidence()
+                    questionHolder.confidence = confidenceSeekBar.progress
                 }
 
                 // If not the last question.
@@ -277,10 +282,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                 spinnerAdapter.notifyDataSetChanged()
             }
         }
-    }
-
-    private fun getConfidence(): Int {
-        return confidenceSeekBar.progress + 1
     }
 
     private fun getSelectedOption(): Int? {
@@ -319,7 +320,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private fun updateConfidenceTextView() {
         if (getSelectedOption() != null) {
             textViewConfidence.visibility = View.VISIBLE
-            val percent = getConfidence() * 10
+            val percent = confidenceSeekBar.progress
             textViewConfidence.text = "${percent}%"
         } else {
             textViewConfidence.visibility = View.INVISIBLE
