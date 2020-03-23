@@ -1,5 +1,6 @@
 package com.csrapp.csr.ui.taketest.personalitytest
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -9,6 +10,14 @@ import com.csrapp.csr.data.PersonalityQuestionRepository
 
 class PersonalityTestViewModel(private val personalityQuestionRepository: PersonalityQuestionRepository) :
     ViewModel() {
+
+    private val TAG = "PersonalityTestVM"
+
+    // Sentiment analysis questions skipped due to internet problems.
+    private val questionsSkippedInEachStream = mutableMapOf<String, Int>()
+
+    val questionsPerStream = 2
+
     private var _currentQuestionIndex = MutableLiveData(0)
     val currentQuestionIndex: LiveData<Int>
         get() = _currentQuestionIndex
@@ -52,15 +61,18 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             tempQuestionHolders.add(PersonalityQuestionAndResponseHolder(questions[i]))
         }
 
-        // Use sublist for easier testing.
-        questionsAndResponses = tempQuestionHolders.subList(0, 10)
+        for (stream in getStreams()) {
+            questionsSkippedInEachStream[stream] = 0
+        }
+        Log.d(TAG, "Questions per stream = $questionsPerStream")
+
+        questionsAndResponses = tempQuestionHolders
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
         _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
 
         sliderValue.value = 0
-        sliderValueObserver = Observer {
-            val percent = sliderValue.value!! * 10
-            _sliderValueText.value = "${percent}%"
+        sliderValueObserver = Observer { value ->
+            _sliderValueText.value = "${value}%"
         }
         sliderValue.observeForever(sliderValueObserver)
         _currentQuestionNumberDisplay.value = generateCurrentQuestionNumber()
@@ -74,11 +86,17 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     }
 
     fun onButtonNextClicked() {
-        if (currentQuestion.value!!.type == "textual")
+        if (currentQuestion.value!!.type == "textual") {
+            val previousQuestionsSkipped =
+                questionsSkippedInEachStream[currentQuestion.value!!.stream]!!
+            questionsSkippedInEachStream[currentQuestion.value!!.stream!!] =
+                previousQuestionsSkipped + 1
+
             questionsAndResponses[_currentQuestionIndex.value!!].responseString =
                 responseString.value
-        else
+        } else {
             questionsAndResponses[_currentQuestionIndex.value!!].responseValue = sliderValue.value
+        }
 
         if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
             _testFinished.value = true
@@ -98,14 +116,24 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     }
 
     private fun getRandomizedQuestions(): List<PersonalityQuestionEntity> {
-        return personalityQuestionRepository.getQuestions().shuffled()
+        val questions = mutableListOf<PersonalityQuestionEntity>()
+        val streams = personalityQuestionRepository.getStreams()
+        streams.forEach { stream ->
+            questions.addAll(
+                personalityQuestionRepository.getQuestionsByStream(
+                    stream,
+                    questionsPerStream
+                )
+            )
+        }
+        return questions
     }
 
     fun getQuestionsAndResponses() = questionsAndResponses
 
-    fun getTotalQuestions() = questionsAndResponses.size
-
     fun getStreams() = personalityQuestionRepository.getStreams()
+
+    fun getQuestionsSkippedInEachStream() = questionsSkippedInEachStream
 
     override fun onCleared() {
         sliderValue.removeObserver(sliderValueObserver)

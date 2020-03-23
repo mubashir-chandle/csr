@@ -20,7 +20,7 @@ import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_aptitude_test.*
-import kotlin.math.round
+import kotlin.math.roundToInt
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener,
     RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener,
@@ -220,8 +220,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         with(sharedPreferences.edit()) {
             putBoolean("isAptitudeTestCompleted", true)
             scores.forEach { (category, score) ->
-                putInt(category, round(score).toInt())
-                Log.d(TAG, "$category: ${round(score).toInt()}")
+                putInt(category, score.roundToInt())
+                Log.d(TAG, "$category: ${score.roundToInt()}")
             }
             commit()
         }

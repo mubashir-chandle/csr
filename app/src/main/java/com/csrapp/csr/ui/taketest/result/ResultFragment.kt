@@ -60,7 +60,7 @@ class ResultFragment : Fragment() {
             val score = sharedPreferences.getInt(category, 0)
             aptitudeScores.add(ResultItem(category, score))
         }
-        Log.d(TAG, aptitudeScores.toString())
+        Log.d(TAG, "Aptitude scores: $aptitudeScores")
         val aptitudeScoresAdapter = ResultAdapter()
         aptitudeScoresAdapter.setUpItems(aptitudeScores)
 
@@ -74,11 +74,11 @@ class ResultFragment : Fragment() {
         viewModel.getAllStreams().forEach { streamEntity ->
             val streamId = streamEntity.id
             val streamTitle = viewModel.getStreamTitleFromId(streamId)
-            val score = sharedPreferences.getFloat(streamId, 0f).toDouble()
+            val score = sharedPreferences.getInt(streamId, 0)
 
-            personalityScores.add(ResultItem(streamTitle, score.toInt()))
+            personalityScores.add(ResultItem(streamTitle, score))
         }
-        Log.d(TAG, personalityScores.toString())
+        Log.d(TAG, "Personality scores: $personalityScores")
         val personalityScoresAdapter = ResultAdapter()
         personalityScoresAdapter.setUpItems(personalityScores)
 

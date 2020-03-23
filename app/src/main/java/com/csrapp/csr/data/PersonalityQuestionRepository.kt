@@ -2,9 +2,10 @@ package com.csrapp.csr.data
 
 class PersonalityQuestionRepository private constructor(private val personalityQuestionDao: PersonalityQuestionDao) {
 
-    fun getQuestions() = personalityQuestionDao.getQuestions()
-
     fun getStreams() = personalityQuestionDao.getStreams()
+
+    fun getQuestionsByStream(stream: String, questions: Int) =
+        personalityQuestionDao.getQuestionsByStream(stream, questions)
 
     companion object {
         private var instance: PersonalityQuestionRepository? = null

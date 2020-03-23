@@ -3,6 +3,7 @@ package com.csrapp.csr.ui.taketest.personalitytest
 import android.app.AlertDialog
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +17,12 @@ import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.databinding.FragmentPersonalityTestBinding
 import com.csrapp.csr.utils.InjectorUtils
+import kotlin.math.roundToInt
 
 class PersonalityTestFragment : Fragment() {
+
+    private val TAG = "PersonalityTestFragment"
+
     private lateinit var navController: NavController
     private lateinit var viewModel: PersonalityTestViewModel
     private lateinit var binding: FragmentPersonalityTestBinding
@@ -84,19 +89,28 @@ class PersonalityTestFragment : Fragment() {
             result[stream] = 0.0
         }
 
+        val questionsSkippedInEachStream = viewModel.getQuestionsSkippedInEachStream()
+        Log.d(TAG, "Questions skipped = ${viewModel.getQuestionsSkippedInEachStream()}")
+
         val questionsAndResponses = viewModel.getQuestionsAndResponses()
         questionsAndResponses.forEach { questionAndResponse ->
             val question = questionAndResponse.question
+            val previousScore = result[question.stream]!!
+
             if (question.type == "textual") {
                 // TODO: Use sentiment analysis.
-                val previousScore = result[question.stream]!!
                 result[question.stream!!] = previousScore
             } else {
-                val previousScore = result[question.stream]!!
-                result[question.stream!!] =
-                    previousScore + questionAndResponse.responseValue!!
+                val questionsAnswered =
+                    viewModel.questionsPerStream - questionsSkippedInEachStream[question.stream]!!
+                val currentScore =
+                    (questionAndResponse.responseValue!!).toDouble() / questionsAnswered
+
+                result[question.stream!!] = previousScore + currentScore
             }
         }
+
+        Log.d(TAG, result.toString())
 
         val sharedPreferences = requireActivity().getSharedPreferences(
             getString(R.string.shared_preference_filename),
@@ -105,7 +119,8 @@ class PersonalityTestFragment : Fragment() {
         with(sharedPreferences.edit()) {
             putBoolean("isPersonalityTestCompleted", true)
             result.forEach { (stream, score) ->
-                putFloat(stream, score.toFloat())
+                putInt(stream, score.roundToInt())
+                Log.d(TAG, "$stream: ${score.roundToInt()}")
             }
             commit()
         }

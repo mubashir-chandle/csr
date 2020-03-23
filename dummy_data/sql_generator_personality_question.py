@@ -2,13 +2,13 @@ import os
 import random
 
 streams = [
-    'stream 1',
-    'stream 2',
-    'stream 3',
-    'stream 4',
-    'stream 5',
-    'stream 6',
-    'stream 7',
+    'agriculture',
+    'arts',
+    'commerce',
+    'fine_arts',
+    'health',
+    'technical',
+    'uniformed',
 ]
 
 counter = 1
