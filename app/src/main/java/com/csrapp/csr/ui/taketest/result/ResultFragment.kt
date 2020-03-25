@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -38,21 +37,22 @@ class ResultFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory).get(ResultViewModel::class.java)
 
         val sharedPreferences = requireActivity().getSharedPreferences(
-            getString(R.string.shared_preference_filename),
+            getString(R.string.shared_preferences_filename),
             Context.MODE_PRIVATE
         )
 
-        val isAptitudeTestCompleted = sharedPreferences.getBoolean("isAptitudeTestCompleted", false)
+        val isAptitudeTestCompleted = sharedPreferences.getBoolean(
+            getString(R.string.shared_preferences_aptitude_test_completed),
+            false
+        )
         val isPersonalityTestCompleted =
-            sharedPreferences.getBoolean("isPersonalityTestCompleted", false)
+            sharedPreferences.getBoolean(
+                getString(R.string.shared_preferences_personality_test_completed),
+                false
+            )
 
         if (!isAptitudeTestCompleted || !isPersonalityTestCompleted) {
-            Toast.makeText(
-                requireContext(),
-                "Please complete both the steps of the test first!",
-                Toast.LENGTH_SHORT
-            ).show()
-            navController.navigateUp()
+            throw Exception("Result Screen started before completing both the test steps")
         }
 
         val aptitudeScores = mutableListOf<ResultItem>()

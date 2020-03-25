@@ -2,6 +2,7 @@ package com.csrapp.csr.ui.taketest.personalitytest
 
 import android.app.AlertDialog
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,6 +27,7 @@ class PersonalityTestFragment : Fragment() {
     private lateinit var navController: NavController
     private lateinit var viewModel: PersonalityTestViewModel
     private lateinit var binding: FragmentPersonalityTestBinding
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +64,19 @@ class PersonalityTestFragment : Fragment() {
 
         val factory = InjectorUtils.providePersonalityTestViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory).get(PersonalityTestViewModel::class.java)
+
+        sharedPreferences = requireActivity().getSharedPreferences(
+            getString(R.string.shared_preferences_filename),
+            MODE_PRIVATE
+        )
+
+        val isAptitudeTestCompleted = sharedPreferences.getBoolean(
+            getString(R.string.shared_preferences_aptitude_test_completed),
+            false
+        )
+        if (!isAptitudeTestCompleted) {
+            throw Exception("Personality Test started without completing Aptitude Test")
+        }
 
         binding.personalityViewModel = viewModel
         binding.lifecycleOwner = this
@@ -112,12 +127,8 @@ class PersonalityTestFragment : Fragment() {
 
         Log.d(TAG, result.toString())
 
-        val sharedPreferences = requireActivity().getSharedPreferences(
-            getString(R.string.shared_preference_filename),
-            MODE_PRIVATE
-        )
         with(sharedPreferences.edit()) {
-            putBoolean("isPersonalityTestCompleted", true)
+            putBoolean(getString(R.string.shared_preferences_personality_test_completed), true)
             result.forEach { (stream, score) ->
                 putInt(stream, score.roundToInt())
                 Log.d(TAG, "$stream: ${score.roundToInt()}")

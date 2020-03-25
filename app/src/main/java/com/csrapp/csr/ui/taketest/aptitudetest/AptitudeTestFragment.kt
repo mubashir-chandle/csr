@@ -214,11 +214,11 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         }
 
         val sharedPreferences = requireActivity().getSharedPreferences(
-            getString(R.string.shared_preference_filename),
+            getString(R.string.shared_preferences_filename),
             MODE_PRIVATE
         )
         with(sharedPreferences.edit()) {
-            putBoolean("isAptitudeTestCompleted", true)
+            putBoolean(getString(R.string.shared_preferences_aptitude_test_completed), true)
             scores.forEach { (category, score) ->
                 putInt(category, score.roundToInt())
                 Log.d(TAG, "$category: ${score.roundToInt()}")

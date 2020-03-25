@@ -5,5 +5,7 @@
         <item>Question 1</item>
     </string-array>
 
-    <string name="shared_preference_filename">shared_preferences</string>
+    <string name="shared_preferences_filename">shared_preferences</string>
+    <string name="shared_preferences_aptitude_test_completed">isAptitudeTestCompleted</string>
+    <string name="shared_preferences_personality_test_completed">isPersonalityTestCompleted</string>
 </resources>

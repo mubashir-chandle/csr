@@ -1,5 +1,7 @@
 package com.csrapp.csr.ui.taketest
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_test_step_selection.*
 
 class TestStepSelectionFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,9 +28,28 @@ class TestStepSelectionFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
+        sharedPreferences = requireActivity().getSharedPreferences(
+            getString(R.string.shared_preferences_filename),
+            MODE_PRIVATE
+        )
+
+        val isAptitudeTestCompleted = sharedPreferences.getBoolean(
+            getString(R.string.shared_preferences_aptitude_test_completed),
+            false
+        )
+        val isPersonalityTestCompleted = sharedPreferences.getBoolean(
+            getString(R.string.shared_preferences_personality_test_completed),
+            false
+        )
+
+        btnResetProgress.isEnabled = isAptitudeTestCompleted
+        btnPersonalityTest.isEnabled = isAptitudeTestCompleted
+        btnViewResult.isEnabled = isPersonalityTestCompleted
+
         btnAptitudeTest.setOnClickListener(this)
         btnPersonalityTest.setOnClickListener(this)
         btnViewResult.setOnClickListener(this)
+        btnResetProgress.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -35,12 +57,26 @@ class TestStepSelectionFragment : Fragment(), View.OnClickListener {
             R.id.btnAptitudeTest -> navController.navigate(
                 R.id.action_testStepSelectonFragment_to_aptitudeTestFragment
             )
-            R.id.btnPersonalityTest -> navController.navigate(
-                R.id.action_testStepSelectonFragment_to_personalityTestFragment
-            )
-            R.id.btnViewResult -> navController.navigate(
-                R.id.action_testStepSelectonFragment_to_resultFragment
-            )
+            R.id.btnPersonalityTest -> {
+                navController.navigate(
+                    R.id.action_testStepSelectonFragment_to_personalityTestFragment
+                )
+            }
+            R.id.btnViewResult -> {
+                navController.navigate(
+                    R.id.action_testStepSelectonFragment_to_resultFragment
+                )
+            }
+            R.id.btnResetProgress -> {
+                with(sharedPreferences.edit()) {
+                    remove(getString(R.string.shared_preferences_aptitude_test_completed))
+                    remove(getString(R.string.shared_preferences_personality_test_completed))
+                    commit()
+                }
+                btnPersonalityTest.isEnabled = false
+                btnViewResult.isEnabled = false
+                btnResetProgress.isEnabled = false
+            }
         }
     }
 }
