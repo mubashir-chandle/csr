@@ -4,6 +4,5 @@ import com.csrapp.csr.data.PersonalityQuestionEntity
 
 class PersonalityQuestionAndResponseHolder(
     val question: PersonalityQuestionEntity,
-    var responseString: String? = null,
-    var responseValue: Int? = null
+    var score: Double? = null
 )

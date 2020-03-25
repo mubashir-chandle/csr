@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
@@ -94,8 +95,37 @@ class PersonalityTestFragment : Fragment() {
                 navController.navigateUp()
             }
         }
-
         viewModel.testFinished.observe(viewLifecycleOwner, testFinishObserver)
+
+        viewModel.nluErrorOccurred.observe(viewLifecycleOwner) { errorOccurred ->
+            when (errorOccurred) {
+                PersonalityTestViewModel.NLUError.INTERNET -> {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Error")
+                        .setMessage("Error while connecting to the internet. Please check your internet connection.")
+                        .setPositiveButton("Try Again") { _, _ ->
+                            viewModel.performSentimentAnalysis(viewModel.responseString.toString())
+                        }
+                        .setNegativeButton("Skip This Question") { _, _ ->
+                            viewModel.skipCurrentQuestion()
+                        }
+                        .create()
+                        .show()
+                }
+                PersonalityTestViewModel.NLUError.BAD_RESPONSE -> {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Unable to Analyze")
+                        .setMessage("Please check to make sure you have not made any spelling mistakes.")
+                        .setPositiveButton("Okay", null)
+                        .setNegativeButton("Skip This Question") { _, _ ->
+                            viewModel.skipCurrentQuestion()
+                        }
+                        .create()
+                        .show()
+                }
+            }
+
+        }
     }
 
     private fun generateResult(): Map<String, Double> {
@@ -105,24 +135,20 @@ class PersonalityTestFragment : Fragment() {
         }
 
         val questionsSkippedInEachStream = viewModel.getQuestionsSkippedInEachStream()
-        Log.d(TAG, "Questions skipped = ${viewModel.getQuestionsSkippedInEachStream()}")
 
         val questionsAndResponses = viewModel.getQuestionsAndResponses()
         questionsAndResponses.forEach { questionAndResponse ->
             val question = questionAndResponse.question
+            val questionsAnswered =
+                viewModel.questionsPerStream - questionsSkippedInEachStream[question.stream]!!
+            var currentScore = (questionAndResponse.score!!).toDouble() / questionsAnswered
+
+            // Score can be NaN if all the questions of a stream are skipped.
+            if (currentScore.isNaN())
+                currentScore = 0.0
+
             val previousScore = result[question.stream]!!
-
-            if (question.type == "textual") {
-                // TODO: Use sentiment analysis.
-                result[question.stream!!] = previousScore
-            } else {
-                val questionsAnswered =
-                    viewModel.questionsPerStream - questionsSkippedInEachStream[question.stream]!!
-                val currentScore =
-                    (questionAndResponse.responseValue!!).toDouble() / questionsAnswered
-
-                result[question.stream!!] = previousScore + currentScore
-            }
+            result[question.stream!!] = previousScore + currentScore
         }
 
         Log.d(TAG, result.toString())
