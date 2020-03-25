@@ -5,12 +5,9 @@ import androidx.room.Query
 
 @Dao
 interface ResultDao {
-    @Query("SELECT DISTINCT category FROM aptitude_question")
-    fun getAptitudeCategories(): List<String>
-
     @Query("SELECT * FROM stream")
     fun getAllStreams(): List<StreamEntity>
 
-    @Query("SELECT title FROM stream WHERE id=:id")
-    fun getStreamTitleFromId(id: String): String
+    @Query("SELECT * FROM aptitude_category")
+    fun getAllCategories(): List<AptitudeCategoryEntity>
 }

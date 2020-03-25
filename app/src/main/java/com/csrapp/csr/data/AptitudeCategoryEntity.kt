@@ -4,17 +4,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "stream")
-data class StreamEntity(
+@Entity(tableName = "aptitude_category")
+data class AptitudeCategoryEntity(
     @PrimaryKey
     val id: String,
 
     @ColumnInfo(name = "title")
-    var title: String,
+    val title: String,
 
     @ColumnInfo(name = "description")
-    val description: String,
-
-    @ColumnInfo(name = "image_reference")
-    var imageReference: String
+    val description: String
 )

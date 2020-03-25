@@ -56,13 +56,20 @@ class ResultFragment : Fragment() {
         }
 
         val aptitudeScores = mutableListOf<ResultItem>()
-        viewModel.getAptitudeCategories().forEach { category ->
-            val score = sharedPreferences.getInt(category, 0)
-            aptitudeScores.add(ResultItem(category, score))
+        viewModel.getAllCategories().forEach { categoryEntity ->
+            val score = sharedPreferences.getInt(categoryEntity.id, 0)
+            aptitudeScores.add(
+                ResultItem(
+                    ResultItem.ResultItemType.APTITUDE,
+                    categoryEntity.id,
+                    categoryEntity.title,
+                    categoryEntity.description,
+                    score
+                )
+            )
         }
         Log.d(TAG, "Aptitude scores: $aptitudeScores")
-        val aptitudeScoresAdapter = ResultAdapter()
-        aptitudeScoresAdapter.setUpItems(aptitudeScores)
+        val aptitudeScoresAdapter = ResultAdapter(aptitudeScores, requireContext(), navController)
 
         recyclerViewAptitudeScores.apply {
             adapter = aptitudeScoresAdapter
@@ -72,15 +79,21 @@ class ResultFragment : Fragment() {
 
         val personalityScores = mutableListOf<ResultItem>()
         viewModel.getAllStreams().forEach { streamEntity ->
-            val streamId = streamEntity.id
-            val streamTitle = viewModel.getStreamTitleFromId(streamId)
-            val score = sharedPreferences.getInt(streamId, 0)
+            val score = sharedPreferences.getInt(streamEntity.id, 0)
 
-            personalityScores.add(ResultItem(streamTitle, score))
+            personalityScores.add(
+                ResultItem(
+                    ResultItem.ResultItemType.PERSONALITY,
+                    streamEntity.id,
+                    streamEntity.title,
+                    streamEntity.description,
+                    score
+                )
+            )
         }
         Log.d(TAG, "Personality scores: $personalityScores")
-        val personalityScoresAdapter = ResultAdapter()
-        personalityScoresAdapter.setUpItems(personalityScores)
+        val personalityScoresAdapter =
+            ResultAdapter(personalityScores, requireContext(), navController)
 
         recyclerViewPersonalityScores.apply {
             adapter = personalityScoresAdapter

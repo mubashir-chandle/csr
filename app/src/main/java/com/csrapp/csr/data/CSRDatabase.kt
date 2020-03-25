@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [StreamEntity::class, JobEntity::class, AptitudeQuestionEntity::class, PersonalityQuestionEntity::class],
+    entities = [StreamEntity::class, JobEntity::class, AptitudeQuestionEntity::class, PersonalityQuestionEntity::class, AptitudeCategoryEntity::class],
     version = 1,
     exportSchema = true
 )
