@@ -1,6 +1,5 @@
 package com.csrapp.csr.ui.taketest.personalitytest
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -141,11 +140,11 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             loading.value = true
         }
 
-        var score = 0.0
+        var score: Double? = null
 
         try {
             val results = nluService.analyze(parameters).execute().result
-            score = results.sentiment?.document?.score!!
+            score = results.sentiment?.document?.score
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
                 when (e) {
@@ -164,9 +163,11 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             }
         }
 
-        val normalizedScore = ((score + 1) / 2) * 100
-        Log.d(TAG, "score = $normalizedScore")
-        return normalizedScore
+        return if (score == null) {
+            null
+        } else {
+            ((score + 1) / 2) * 100
+        }
     }
 
     fun skipCurrentQuestion() {
@@ -201,6 +202,8 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
                     }
 
                     score = performSentimentAnalysis(responseString.value!!)
+                    if (score == null)
+                        cancel()
                 }
                 else -> {
                     score = sliderValue.value!!.toDouble()
