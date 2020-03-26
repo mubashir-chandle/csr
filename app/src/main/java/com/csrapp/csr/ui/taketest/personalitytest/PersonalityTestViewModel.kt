@@ -5,8 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.csrapp.csr.R
 import com.csrapp.csr.data.PersonalityQuestionEntity
 import com.csrapp.csr.data.PersonalityQuestionRepository
+import com.csrapp.csr.utils.ResourceProvider
+import com.ibm.cloud.sdk.core.security.IamAuthenticator
+import com.ibm.cloud.sdk.core.service.exception.BadRequestException
+import com.ibm.cloud.sdk.core.service.exception.ServiceResponseException
+import com.ibm.watson.natural_language_understanding.v1.NaturalLanguageUnderstanding
+import com.ibm.watson.natural_language_understanding.v1.model.AnalyzeOptions
+import com.ibm.watson.natural_language_understanding.v1.model.EmotionOptions
+import com.ibm.watson.natural_language_understanding.v1.model.Features
+import com.ibm.watson.natural_language_understanding.v1.model.SentimentOptions
+import kotlinx.coroutines.*
 import kotlin.collections.set
 
 class PersonalityTestViewModel(private val personalityQuestionRepository: PersonalityQuestionRepository) :
@@ -22,7 +33,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         get() = _nluErrorOccurred
 
     enum class NLUError {
-        INTERNET, BAD_RESPONSE
+        INTERNET, BAD_RESPONSE, INSUFFICIENT_INPUT
     }
 
     val questionsPerStream = 2
@@ -63,6 +74,11 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
     private var sliderValueObserver: Observer<Int>
 
+    var loading = MutableLiveData(false)
+
+    private var nluService: NaturalLanguageUnderstanding
+    private var nluFeatures: Features
+
     init {
         val questions = getRandomizedQuestions()
         val tempQuestionHolders = mutableListOf<PersonalityQuestionAndResponseHolder>()
@@ -73,7 +89,9 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         for (stream in getStreams()) {
             sentimentalQuestionsSkipped[stream] = 0
         }
-        Log.d(TAG, "Questions per stream = $questionsPerStream")
+
+        nluFeatures = initNLUFeatures()
+        nluService = initNLUService()
 
         questionsAndResponses = tempQuestionHolders
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
@@ -87,6 +105,24 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         _currentQuestionNumberDisplay.value = generateCurrentQuestionNumber()
     }
 
+    private fun initNLUService(): NaturalLanguageUnderstanding {
+        val authenticator = IamAuthenticator(ResourceProvider.getString(R.string.nlu_apikey))
+        nluService = NaturalLanguageUnderstanding("2019-07-12", authenticator)
+        nluService.serviceUrl = ResourceProvider.getString(R.string.nlu_url)
+
+        return nluService
+    }
+
+    private fun initNLUFeatures(): Features {
+        val sentimentOptions = SentimentOptions.Builder().document(true).build()
+        val emotionOptions = EmotionOptions.Builder().document(true).build()
+
+        return Features.Builder()
+            .sentiment(sentimentOptions)
+            .emotion(emotionOptions)
+            .build()
+    }
+
     private fun generateCurrentQuestionNumber(): String {
         val currentQuestionNumber = _currentQuestionIndex.value!! + 1
         val totalQuestions = questionsAndResponses.size
@@ -94,15 +130,43 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         return "Question $currentQuestionNumber/$totalQuestions"
     }
 
-    fun performSentimentAnalysis(string: String): Double? {
-        // TODO: Perform actual sentiment analysis.
-        val score: Double? = null
+    suspend fun performSentimentAnalysis(string: String): Double? {
+        val parameters = AnalyzeOptions.Builder()
+            .text(string)
+            .features(nluFeatures)
+            .language("en")
+            .build()
 
-        if (score == null) {
-            _nluErrorOccurred.value = NLUError.BAD_RESPONSE
+        withContext(Dispatchers.Main) {
+            loading.value = true
         }
 
-        return score
+        var score = 0.0
+
+        try {
+            val results = nluService.analyze(parameters).execute().result
+            score = results.sentiment?.document?.score!!
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                when (e) {
+                    is BadRequestException, is ServiceResponseException -> {
+                        _nluErrorOccurred.value = NLUError.BAD_RESPONSE
+                    }
+                    else -> {
+                        _nluErrorOccurred.value = NLUError.INTERNET
+                    }
+                }
+            }
+
+        } finally {
+            withContext(Dispatchers.Main) {
+                loading.value = false
+            }
+        }
+
+        val normalizedScore = ((score + 1) / 2) * 100
+        Log.d(TAG, "score = $normalizedScore")
+        return normalizedScore
     }
 
     fun skipCurrentQuestion() {
@@ -124,33 +188,40 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     }
 
     fun onButtonNextClicked() {
-        val score: Double?
+        CoroutineScope(Dispatchers.IO).launch {
+            val score: Double?
 
-        when (currentQuestion.value!!.type) {
-            "textual" -> {
-                score = performSentimentAnalysis(responseString.value!!)
-                // Allow user to retry or skip the question on encountering an error
-                // while performing sentiment analysis.
-                if (score == null) {
-                    return
+            when (currentQuestion.value!!.type) {
+                "textual" -> {
+                    withContext(Dispatchers.Main) {
+                        if (responseString.value!!.length < 5) {
+                            _nluErrorOccurred.value = NLUError.INSUFFICIENT_INPUT
+                            cancel()
+                        }
+                    }
+
+                    score = performSentimentAnalysis(responseString.value!!)
+                }
+                else -> {
+                    score = sliderValue.value!!.toDouble()
                 }
             }
-            else -> {
-                score = sliderValue.value!!.toDouble()
+
+            withContext(Dispatchers.Main) {
+                questionsAndResponses[_currentQuestionIndex.value!!].score = score
+
+                if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
+                    _testFinished.value = true
+                } else {
+                    if (_currentQuestionIndex.value == questionsAndResponses.lastIndex - 1) {
+                        _btnNextText.value = "Finish"
+                    }
+
+                    _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
+                    updateUI()
+                }
             }
         }
-
-        questionsAndResponses[_currentQuestionIndex.value!!].score = score
-
-        if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
-            _testFinished.value = true
-            return
-        } else if (_currentQuestionIndex.value == questionsAndResponses.lastIndex - 1) {
-            _btnNextText.value = "Finish"
-        }
-
-        _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
-        updateUI()
     }
 
     private fun updateUI() {

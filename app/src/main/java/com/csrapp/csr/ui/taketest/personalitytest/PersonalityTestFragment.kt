@@ -19,6 +19,9 @@ import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.databinding.FragmentPersonalityTestBinding
 import com.csrapp.csr.utils.InjectorUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class PersonalityTestFragment : Fragment() {
@@ -29,6 +32,8 @@ class PersonalityTestFragment : Fragment() {
     private lateinit var viewModel: PersonalityTestViewModel
     private lateinit var binding: FragmentPersonalityTestBinding
     private lateinit var sharedPreferences: SharedPreferences
+
+    private var loadingDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +102,20 @@ class PersonalityTestFragment : Fragment() {
         }
         viewModel.testFinished.observe(viewLifecycleOwner, testFinishObserver)
 
+        viewModel.loading.observe(viewLifecycleOwner) { loading ->
+            if (loading) {
+                loadingDialog = AlertDialog.Builder(requireContext())
+                    .setTitle("Analyzing Text")
+                    .setView(R.layout.dialog_loading)
+                    .setCancelable(false)
+                    .create()
+
+                loadingDialog?.show()
+            } else {
+                loadingDialog?.dismiss()
+            }
+        }
+
         viewModel.nluErrorOccurred.observe(viewLifecycleOwner) { errorOccurred ->
             when (errorOccurred) {
                 PersonalityTestViewModel.NLUError.INTERNET -> {
@@ -104,7 +123,9 @@ class PersonalityTestFragment : Fragment() {
                         .setTitle("Error")
                         .setMessage("Error while connecting to the internet. Please check your internet connection.")
                         .setPositiveButton("Try Again") { _, _ ->
-                            viewModel.performSentimentAnalysis(viewModel.responseString.toString())
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.performSentimentAnalysis(viewModel.responseString.toString())
+                            }
                         }
                         .setNegativeButton("Skip This Question") { _, _ ->
                             viewModel.skipCurrentQuestion()
@@ -116,6 +137,17 @@ class PersonalityTestFragment : Fragment() {
                     AlertDialog.Builder(requireContext())
                         .setTitle("Unable to Analyze")
                         .setMessage("Please check to make sure you have not made any spelling mistakes.")
+                        .setPositiveButton("Okay", null)
+                        .setNegativeButton("Skip This Question") { _, _ ->
+                            viewModel.skipCurrentQuestion()
+                        }
+                        .create()
+                        .show()
+                }
+                PersonalityTestViewModel.NLUError.INSUFFICIENT_INPUT -> {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Insufficient Input")
+                        .setMessage("Please enter more text to analyze it.")
                         .setPositiveButton("Okay", null)
                         .setNegativeButton("Skip This Question") { _, _ ->
                             viewModel.skipCurrentQuestion()

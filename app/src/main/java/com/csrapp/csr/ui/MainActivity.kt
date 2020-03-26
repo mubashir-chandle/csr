@@ -7,6 +7,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.csrapp.csr.R
+import com.csrapp.csr.utils.ResourceProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
+
+        ResourceProvider.setUpApplicationContext(this.applicationContext)
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp()
