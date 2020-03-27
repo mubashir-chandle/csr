@@ -2,7 +2,6 @@ package com.csrapp.csr.ui.taketest.aptitudetest
 
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +30,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var spinnerAdapter: SpinnerQuestionAdapter
-    private lateinit var timer: CountDownTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,16 +68,14 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         spinnerAdapter = viewModel.getSpinnerAdapter(requireContext())
         spinnerQuestions.adapter = spinnerAdapter
 
-        viewModel.testFinished.observe(this) { testFinished ->
-            if (testFinished) {
-                finishTest(finishedByTimer = true)
-            }
-        }
-
         viewModel.timeRemaining.observe(this) {
             val minutes = it / 60
             val seconds = it % 60
-            remainingTime.text = "$minutes:$seconds"
+            remainingTime.text = "%02d:%02d".format(minutes, seconds)
+
+            if (it == 0L) {
+                finishTest(finishedByTimer = true)
+            }
         }
 
         assignActionListeners()
@@ -99,7 +95,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     }
 
     private fun updateUI() {
-        layout.smoothScrollTo(0, 0)
+        questionScrollView.smoothScrollTo(0, 0)
         spinnerQuestions.setSelection(viewModel.currentQuestionIndex)
 
         val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!

@@ -13,7 +13,7 @@ class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQues
 
     val questionsPerCategory = 1
 
-    private val TEST_TIME = 1 * 60 * 1000L                // 1 Minute
+    private val TEST_TIME = 30 * 60 * 1000L                // 30 Minutes
     private val questions = getRandomQuestions()
     private var spinnerAdapter: SpinnerQuestionAdapter? = null
 
@@ -23,13 +23,9 @@ class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQues
     val timeRemaining: LiveData<Long>
         get() = _timeRemaining
 
-    private val _testFinished = MutableLiveData<Boolean>(false)
-    val testFinished: LiveData<Boolean>
-        get() = _testFinished
-
-    val timer = object : CountDownTimer(TEST_TIME, 1000) {
+    private val timer = object : CountDownTimer(TEST_TIME, 1000) {
         override fun onFinish() {
-            _testFinished.value = true
+            // Do nothing, test completion will be checked using remaining time in the fragment.
         }
 
         override fun onTick(millisUntilFinished: Long) {
@@ -65,6 +61,6 @@ class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQues
             questions.addAll(selectedQuestions)
         }
 
-        return questions.shuffled()
+        return questions
     }
 }
