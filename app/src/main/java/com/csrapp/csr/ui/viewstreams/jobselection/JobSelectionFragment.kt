@@ -39,12 +39,13 @@ class JobSelectionFragment : Fragment() {
         val factory = InjectorUtils.provideJobSelectionViewModelFactory(requireContext())
         val viewModel = ViewModelProvider(this, factory).get(JobSelectionViewModel::class.java)
 
+        streamTitle.text = viewModel.getStreamTitleById(stream)
+
         initRecyclerView(stream, viewModel)
     }
 
     private fun initRecyclerView(stream: String, viewModel: JobSelectionViewModel) {
-        val jobAdapter =
-            JobRecyclerAdapter()
+        val jobAdapter = JobRecyclerAdapter()
         val jobs = viewModel.getJobsByStream(stream)
         jobAdapter.populateJobs(jobs)
         jobAdapter.setUpNavController(navController)

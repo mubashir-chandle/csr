@@ -6,4 +6,6 @@ import com.csrapp.csr.data.JobRepository
 class JobSelectionViewModel(private val jobRepository: JobRepository) : ViewModel() {
 
     fun getJobsByStream(stream: String) = jobRepository.getJobsByStream(stream)
+
+    fun getStreamTitleById(id: String) = jobRepository.getStreamTitleById(id)
 }

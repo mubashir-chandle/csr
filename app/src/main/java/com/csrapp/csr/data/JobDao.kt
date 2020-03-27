@@ -13,4 +13,7 @@ interface JobDao {
 
     @Query("SELECT * FROM job")
     fun getJobs(): List<JobEntity>
+
+    @Query("SELECT title FROM stream WHERE id=:id")
+    fun getStreamTitleById(id: String): String
 }

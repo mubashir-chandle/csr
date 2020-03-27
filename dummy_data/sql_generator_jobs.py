@@ -2,10 +2,10 @@ import os
 
 streams = [
     ('agriculture', 'Agriculture'),
-    ('arts', 'Arts and Humanities'),
+    ('arts', 'Arts & Humanities'),
     ('commerce', 'Commerce'),
     ('fine_arts', 'Fine Arts'),
-    ('health', 'Health and Life Sciences'),
+    ('health', 'Health & Life Sciences'),
     ('technical', 'Technical'),
     ('uniformed', 'Uniformed Services')
 ]

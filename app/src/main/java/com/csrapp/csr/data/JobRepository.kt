@@ -2,7 +2,7 @@ package com.csrapp.csr.data
 
 class JobRepository private constructor(private val jobDao: JobDao) {
 
-    fun getJobs() = jobDao.getJobs()
+    fun getStreamTitleById(stream: String) = jobDao.getStreamTitleById(stream)
     fun getJobsByStream(stream: String) = jobDao.getJobsByStream(stream)
     fun getJobById(id: Int) = jobDao.getJobById(id)
 
