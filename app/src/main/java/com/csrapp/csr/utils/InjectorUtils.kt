@@ -26,9 +26,13 @@ object InjectorUtils {
     }
 
     fun provideResultViewModelFactory(context: Context): ResultViewModelFactory {
-        val repository =
-            ResultRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).resultDao())
-        return ResultViewModelFactory(repository)
+        val aptitudeCategoryRepository =
+            AptitudeCategoryRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).aptitudeCategoryDao())
+
+        val streamRepository =
+            StreamRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).streamDao())
+
+        return ResultViewModelFactory(aptitudeCategoryRepository, streamRepository)
     }
 
     fun provideStreamSelectionViewModelFactory(context: Context): StreamSelectionViewModelFactory {

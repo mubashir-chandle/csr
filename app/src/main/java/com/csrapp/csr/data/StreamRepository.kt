@@ -2,7 +2,7 @@ package com.csrapp.csr.data
 
 class StreamRepository private constructor(private val streamDao: StreamDao) {
 
-    fun getStreams() = streamDao.getAllStreams()
+    fun getAllStreams() = streamDao.getAllStreams()
 
     companion object {
         private var instance: StreamRepository? = null

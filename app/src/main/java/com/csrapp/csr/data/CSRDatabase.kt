@@ -15,7 +15,7 @@ abstract class CSRDatabase : RoomDatabase() {
     abstract fun jobDao(): JobDao
     abstract fun aptitudeQuestionDao(): AptitudeQuestionDao
     abstract fun personalityQuestionDao(): PersonalityQuestionDao
-    abstract fun resultDao(): ResultDao
+    abstract fun aptitudeCategoryDao(): AptitudeCategoryDao
 
     companion object {
         private var instance: CSRDatabase? = null

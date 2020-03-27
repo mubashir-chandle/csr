@@ -1,11 +1,15 @@
 package com.csrapp.csr.ui.taketest.result
 
 import androidx.lifecycle.ViewModel
-import com.csrapp.csr.data.ResultRepository
+import com.csrapp.csr.data.AptitudeCategoryRepository
+import com.csrapp.csr.data.StreamRepository
 
-class ResultViewModel(private val resultRepository: ResultRepository) : ViewModel() {
+class ResultViewModel(
+    private val aptitudeCategoryRepository: AptitudeCategoryRepository,
+    private val streamRepository: StreamRepository
+) : ViewModel() {
 
-    fun getAllStreams() = resultRepository.getAllStreams()
+    fun getAllStreams() = streamRepository.getAllStreams()
 
-    fun getAllCategories() = resultRepository.getAllCategories()
+    fun getAllCategories() = aptitudeCategoryRepository.getAllCategories()
 }
