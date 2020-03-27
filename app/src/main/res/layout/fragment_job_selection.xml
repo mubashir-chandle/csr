@@ -12,6 +12,7 @@
         android:id="@+id/streamTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:textColor="@color/whiteText"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
