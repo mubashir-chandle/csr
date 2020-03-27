@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -42,8 +43,9 @@ class TestStepSelectionFragment : Fragment(), View.OnClickListener {
             false
         )
 
+        btnAptitudeTest.isEnabled = !isAptitudeTestCompleted
+        btnPersonalityTest.isEnabled = isAptitudeTestCompleted && !isPersonalityTestCompleted
         btnResetProgress.isEnabled = isAptitudeTestCompleted
-        btnPersonalityTest.isEnabled = isAptitudeTestCompleted
         btnViewResult.isEnabled = isPersonalityTestCompleted
 
         btnAptitudeTest.setOnClickListener(this)
@@ -68,14 +70,23 @@ class TestStepSelectionFragment : Fragment(), View.OnClickListener {
                 )
             }
             R.id.btnResetProgress -> {
-                with(sharedPreferences.edit()) {
-                    remove(getString(R.string.shared_preferences_aptitude_test_completed))
-                    remove(getString(R.string.shared_preferences_personality_test_completed))
-                    commit()
-                }
-                btnPersonalityTest.isEnabled = false
-                btnViewResult.isEnabled = false
-                btnResetProgress.isEnabled = false
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Reset")
+                    .setMessage("Are you sure you want to reset all your progress?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        with(sharedPreferences.edit()) {
+                            remove(getString(R.string.shared_preferences_aptitude_test_completed))
+                            remove(getString(R.string.shared_preferences_personality_test_completed))
+                            commit()
+                        }
+                        btnAptitudeTest.isEnabled = true
+                        btnPersonalityTest.isEnabled = false
+                        btnViewResult.isEnabled = false
+                        btnResetProgress.isEnabled = false
+                    }
+                    .setNegativeButton("No", null)
+                    .create()
+                    .show()
             }
         }
     }

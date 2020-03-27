@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/colorPrimaryExtraDark">
+
+    <item android:id="@android:id/mask">
+        <shape>
+            <gradient
+                android:angle="0"
+                android:endColor="@color/buttonGradientEnd"
+                android:startColor="@color/buttonGradientStart" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/background">
+        <shape>
+            <gradient
+                android:angle="0"
+                android:endColor="@color/buttonGradientEnd"
+                android:startColor="@color/buttonGradientStart" />
+        </shape>
+    </item>
+</ripple>
