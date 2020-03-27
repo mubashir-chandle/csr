@@ -244,7 +244,15 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                     viewModel.currentQuestionIndex += 1
                     updateUI()
                 } else {
-                    finishTest(finishedByTimer = false)
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Finish Test")
+                        .setMessage("Are you sure you want to finish your test?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            finishTest(finishedByTimer = false)
+                        }
+                        .setNegativeButton("No", null)
+                        .create()
+                        .show()
                 }
             }
 
