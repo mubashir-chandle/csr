@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -53,7 +52,6 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private lateinit var stream: String
         private var streamTitle: TextView = itemView.streamTitle
-        private var streamImage: ImageView = itemView.streamImage
 
         init {
             itemView.setOnClickListener(this)
@@ -61,13 +59,6 @@ class StreamRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(streamEntity: StreamEntity) {
             streamTitle.text = streamEntity.title
-            val identifier = context.resources.getIdentifier(
-                "placeholder",
-                "mipmap",
-                context.packageName
-            )
-
-            streamImage.setImageResource(identifier)
             stream = streamEntity.id
         }
 

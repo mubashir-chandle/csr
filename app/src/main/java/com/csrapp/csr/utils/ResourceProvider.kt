@@ -12,4 +12,6 @@ object ResourceProvider {
     fun getString(resId: Int) = applicationContext!!.getString(resId)
 
     fun getColor(resId: Int) = applicationContext!!.resources.getColor(resId)
+
+    fun getDrawable(resId: Int) = applicationContext!!.getDrawable(resId)!!
 }
