@@ -8,4 +8,7 @@
     <string name="shared_preferences_filename">shared_preferences</string>
     <string name="shared_preferences_aptitude_test_completed">isAptitudeTestCompleted</string>
     <string name="shared_preferences_personality_test_completed">isPersonalityTestCompleted</string>
+    <string name="career_stream_recommendation">Career Stream Recommendation</string>
+    <string name="take_test">Take Test</string>
+    <string name="view_streams">View Streams</string>
 </resources>
