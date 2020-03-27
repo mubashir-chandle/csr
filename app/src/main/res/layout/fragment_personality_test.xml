@@ -12,95 +12,129 @@
             type="com.csrapp.csr.ui.taketest.personalitytest.PersonalityTestViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.taketest.personalitytest.PersonalityTestFragment">
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/personalityQuestionNumber"
-            android:layout_width="0dp"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@{personalityViewModel.currentQuestionNumberDisplay}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Question 01/70" />
+            android:background="@drawable/bg_gradient"
+            tools:context=".ui.taketest.personalitytest.PersonalityTestFragment">
 
-        <TextView
-            android:id="@+id/questionText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@{personalityViewModel.currentQuestion.text}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/personalityQuestionNumber" />
+            <TextView
+                android:id="@+id/personalityQuestionNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@{personalityViewModel.currentQuestionNumberDisplay}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/whiteText"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toTopOf="@+id/card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Question 01/70" />
 
-        <EditText
-            android:id="@+id/questionResponseText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="Enter your response"
-            android:inputType="textMultiLine"
-            android:text="@={personalityViewModel.responseString}"
-            android:visibility="@{personalityViewModel.isTextualQuestion() ? View.VISIBLE : View.GONE}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/questionText" />
 
-        <SeekBar
-            android:id="@+id/questionResponseSlider"
-            style="@style/Widget.AppCompat.SeekBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:max="100"
-            android:progress="@={personalityViewModel.sliderValue}"
-            android:visibility="@{personalityViewModel.isTextualQuestion() ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toTopOf="@+id/btnNext"
-            app:layout_constraintEnd_toStartOf="@+id/sliderValue"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/questionText"
-            tools:progress="70" />
+            <ImageView
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/topSpacing"
+                android:contentDescription="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/bg_card" />
 
-        <TextView
-            android:id="@+id/sliderValue"
-            android:layout_width="50sp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="@{personalityViewModel.sliderValueText}"
-            android:visibility="@{personalityViewModel.isTextualQuestion() ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toBottomOf="@+id/questionResponseSlider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/questionResponseSlider"
-            tools:text="100%" />
+            <TextView
+                android:id="@+id/questionText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginEnd="16dp"
+                android:text="@{personalityViewModel.currentQuestion.text}"
+                android:textColor="@color/colorText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/card"
+                tools:text="Question Text" />
 
-        <Button
-            android:id="@+id/btnNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:onClick="@{() -> personalityViewModel.onButtonNextClicked() }"
-            android:text="@{personalityViewModel.btnNextText}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <EditText
+                android:id="@+id/questionResponseText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/enter_your_response"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:maxLength="500"
+                android:text="@={personalityViewModel.responseString}"
+                android:visibility="@{personalityViewModel.isTextualQuestion() ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/questionText" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <SeekBar
+                android:id="@+id/questionResponseSlider"
+                style="@style/Widget.AppCompat.SeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:max="100"
+                android:progress="@={personalityViewModel.sliderValue}"
+                android:visibility="@{personalityViewModel.isTextualQuestion() ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toTopOf="@+id/btnNext"
+                app:layout_constraintEnd_toStartOf="@+id/sliderValue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/questionText"
+                tools:progress="70" />
+
+            <TextView
+                android:id="@+id/sliderValue"
+                android:layout_width="50sp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@{personalityViewModel.sliderValueText}"
+                android:textColor="@color/colorText"
+                android:visibility="@{personalityViewModel.isTextualQuestion() ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="@+id/questionResponseSlider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/questionResponseSlider"
+                tools:text="100%" />
+
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:onClick="@{() -> personalityViewModel.onButtonNextClicked() }"
+                android:text="@{personalityViewModel.btnNextText}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/questionResponseText"
+                app:layout_constraintVertical_bias="1.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

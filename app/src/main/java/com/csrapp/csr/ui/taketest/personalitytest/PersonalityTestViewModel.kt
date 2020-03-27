@@ -126,7 +126,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         val currentQuestionNumber = _currentQuestionIndex.value!! + 1
         val totalQuestions = questionsAndResponses.size
 
-        return "Question $currentQuestionNumber/$totalQuestions"
+        return "%02d/%02d".format(currentQuestionNumber, totalQuestions)
     }
 
     suspend fun performSentimentAnalysis(string: String): Double? {
@@ -194,11 +194,11 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
             when (currentQuestion.value!!.type) {
                 "textual" -> {
-                    withContext(Dispatchers.Main) {
-                        if (responseString.value!!.length < 5) {
+                    if (responseString.value!!.length < 5) {
+                        withContext(Dispatchers.Main) {
                             _nluErrorOccurred.value = NLUError.INSUFFICIENT_INPUT
-                            cancel()
                         }
+                        cancel()
                     }
 
                     score = performSentimentAnalysis(responseString.value!!)

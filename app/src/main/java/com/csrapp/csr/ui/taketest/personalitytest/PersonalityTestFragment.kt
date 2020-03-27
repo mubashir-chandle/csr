@@ -1,13 +1,14 @@
 package com.csrapp.csr.ui.taketest.personalitytest
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -157,7 +158,16 @@ class PersonalityTestFragment : Fragment() {
                 }
             }
 
+            viewModel.currentQuestionIndex.observe(viewLifecycleOwner) {
+                hideKeyboard()
+            }
         }
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val windowToken = view?.rootView?.windowToken
+        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
     private fun generateResult(): Map<String, Double> {
@@ -183,13 +193,10 @@ class PersonalityTestFragment : Fragment() {
             result[question.stream!!] = previousScore + currentScore
         }
 
-        Log.d(TAG, result.toString())
-
         with(sharedPreferences.edit()) {
             putBoolean(getString(R.string.shared_preferences_personality_test_completed), true)
             result.forEach { (stream, score) ->
                 putInt(stream, score.roundToInt())
-                Log.d(TAG, "$stream: ${score.roundToInt()}")
             }
             commit()
         }
