@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.csrapp.csr.R
+import com.csrapp.csr.utils.ResourceProvider
 import kotlinx.android.synthetic.main.list_item_result.view.*
 
 class ResultAdapter(
@@ -73,6 +74,9 @@ class ResultAdapter(
             itemView.textViewTitle.text = receivedItem.title
             itemView.progressBar.progress = if (receivedItem.score > 0) receivedItem.score else 0
             itemView.textViewScore.text = "${receivedItem.score}%"
+
+            if (receivedItem.score <= 0)
+                itemView.textViewScore.setTextColor(ResourceProvider.getColor(R.color.colorTextError))
         }
 
     }

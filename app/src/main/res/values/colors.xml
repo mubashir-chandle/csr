@@ -17,7 +17,8 @@
     <color name="buttonGradientDisabledStart">@color/colorPrimaryMuted</color>
     <color name="buttonGradientDisabledEnd">@color/colorPrimaryDarkMuted</color>
 
-    <color name="colorText">@color/colorPrimaryDark</color>
+    <color name="colorText">@color/colorPrimary</color>
+    <color name="colorTextError">#F43636</color>
 
     <color name="whiteText">#FFFFFF</color>
     <color name="whiteTextDisabled">#666666</color>
