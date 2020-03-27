@@ -13,8 +13,5 @@ data class StreamEntity(
     var title: String,
 
     @ColumnInfo(name = "description")
-    val description: String,
-
-    @ColumnInfo(name = "image_reference")
-    var imageReference: String
+    val description: String
 )
