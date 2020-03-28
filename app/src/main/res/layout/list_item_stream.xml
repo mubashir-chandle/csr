@@ -4,7 +4,7 @@
     android:id="@+id/streamTitle"
     android:layout_width="match_parent"
     android:layout_height="256dp"
-    android:background="@drawable/bg_gradient"
+    android:background="@drawable/btn_gradient"
     android:fontFamily="@font/comfortaa"
     android:paddingStart="64dp"
     android:paddingEnd="64dp"
