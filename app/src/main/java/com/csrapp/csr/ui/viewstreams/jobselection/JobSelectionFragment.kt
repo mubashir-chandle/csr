@@ -1,5 +1,6 @@
 package com.csrapp.csr.ui.viewstreams.jobselection
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,13 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.csrapp.csr.R
+import com.csrapp.csr.data.StreamEntity
 import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_job_selection.*
 
-class JobSelectionFragment : Fragment() {
+class JobSelectionFragment : Fragment(), View.OnClickListener {
     private lateinit var navController: NavController
-    private lateinit var stream: String
+    private lateinit var stream: StreamEntity
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,14 +36,16 @@ class JobSelectionFragment : Fragment() {
     }
 
     private fun initUI() {
-        stream = arguments!!.getString("stream")!!
+        val streamId = arguments!!.getString("stream")!!
 
         val factory = InjectorUtils.provideJobSelectionViewModelFactory(requireContext())
         val viewModel = ViewModelProvider(this, factory).get(JobSelectionViewModel::class.java)
 
-        streamTitle.text = viewModel.getStreamTitleById(stream)
+        stream = viewModel.getStreamById(streamId)
+        streamTitle.text = stream.title
 
-        initRecyclerView(stream, viewModel)
+        initRecyclerView(stream.id, viewModel)
+        fabDescription.setOnClickListener(this)
     }
 
     private fun initRecyclerView(stream: String, viewModel: JobSelectionViewModel) {
@@ -54,6 +58,19 @@ class JobSelectionFragment : Fragment() {
             adapter = jobAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.fabDescription -> {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(stream.title)
+                    .setMessage(stream.description)
+                    .setPositiveButton(R.string.close, null)
+                    .create()
+                    .show()
+            }
         }
     }
 }

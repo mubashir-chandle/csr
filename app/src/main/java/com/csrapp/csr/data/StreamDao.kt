@@ -8,6 +8,6 @@ interface StreamDao {
     @Query("SELECT * FROM stream")
     fun getAllStreams(): List<StreamEntity>
 
-    @Query("SELECT title FROM stream WHERE id=:id")
-    fun getStreamTitleById(id: String): String
+    @Query("SELECT * FROM stream WHERE id=:id")
+    fun getStreamById(id: String): StreamEntity
 }

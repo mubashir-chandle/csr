@@ -11,5 +11,5 @@ class JobSelectionViewModel(
 
     fun getJobsByStream(stream: String) = jobRepository.getJobsByStream(stream)
 
-    fun getStreamTitleById(id: String) = streamRepository.getStreamTitleById(id)
+    fun getStreamById(id: String) = streamRepository.getStreamById(id)
 }
