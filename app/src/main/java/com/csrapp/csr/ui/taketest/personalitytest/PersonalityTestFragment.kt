@@ -75,14 +75,6 @@ class PersonalityTestFragment : Fragment() {
             MODE_PRIVATE
         )
 
-        val isAptitudeTestCompleted = sharedPreferences.getBoolean(
-            getString(R.string.shared_preferences_aptitude_test_completed),
-            false
-        )
-        if (!isAptitudeTestCompleted) {
-            throw Exception("Personality Test started without completing Aptitude Test")
-        }
-
         binding.personalityViewModel = viewModel
         binding.lifecycleOwner = this
 

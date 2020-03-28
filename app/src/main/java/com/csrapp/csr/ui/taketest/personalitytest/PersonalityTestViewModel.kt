@@ -2,11 +2,12 @@ package com.csrapp.csr.ui.taketest.personalitytest
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.csrapp.csr.R
 import com.csrapp.csr.data.PersonalityQuestionEntity
 import com.csrapp.csr.data.PersonalityQuestionEntity.Companion.getPersonalityQuestionType
+import com.csrapp.csr.data.PersonalityQuestionEntity.PersonalityQuestionType.Textual
 import com.csrapp.csr.data.PersonalityQuestionRepository
 import com.csrapp.csr.utils.ResourceProvider
 import com.ibm.cloud.sdk.core.security.IamAuthenticator
@@ -23,6 +24,8 @@ import kotlin.collections.set
 class PersonalityTestViewModel(private val personalityQuestionRepository: PersonalityQuestionRepository) :
     ViewModel() {
 
+    val questionsPerStream = 1
+
     // Sentiment analysis questions skipped due to internet problems.
     private val sentimentalQuestionsSkipped = mutableMapOf<String, Int>()
 
@@ -34,43 +37,49 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         INTERNET, BAD_RESPONSE, INSUFFICIENT_INPUT
     }
 
-    val questionsPerStream = 1
-
     private var _currentQuestionIndex = MutableLiveData(0)
     val currentQuestionIndex: LiveData<Int>
         get() = _currentQuestionIndex
 
-    private var _currentQuestionNumberDisplay = MutableLiveData<String>()
-    val currentQuestionNumberDisplay: LiveData<String>
-        get() = _currentQuestionNumberDisplay
+    val currentQuestionNumberDisplay: LiveData<String> =
+        Transformations.switchMap(currentQuestionIndex) { index ->
+            MutableLiveData(currentQuestionNumber(index))
+        }
 
     private var _testFinished = MutableLiveData(false)
     val testFinished: LiveData<Boolean>
         get() = _testFinished
 
-    private var _btnNextText = MutableLiveData<String>("Next")
-    val btnNextText: LiveData<String>
-        get() = _btnNextText
-
-    private var _sliderValueText = MutableLiveData<String>()
-    val sliderValueText: LiveData<String>
-        get() = _sliderValueText
+    val btnNextText: LiveData<String> = Transformations.switchMap(currentQuestionIndex) { index ->
+        val text = when (index) {
+            questionsAndResponses.lastIndex -> (ResourceProvider.getString(R.string.finish))
+            else -> ResourceProvider.getString(R.string.next)
+        }
+        MutableLiveData(text)
+    }
 
     var sliderValue = MutableLiveData<Int>()
+    val sliderValueText: LiveData<String> = Transformations.switchMap(sliderValue) {
+        MutableLiveData(ResourceProvider.getString(R.string.percent, it))
+    }
 
-    private var _currentQuestion = MutableLiveData<PersonalityQuestionEntity>()
-    val currentQuestion: LiveData<PersonalityQuestionEntity>
-        get() = _currentQuestion
+    val currentQuestion: LiveData<PersonalityQuestionEntity> = Transformations
+        .switchMap(currentQuestionIndex) { index ->
+            MutableLiveData(questionsAndResponses[index].question)
+        }
 
     var responseString = MutableLiveData<String>()
 
-    private var _isTextualQuestion = MutableLiveData<Boolean>()
-    val isTextualQuestion: LiveData<Boolean>
-        get() = _isTextualQuestion
+    val isTextualQuestion: LiveData<Boolean> = Transformations
+        .switchMap(currentQuestion) {
+            val textual = when (getPersonalityQuestionType(it)) {
+                Textual -> true
+                else -> false
+            }
+            MutableLiveData(textual)
+        }
 
     private var questionsAndResponses: List<PersonalityQuestionAndResponseHolder>
-
-    private var sliderValueObserver: Observer<Int>
 
     var loading = MutableLiveData(false)
 
@@ -92,16 +101,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         nluService = initNLUService()
 
         questionsAndResponses = tempQuestionHolders
-        _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
-        _isTextualQuestion.value =
-            getPersonalityQuestionType(_currentQuestion.value!!) == PersonalityQuestionEntity.PersonalityQuestionType.Textual
-
         sliderValue.value = 0
-        sliderValueObserver = Observer { value ->
-            _sliderValueText.value = "${value}%"
-        }
-        sliderValue.observeForever(sliderValueObserver)
-        _currentQuestionNumberDisplay.value = generateCurrentQuestionNumber()
     }
 
     private fun initNLUService(): NaturalLanguageUnderstanding {
@@ -125,8 +125,8 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             .build()
     }
 
-    private fun generateCurrentQuestionNumber(): String {
-        val currentQuestionNumber = _currentQuestionIndex.value!! + 1
+    private fun currentQuestionNumber(index: Int): String {
+        val currentQuestionNumber = index + 1
         val totalQuestions = questionsAndResponses.size
 
         return "%02d/%02d".format(currentQuestionNumber, totalQuestions)
@@ -178,17 +178,20 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         val previousSkipped = sentimentalQuestionsSkipped[stream]!!
         sentimentalQuestionsSkipped[stream] = previousSkipped + 1
 
-        questionsAndResponses[_currentQuestionIndex.value!!].score = 0.0
+        saveScoreGoToNextQuestion(0.0)
+    }
+
+    private fun saveScoreGoToNextQuestion(score: Double?) {
+
+        questionsAndResponses[_currentQuestionIndex.value!!].score = score
 
         if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
             _testFinished.value = true
-            return
-        } else if (_currentQuestionIndex.value == questionsAndResponses.lastIndex - 1) {
-            _btnNextText.value = "Finish"
+        } else {
+            _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
+            sliderValue.value = 0
+            responseString.value = ""
         }
-
-        _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
-        updateUI()
     }
 
     fun onButtonNextClicked() {
@@ -196,7 +199,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             val score: Double?
 
             when (getPersonalityQuestionType(currentQuestion.value!!)) {
-                PersonalityQuestionEntity.PersonalityQuestionType.Textual -> {
+                Textual -> {
                     if (responseString.value!!.length < 5) {
                         withContext(Dispatchers.Main) {
                             _nluErrorOccurred.value = NLUError.INSUFFICIENT_INPUT
@@ -214,31 +217,9 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             }
 
             withContext(Dispatchers.Main) {
-                questionsAndResponses[_currentQuestionIndex.value!!].score = score
-
-                if (_currentQuestionIndex.value == questionsAndResponses.lastIndex) {
-                    _testFinished.value = true
-                } else {
-                    if (_currentQuestionIndex.value == questionsAndResponses.lastIndex - 1) {
-                        _btnNextText.value = "Finish"
-                    }
-
-                    _currentQuestionIndex.value = _currentQuestionIndex.value!! + 1
-                    updateUI()
-                }
+                saveScoreGoToNextQuestion(score)
             }
         }
-    }
-
-    private fun updateUI() {
-        _currentQuestionNumberDisplay.value = generateCurrentQuestionNumber()
-
-        _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
-        _isTextualQuestion.value =
-            getPersonalityQuestionType(currentQuestion.value!!) == PersonalityQuestionEntity.PersonalityQuestionType.Textual
-
-        sliderValue.value = 0
-        responseString.value = ""
     }
 
     private fun getRandomizedQuestions(): List<PersonalityQuestionEntity> {
@@ -260,9 +241,4 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     fun getStreams() = personalityQuestionRepository.getStreams()
 
     fun getQuestionsSkippedInEachStream() = sentimentalQuestionsSkipped
-
-    override fun onCleared() {
-        sliderValue.removeObserver(sliderValueObserver)
-        super.onCleared()
-    }
 }
