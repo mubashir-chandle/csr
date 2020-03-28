@@ -28,6 +28,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var spinnerAdapter: SpinnerQuestionAdapter
+    private var finishTestDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,10 +71,11 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
             remainingTime.text =
                 ResourceProvider.getString(R.string.remaining_time, minutes, seconds)
+        }
 
-            if (it == 0L) {
+        viewModel.testFinished.observe(this) { finished ->
+            if (finished)
                 finishTest(finishedByTimer = true)
-            }
         }
 
         assignActionListeners()
@@ -164,6 +166,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         btnNext.isEnabled = false
         btnMark.isEnabled = false
         btnClear.isEnabled = false
+        finishTestDialog?.dismiss()
 
         saveScores()
 
@@ -172,12 +175,12 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             false -> ResourceProvider.getString(R.string.aptitude_test_completed_manually_msg)
         }
 
-        val testCompletionDialog = AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext())
             .setTitle(ResourceProvider.getString(R.string.aptitude_test_completed))
             .setMessage(message)
             .setPositiveButton(ResourceProvider.getString(R.string.okay), null)
             .create()
-        testCompletionDialog.show()
+            .show()
         navController.navigateUp()
     }
 
@@ -233,7 +236,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                     viewModel.currentQuestionIndex += 1
                     updateUI()
                 } else {
-                    AlertDialog.Builder(requireContext())
+                    finishTestDialog = AlertDialog.Builder(requireContext())
                         .setTitle(ResourceProvider.getString(R.string.finish_test))
                         .setMessage(ResourceProvider.getString(R.string.aptitude_test_submission_confirmation))
                         .setPositiveButton(ResourceProvider.getString(R.string.yes)) { _, _ ->
@@ -241,7 +244,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                         }
                         .setNegativeButton(ResourceProvider.getString(R.string.no), null)
                         .create()
-                        .show()
+
+                    finishTestDialog?.show()
                 }
             }
 

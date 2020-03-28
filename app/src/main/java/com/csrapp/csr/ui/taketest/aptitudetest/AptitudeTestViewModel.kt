@@ -19,13 +19,17 @@ class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQues
 
     var currentQuestionIndex = 0
 
+    private val _testFinished = MutableLiveData(false)
+    val testFinished: LiveData<Boolean>
+        get() = _testFinished
+
     private val _timeRemaining = MutableLiveData<Long>(testDuration)
     val timeRemaining: LiveData<Long>
         get() = _timeRemaining
 
     private val timer = object : CountDownTimer(testDuration, 1000) {
         override fun onFinish() {
-            // Do nothing, test completion will be checked using remaining time in the fragment.
+            _testFinished.value = true
         }
 
         override fun onTick(millisUntilFinished: Long) {
