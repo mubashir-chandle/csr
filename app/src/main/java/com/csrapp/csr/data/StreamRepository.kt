@@ -4,6 +4,8 @@ class StreamRepository private constructor(private val streamDao: StreamDao) {
 
     fun getAllStreams() = streamDao.getAllStreams()
 
+    fun getStreamTitleById(id: String) = streamDao.getStreamTitleById(id)
+
     companion object {
         private var instance: StreamRepository? = null
 

@@ -5,5 +5,5 @@ import com.csrapp.csr.data.StreamRepository
 
 class StreamSelectionViewModel(private val streamRepository: StreamRepository) : ViewModel() {
 
-    fun getStreams() = streamRepository.getAllStreams()
+    fun getAllStreams() = streamRepository.getAllStreams()
 }

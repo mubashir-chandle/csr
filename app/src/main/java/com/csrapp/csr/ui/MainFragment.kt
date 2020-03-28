@@ -32,7 +32,7 @@ class MainFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnTakeTest -> navController.navigate(
-                R.id.action_mainFragment_to_testStepSelectonFragment
+                R.id.action_mainFragment_to_testStepSelectionFragment
             )
             R.id.btnViewStreams -> navController.navigate(
                 R.id.action_mainFragment_to_streamSelectionFragment

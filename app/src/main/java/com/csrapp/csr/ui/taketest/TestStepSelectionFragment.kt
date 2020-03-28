@@ -57,16 +57,16 @@ class TestStepSelectionFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnAptitudeTest -> navController.navigate(
-                R.id.action_testStepSelectonFragment_to_aptitudeTestFragment
+                R.id.action_testStepSelectionFragment_to_aptitudeTestFragment
             )
             R.id.btnPersonalityTest -> {
                 navController.navigate(
-                    R.id.action_testStepSelectonFragment_to_personalityTestFragment
+                    R.id.action_testStepSelectionFragment_to_personalityTestFragment
                 )
             }
             R.id.btnViewResult -> {
                 navController.navigate(
-                    R.id.action_testStepSelectonFragment_to_resultFragment
+                    R.id.action_testStepSelectionFragment_to_resultFragment
                 )
             }
             R.id.btnResetProgress -> {

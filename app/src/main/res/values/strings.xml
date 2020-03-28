@@ -1,9 +1,23 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">CSR</string>
 
     <string-array name="dummy_question_numbers">
         <item>Question 1</item>
     </string-array>
+
+    <string name="nlu_version_date" tools:ignore="TypographyDashes">2019-07-12</string>
+
+    <string name="finish">Finish</string>
+    <string name="next">Next</string>
+
+    <string name="mark">Mark</string>
+    <string name="mark_and_next">Mark and Next</string>
+
+    <string name="aptitude_test_completed_manually_msg">You have successfully completed the first step of the test.\n\nYou can now start the second step whenever you are ready for it.</string>
+    <string name="aptitude_test_completed_by_timer_msg">Your time for the aptitude test has finished.\n\nYou can now start the second step whenever you are ready for it.</string>
+
+    <string name="aptitude_test_submission_confirmation">Are you sure you want to finish your test?</string>
+    <string name="aptitude_test_quit_confirmation">Are you sure you want to finish your test?</string>
 
     <string name="shared_preferences_filename">shared_preferences</string>
     <string name="shared_preferences_aptitude_test_completed">isAptitudeTestCompleted</string>
@@ -12,4 +26,22 @@
     <string name="take_test">Take Test</string>
     <string name="view_streams">View Streams</string>
     <string name="enter_your_response">Enter your response</string>
+    <string name="please_wait">Please Wait…</string>
+    <string name="how_confident_are_you_about_your_answer">How confident are you about your answer?</string>
+    <string name="clear">Clear</string>
+    <string name="aptitude_test">Aptitude Test</string>
+    <string name="personality_test">Personality Test</string>
+    <string name="view_result">View Result</string>
+    <string name="result">Result</string>
+
+    <string name="spinner_question_number">Question %1$02d</string>
+    <string name="remaining_time">%1$02d:%2$02d</string>
+    <string name="percent">%1$d%%</string>
+
+    <string name="aptitude_test_completed">Aptitude Test Completed</string>
+    <string name="finish_test">Finish Test</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="okay">Okay</string>
+    <string name="quit_test">Quit Test</string>
 </resources>

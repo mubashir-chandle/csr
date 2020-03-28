@@ -52,8 +52,8 @@ class JobSelectionFragment : Fragment() {
 
         jobRecyclerView.apply {
             adapter = jobAdapter
-            layoutManager = LinearLayoutManager(activity)
-            addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }
 }

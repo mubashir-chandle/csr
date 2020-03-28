@@ -42,9 +42,13 @@ object InjectorUtils {
     }
 
     fun provideJobSelectionViewModelFactory(context: Context): JobSelectionViewModelFactory {
-        val repository =
+        val jobRepository =
             JobRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).jobDao())
-        return JobSelectionViewModelFactory(repository)
+
+        val streamRepository =
+            StreamRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).streamDao())
+
+        return JobSelectionViewModelFactory(jobRepository, streamRepository)
     }
 
     fun provideJobDetailViewModelFactory(context: Context): JobDetailViewModelFactory {

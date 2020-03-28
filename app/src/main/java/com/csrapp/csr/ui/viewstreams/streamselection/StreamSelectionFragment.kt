@@ -43,7 +43,7 @@ class StreamSelectionFragment : Fragment() {
 
     private fun initRecyclerView(viewModel: StreamSelectionViewModel) {
         val streamAdapter = StreamRecyclerAdapter()
-        val streams = viewModel.getStreams()
+        val streams = viewModel.getAllStreams()
         streamAdapter.populateWithData(streams)
         streamAdapter.setUpNavController(navController)
 

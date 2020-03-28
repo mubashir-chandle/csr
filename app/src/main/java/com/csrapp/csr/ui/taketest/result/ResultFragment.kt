@@ -2,7 +2,6 @@ package com.csrapp.csr.ui.taketest.result
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_result.*
 
 class ResultFragment : Fragment() {
-    private val TAG = "ResultFragment"
 
     private lateinit var navController: NavController
     private lateinit var viewModel: ResultViewModel
@@ -68,7 +66,6 @@ class ResultFragment : Fragment() {
                 )
             )
         }
-        Log.d(TAG, "Aptitude scores: $aptitudeScores")
         val aptitudeScoresAdapter = ResultAdapter(aptitudeScores, requireContext(), navController)
 
         recyclerViewAptitudeScores.apply {
@@ -91,7 +88,6 @@ class ResultFragment : Fragment() {
                 )
             )
         }
-        Log.d(TAG, "Personality scores: $personalityScores")
         val personalityScoresAdapter =
             ResultAdapter(personalityScores, requireContext(), navController)
 

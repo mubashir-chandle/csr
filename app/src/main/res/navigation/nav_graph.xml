@@ -18,8 +18,8 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_mainFragment_to_testStepSelectonFragment"
-            app:destination="@id/testStepSelectonFragment"
+            android:id="@+id/action_mainFragment_to_testStepSelectionFragment"
+            app:destination="@id/testStepSelectionFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -64,26 +64,26 @@
             app:argType="integer" />
     </fragment>
     <fragment
-        android:id="@+id/testStepSelectonFragment"
+        android:id="@+id/testStepSelectionFragment"
         android:name="com.csrapp.csr.ui.taketest.TestStepSelectionFragment"
         android:label="Test"
         tools:layout="@layout/fragment_test_step_selection">
         <action
-            android:id="@+id/action_testStepSelectonFragment_to_aptitudeTestFragment"
+            android:id="@+id/action_testStepSelectionFragment_to_aptitudeTestFragment"
             app:destination="@id/aptitudeTestFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_testStepSelectonFragment_to_personalityTestFragment"
+            android:id="@+id/action_testStepSelectionFragment_to_personalityTestFragment"
             app:destination="@id/personalityTestFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_testStepSelectonFragment_to_resultFragment"
+            android:id="@+id/action_testStepSelectionFragment_to_resultFragment"
             app:destination="@id/resultFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

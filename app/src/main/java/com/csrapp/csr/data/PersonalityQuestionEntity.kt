@@ -17,4 +17,18 @@ class PersonalityQuestionEntity(
 
     @ColumnInfo(name = "type")
     val type: String?
-)
+) {
+    enum class PersonalityQuestionType {
+        Textual, Slider
+    }
+
+    companion object {
+        fun getPersonalityQuestionType(personalityQuestionEntity: PersonalityQuestionEntity): PersonalityQuestionType {
+            return when (personalityQuestionEntity.type) {
+                "textual" -> PersonalityQuestionType.Textual
+                "slider" -> PersonalityQuestionType.Slider
+                else -> throw Exception("Unsupported personality question type")
+            }
+        }
+    }
+}

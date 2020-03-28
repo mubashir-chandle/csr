@@ -7,10 +7,6 @@
     <color name="colorPrimaryDarkMuted">#1b2c32</color>
     <color name="colorAccent">#00B4DB</color>
 
-    <color name="buttonBlue">@color/colorPrimary</color>
-    <color name="buttonBluePressed">@color/colorPrimaryDark</color>
-    <color name="buttonBlueDisabled">#99B7BF</color>
-
     <color name="buttonGradientStart">@color/colorPrimary</color>
     <color name="buttonGradientEnd">@color/colorPrimaryDark</color>
 

@@ -9,7 +9,8 @@ object ResourceProvider {
         applicationContext = context.applicationContext
     }
 
-    fun getString(resId: Int) = applicationContext!!.getString(resId)
+    fun getString(resId: Int, vararg formatArgs: Any) =
+        applicationContext!!.getString(resId, *formatArgs)
 
     fun getColor(resId: Int) = applicationContext!!.resources.getColor(resId)
 

@@ -2,7 +2,6 @@ package com.csrapp.csr.ui.taketest.aptitudetest
 
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,14 +17,13 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.utils.InjectorUtils
+import com.csrapp.csr.utils.ResourceProvider
 import kotlinx.android.synthetic.main.fragment_aptitude_test.*
 import kotlin.math.roundToInt
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener,
     RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener,
     AdapterView.OnItemSelectedListener {
-
-    private val TAG = "AptitudeTestFragment"
 
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
@@ -35,14 +33,12 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         super.onCreate(savedInstanceState)
 
         val backConfirmationDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Quit Test")
-            .setMessage("Are you sure you want to quit the test?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setTitle(ResourceProvider.getString(R.string.quit_test))
+            .setMessage(ResourceProvider.getString(R.string.aptitude_test_quit_confirmation))
+            .setPositiveButton(ResourceProvider.getString(R.string.yes)) { _, _ ->
                 navController.navigateUp()
             }
-            .setNegativeButton("Cancel") { _, _ ->
-                println("Cancel pressed")
-            }
+            .setNegativeButton(ResourceProvider.getString(R.string.no), null)
             .create()
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -71,7 +67,9 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         viewModel.timeRemaining.observe(this) {
             val minutes = it / 60
             val seconds = it % 60
-            remainingTime.text = "%02d:%02d".format(minutes, seconds)
+
+            remainingTime.text =
+                ResourceProvider.getString(R.string.remaining_time, minutes, seconds)
 
             if (it == 0L) {
                 finishTest(finishedByTimer = true)
@@ -98,8 +96,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         questionScrollView.smoothScrollTo(0, 0)
         spinnerQuestions.setSelection(viewModel.currentQuestionIndex)
 
-        val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
-        val question = questionHolder.question
+        val questionAndResponseHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
+        val question = questionAndResponseHolder.question
         questionText.text = question.text
 
         if (question.referenceImage.isNullOrBlank()) {
@@ -120,11 +118,11 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         option4.text = question.option4
 
         // Check if this question was answered previously.
-        if (questionHolder.optionSelected == null) {
+        if (questionAndResponseHolder.optionSelected == null) {
             optionGroup.clearCheck()
         } else {
             updateConfidenceTextView()
-            when (questionHolder.optionSelected) {
+            when (questionAndResponseHolder.optionSelected) {
                 1 -> optionGroup.check(R.id.option1)
                 2 -> optionGroup.check(R.id.option2)
                 3 -> optionGroup.check(R.id.option3)
@@ -132,10 +130,10 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             }
         }
 
-        if (questionHolder.confidence == null)
+        if (questionAndResponseHolder.confidence == null)
             confidenceSeekBar.progress = 0
         else
-            confidenceSeekBar.progress = questionHolder.confidence!! - 1
+            confidenceSeekBar.progress = questionAndResponseHolder.confidence!! - 1
 
         updateConfidenceTextView()
         updateButtons()
@@ -154,11 +152,11 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         }
 
         if (viewModel.currentQuestionIndex == spinnerAdapter.count - 1) {
-            btnNext.text = "Finish"
-            btnMark.text = "Mark"
+            btnNext.text = ResourceProvider.getString(R.string.finish)
+            btnMark.text = ResourceProvider.getString(R.string.mark)
         } else {
-            btnNext.text = "Next"
-            btnMark.text = "Mark and Next"
+            btnNext.text = ResourceProvider.getString(R.string.next)
+            btnMark.text = ResourceProvider.getString(R.string.mark_and_next)
         }
     }
 
@@ -170,19 +168,14 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         saveScores()
 
         val message = when (finishedByTimer) {
-            true -> "Your time for the aptitude test has finished.\n" +
-                    "\n" +
-                    "You can now start the second step whenever you are ready for it."
-
-            false -> "You have successfully completed the first step of the test.\n" +
-                    "\n" +
-                    "You can now start the second step whenever you are ready for it."
+            true -> ResourceProvider.getString(R.string.aptitude_test_completed_by_timer_msg)
+            false -> ResourceProvider.getString(R.string.aptitude_test_completed_manually_msg)
         }
 
         val testCompletionDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Aptitude Test Completed")
+            .setTitle(ResourceProvider.getString(R.string.aptitude_test_completed))
             .setMessage(message)
-            .setPositiveButton("Okay", null)
+            .setPositiveButton(ResourceProvider.getString(R.string.okay), null)
             .create()
         testCompletionDialog.show()
         navController.navigateUp()
@@ -194,7 +187,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
         for (i in 0 until spinnerAdapter.count) {
             val questionHolder = spinnerAdapter.getItem(i)!!
-            if (questionHolder.responseType == QuestionHolder.QuestionResponseType.UNANSWERED)
+            if (questionHolder.responseType == AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED)
                 continue
 
             val questionScore =
@@ -217,7 +210,6 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             putBoolean(getString(R.string.shared_preferences_aptitude_test_completed), true)
             scores.forEach { (category, score) ->
                 putInt(category, score.roundToInt())
-                Log.d(TAG, "$category: ${score.roundToInt()}")
             }
             commit()
         }
@@ -229,7 +221,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             R.id.btnNext -> {
                 if (getSelectedOption() != null) {
                     val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
-                    questionHolder.responseType = QuestionHolder.QuestionResponseType.ANSWERED
+                    questionHolder.responseType =
+                        AptitudeQuestionAndResponseHolder.QuestionResponseType.ANSWERED
                     questionHolder.optionSelected = getSelectedOption()
                     questionHolder.confidence = confidenceSeekBar.progress
 
@@ -241,12 +234,12 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                     updateUI()
                 } else {
                     AlertDialog.Builder(requireContext())
-                        .setTitle("Finish Test")
-                        .setMessage("Are you sure you want to finish your test?")
-                        .setPositiveButton("Yes") { _, _ ->
+                        .setTitle(ResourceProvider.getString(R.string.finish_test))
+                        .setMessage(ResourceProvider.getString(R.string.aptitude_test_submission_confirmation))
+                        .setPositiveButton(ResourceProvider.getString(R.string.yes)) { _, _ ->
                             finishTest(finishedByTimer = false)
                         }
-                        .setNegativeButton("No", null)
+                        .setNegativeButton(ResourceProvider.getString(R.string.no), null)
                         .create()
                         .show()
                 }
@@ -255,7 +248,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             R.id.btnMark -> {
                 if (getSelectedOption() != null) {
                     val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
-                    questionHolder.responseType = QuestionHolder.QuestionResponseType.MARKED
+                    questionHolder.responseType =
+                        AptitudeQuestionAndResponseHolder.QuestionResponseType.MARKED
                     questionHolder.optionSelected = getSelectedOption()
                     questionHolder.confidence = confidenceSeekBar.progress
                 }
@@ -272,7 +266,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
             R.id.btnClear -> {
                 val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
-                questionHolder.responseType = QuestionHolder.QuestionResponseType.UNANSWERED
+                questionHolder.responseType =
+                    AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED
                 questionHolder.optionSelected = null
                 questionHolder.confidence = 0
 
@@ -325,7 +320,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         if (getSelectedOption() != null) {
             textViewConfidence.visibility = View.VISIBLE
             val percent = confidenceSeekBar.progress
-            textViewConfidence.text = "${percent}%"
+            textViewConfidence.text = ResourceProvider.getString(R.string.percent, percent)
         } else {
             textViewConfidence.visibility = View.INVISIBLE
         }

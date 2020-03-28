@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.csrapp.csr.R
 import com.csrapp.csr.data.PersonalityQuestionEntity
+import com.csrapp.csr.data.PersonalityQuestionEntity.Companion.getPersonalityQuestionType
 import com.csrapp.csr.data.PersonalityQuestionRepository
 import com.csrapp.csr.utils.ResourceProvider
 import com.ibm.cloud.sdk.core.security.IamAuthenticator
@@ -22,8 +23,6 @@ import kotlin.collections.set
 class PersonalityTestViewModel(private val personalityQuestionRepository: PersonalityQuestionRepository) :
     ViewModel() {
 
-    private val TAG = "PersonalityTestVM"
-
     // Sentiment analysis questions skipped due to internet problems.
     private val sentimentalQuestionsSkipped = mutableMapOf<String, Int>()
 
@@ -35,7 +34,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         INTERNET, BAD_RESPONSE, INSUFFICIENT_INPUT
     }
 
-    val questionsPerStream = 2
+    val questionsPerStream = 1
 
     private var _currentQuestionIndex = MutableLiveData(0)
     val currentQuestionIndex: LiveData<Int>
@@ -94,7 +93,8 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
         questionsAndResponses = tempQuestionHolders
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
-        _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
+        _isTextualQuestion.value =
+            getPersonalityQuestionType(_currentQuestion.value!!) == PersonalityQuestionEntity.PersonalityQuestionType.Textual
 
         sliderValue.value = 0
         sliderValueObserver = Observer { value ->
@@ -106,7 +106,10 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
     private fun initNLUService(): NaturalLanguageUnderstanding {
         val authenticator = IamAuthenticator(ResourceProvider.getString(R.string.nlu_apikey))
-        nluService = NaturalLanguageUnderstanding("2019-07-12", authenticator)
+        nluService = NaturalLanguageUnderstanding(
+            ResourceProvider.getString(R.string.nlu_version_date),
+            authenticator
+        )
         nluService.serviceUrl = ResourceProvider.getString(R.string.nlu_url)
 
         return nluService
@@ -192,8 +195,8 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         CoroutineScope(Dispatchers.IO).launch {
             val score: Double?
 
-            when (currentQuestion.value!!.type) {
-                "textual" -> {
+            when (getPersonalityQuestionType(currentQuestion.value!!)) {
+                PersonalityQuestionEntity.PersonalityQuestionType.Textual -> {
                     if (responseString.value!!.length < 5) {
                         withContext(Dispatchers.Main) {
                             _nluErrorOccurred.value = NLUError.INSUFFICIENT_INPUT
@@ -231,7 +234,8 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         _currentQuestionNumberDisplay.value = generateCurrentQuestionNumber()
 
         _currentQuestion.value = questionsAndResponses[_currentQuestionIndex.value!!].question
-        _isTextualQuestion.value = _currentQuestion.value!!.type == "textual"
+        _isTextualQuestion.value =
+            getPersonalityQuestionType(currentQuestion.value!!) == PersonalityQuestionEntity.PersonalityQuestionType.Textual
 
         sliderValue.value = 0
         responseString.value = ""

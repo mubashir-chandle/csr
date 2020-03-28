@@ -73,7 +73,9 @@ class ResultAdapter(
         fun bind(receivedItem: ResultItem) {
             itemView.textViewTitle.text = receivedItem.title
             itemView.progressBar.progress = if (receivedItem.score > 0) receivedItem.score else 0
-            itemView.textViewScore.text = "${receivedItem.score}%"
+
+            itemView.textViewScore.text =
+                ResourceProvider.getString(R.string.percent, receivedItem.score)
 
             if (receivedItem.score <= 0)
                 itemView.textViewScore.setTextColor(ResourceProvider.getColor(R.color.colorTextError))

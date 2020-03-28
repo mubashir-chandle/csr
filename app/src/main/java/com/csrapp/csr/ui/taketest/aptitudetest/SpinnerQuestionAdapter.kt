@@ -8,17 +8,19 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.csrapp.csr.R
 import com.csrapp.csr.data.AptitudeQuestionEntity
+import com.csrapp.csr.utils.ResourceProvider
 
 class SpinnerQuestionAdapter(val context: Context, questions: List<AptitudeQuestionEntity>) :
     BaseAdapter() {
-    private var questionHolders: Array<QuestionHolder?> = arrayOfNulls(questions.size)
+    private var questionHolders: Array<AptitudeQuestionAndResponseHolder?> =
+        arrayOfNulls(questions.size)
     private val layoutInflater = LayoutInflater.from(context)
 
     init {
         for (i in questions.indices) {
-            questionHolders[i] = QuestionHolder(
+            questionHolders[i] = AptitudeQuestionAndResponseHolder(
                 questions[i],
-                QuestionHolder.QuestionResponseType.UNANSWERED
+                AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED
             )
         }
     }
@@ -35,11 +37,12 @@ class SpinnerQuestionAdapter(val context: Context, questions: List<AptitudeQuest
             viewHolder = view.tag as QuestionViewHolder
         }
 
-        viewHolder.questionNumber!!.text = "Question ${position + 1}"
+        viewHolder.questionNumber!!.text =
+            ResourceProvider.getString(R.string.spinner_question_number, position + 1)
         val color = when (questionHolders[position]!!.responseType) {
-            QuestionHolder.QuestionResponseType.ANSWERED -> R.color.spinnerItemQuestionAnswered
-            QuestionHolder.QuestionResponseType.MARKED -> R.color.spinnerItemQuestionMarked
-            QuestionHolder.QuestionResponseType.UNANSWERED -> R.color.spinnerItemQuestionSkipped
+            AptitudeQuestionAndResponseHolder.QuestionResponseType.ANSWERED -> R.color.spinnerItemQuestionAnswered
+            AptitudeQuestionAndResponseHolder.QuestionResponseType.MARKED -> R.color.spinnerItemQuestionMarked
+            AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED -> R.color.spinnerItemQuestionSkipped
         }
 
         val colorResource = context.resources.getColor(color)
@@ -47,12 +50,11 @@ class SpinnerQuestionAdapter(val context: Context, questions: List<AptitudeQuest
         return view
     }
 
-    override fun getItem(position: Int): QuestionHolder? {
+    override fun getItem(position: Int): AptitudeQuestionAndResponseHolder? {
         return questionHolders[position]
     }
 
     override fun getItemId(position: Int): Long {
-        // TODO: Check if this is the right solution.
         return 0
     }
 

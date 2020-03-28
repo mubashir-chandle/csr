@@ -27,8 +27,6 @@ import kotlin.math.roundToInt
 
 class PersonalityTestFragment : Fragment() {
 
-    private val TAG = "PersonalityTestFragment"
-
     private lateinit var navController: NavController
     private lateinit var viewModel: PersonalityTestViewModel
     private lateinit var binding: FragmentPersonalityTestBinding
