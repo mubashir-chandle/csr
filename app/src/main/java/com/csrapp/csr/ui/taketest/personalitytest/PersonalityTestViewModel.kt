@@ -14,7 +14,6 @@ import com.csrapp.csr.utils.ResourceProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.collections.set
 
 class PersonalityTestViewModel(private val personalityQuestionRepository: PersonalityQuestionRepository) :
@@ -133,9 +132,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             when (getPersonalityQuestionType(currentQuestion.value!!)) {
                 Textual -> {
                     if (responseString.value!!.length < 5) {
-                        withContext(Dispatchers.Main) {
-                            _nluErrorOccurred.value = NLUService.NLUError.INSUFFICIENT_INPUT
-                        }
+                        _nluErrorOccurred.value = NLUService.NLUError.INSUFFICIENT_INPUT
                         return@launch
                     }
 

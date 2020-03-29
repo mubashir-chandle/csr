@@ -1,6 +1,5 @@
 package com.csrapp.csr.nlu
 
-import androidx.lifecycle.MutableLiveData
 import com.csrapp.csr.R
 import com.csrapp.csr.utils.ResourceProvider
 import com.ibm.cloud.sdk.core.security.IamAuthenticator
@@ -10,7 +9,6 @@ import com.ibm.watson.natural_language_understanding.v1.model.EmotionOptions
 import com.ibm.watson.natural_language_understanding.v1.model.Features
 import com.ibm.watson.natural_language_understanding.v1.model.SentimentOptions
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 object NLUService {
@@ -47,8 +45,7 @@ object NLUService {
             .language("en")
             .build()
 
-        val score = MutableLiveData<Double>()
-        withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             val results = try {
                 nluService.analyze(parameters).execute().result
             } catch (e: Exception) {
@@ -56,13 +53,9 @@ object NLUService {
             }
 
             val serviceScore = results.sentiment?.document?.score!!
-            score.postValue(((serviceScore + 1) / 2) * 100)
-        }
 
-        while (score.value == null) {
-            delay(100)
+            // Change score range from [-1, 1] to [0, 100].
+            ((serviceScore + 1) / 2) * 100
         }
-
-        return score.value
     }
 }
