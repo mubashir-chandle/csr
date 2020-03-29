@@ -9,16 +9,12 @@ import com.csrapp.csr.data.PersonalityQuestionEntity
 import com.csrapp.csr.data.PersonalityQuestionEntity.Companion.getPersonalityQuestionType
 import com.csrapp.csr.data.PersonalityQuestionEntity.PersonalityQuestionType.Textual
 import com.csrapp.csr.data.PersonalityQuestionRepository
+import com.csrapp.csr.nlu.NLUService
 import com.csrapp.csr.utils.ResourceProvider
-import com.ibm.cloud.sdk.core.security.IamAuthenticator
-import com.ibm.cloud.sdk.core.service.exception.BadRequestException
-import com.ibm.cloud.sdk.core.service.exception.ServiceResponseException
-import com.ibm.watson.natural_language_understanding.v1.NaturalLanguageUnderstanding
-import com.ibm.watson.natural_language_understanding.v1.model.AnalyzeOptions
-import com.ibm.watson.natural_language_understanding.v1.model.EmotionOptions
-import com.ibm.watson.natural_language_understanding.v1.model.Features
-import com.ibm.watson.natural_language_understanding.v1.model.SentimentOptions
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.collections.set
 
 class PersonalityTestViewModel(private val personalityQuestionRepository: PersonalityQuestionRepository) :
@@ -29,13 +25,10 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     // Sentiment analysis questions skipped due to internet problems.
     private val sentimentalQuestionsSkipped = mutableMapOf<String, Int>()
 
-    private var _nluErrorOccurred = MutableLiveData<NLUError?>(null)
-    val nluErrorOccurred: LiveData<NLUError?>
+    private var _nluErrorOccurred = MutableLiveData<NLUService.NLUError?>(null)
+    val nluErrorOccurred: LiveData<NLUService.NLUError?>
         get() = _nluErrorOccurred
 
-    enum class NLUError {
-        INTERNET, BAD_RESPONSE, INSUFFICIENT_INPUT
-    }
 
     private var _currentQuestionIndex = MutableLiveData(0)
     val currentQuestionIndex: LiveData<Int>
@@ -83,9 +76,6 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
     var loading = MutableLiveData(false)
 
-    private var nluService: NaturalLanguageUnderstanding
-    private var nluFeatures: Features
-
     init {
         val questions = getRandomizedQuestions()
         val tempQuestionHolders = mutableListOf<PersonalityQuestionAndResponseHolder>()
@@ -97,81 +87,10 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             sentimentalQuestionsSkipped[stream] = 0
         }
 
-        nluFeatures = initNLUFeatures()
-        nluService = initNLUService()
-
         questionsAndResponses = tempQuestionHolders
         sliderValue.value = 0
     }
 
-    private fun initNLUService(): NaturalLanguageUnderstanding {
-        val authenticator = IamAuthenticator(ResourceProvider.getString(R.string.nlu_apikey))
-        nluService = NaturalLanguageUnderstanding(
-            ResourceProvider.getString(R.string.nlu_version_date),
-            authenticator
-        )
-        nluService.serviceUrl = ResourceProvider.getString(R.string.nlu_url)
-
-        return nluService
-    }
-
-    private fun initNLUFeatures(): Features {
-        val sentimentOptions = SentimentOptions.Builder().document(true).build()
-        val emotionOptions = EmotionOptions.Builder().document(true).build()
-
-        return Features.Builder()
-            .sentiment(sentimentOptions)
-            .emotion(emotionOptions)
-            .build()
-    }
-
-    private fun currentQuestionNumber(index: Int): String {
-        val currentQuestionNumber = index + 1
-        val totalQuestions = questionsAndResponses.size
-
-        return "%02d/%02d".format(currentQuestionNumber, totalQuestions)
-    }
-
-    suspend fun performSentimentAnalysis(string: String): Double? {
-        val parameters = AnalyzeOptions.Builder()
-            .text(string)
-            .features(nluFeatures)
-            .language("en")
-            .build()
-
-        withContext(Dispatchers.Main) {
-            loading.value = true
-        }
-
-        var score: Double? = null
-
-        try {
-            val results = nluService.analyze(parameters).execute().result
-            score = results.sentiment?.document?.score
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                when (e) {
-                    is BadRequestException, is ServiceResponseException -> {
-                        _nluErrorOccurred.value = NLUError.BAD_RESPONSE
-                    }
-                    else -> {
-                        _nluErrorOccurred.value = NLUError.INTERNET
-                    }
-                }
-            }
-
-        } finally {
-            withContext(Dispatchers.Main) {
-                loading.value = false
-            }
-        }
-
-        return if (score == null) {
-            null
-        } else {
-            ((score + 1) / 2) * 100
-        }
-    }
 
     fun skipCurrentQuestion() {
         val stream = currentQuestion.value!!.stream!!
@@ -194,31 +113,43 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         }
     }
 
+    private suspend fun performSentimentAnalysis(): Double? {
+        loading.value = true
+
+        return try {
+            NLUService.performSentimentAnalysis(responseString.value!!)
+        } catch (e: NLUService.NLUException) {
+            _nluErrorOccurred.postValue(NLUService.NLUError.INTERNET)
+            null
+        } finally {
+            loading.value = false
+        }
+    }
+
     fun onButtonNextClicked() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             val score: Double?
 
             when (getPersonalityQuestionType(currentQuestion.value!!)) {
                 Textual -> {
                     if (responseString.value!!.length < 5) {
                         withContext(Dispatchers.Main) {
-                            _nluErrorOccurred.value = NLUError.INSUFFICIENT_INPUT
+                            _nluErrorOccurred.value = NLUService.NLUError.INSUFFICIENT_INPUT
                         }
-                        cancel()
+                        return@launch
                     }
 
-                    score = performSentimentAnalysis(responseString.value!!)
+                    score = performSentimentAnalysis()
+
                     if (score == null)
-                        cancel()
+                        return@launch
                 }
                 else -> {
                     score = sliderValue.value!!.toDouble()
                 }
             }
 
-            withContext(Dispatchers.Main) {
-                saveScoreGoToNextQuestion(score)
-            }
+            saveScoreGoToNextQuestion(score)
         }
     }
 
@@ -234,6 +165,13 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
             )
         }
         return questions
+    }
+
+    private fun currentQuestionNumber(index: Int): String {
+        val currentQuestionNumber = index + 1
+        val totalQuestions = questionsAndResponses.size
+
+        return "%02d/%02d".format(currentQuestionNumber, totalQuestions)
     }
 
     fun getQuestionsAndResponses() = questionsAndResponses

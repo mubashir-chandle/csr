@@ -19,10 +19,8 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.databinding.FragmentPersonalityTestBinding
+import com.csrapp.csr.nlu.NLUService.NLUError.*
 import com.csrapp.csr.utils.InjectorUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class PersonalityTestFragment : Fragment() {
@@ -109,14 +107,12 @@ class PersonalityTestFragment : Fragment() {
 
         viewModel.nluErrorOccurred.observe(viewLifecycleOwner) { errorOccurred ->
             when (errorOccurred) {
-                PersonalityTestViewModel.NLUError.INTERNET -> {
+                INTERNET -> {
                     AlertDialog.Builder(requireContext())
                         .setTitle("Error")
-                        .setMessage("Error while connecting to the internet. Please check your internet connection.")
+                        .setMessage("An error occurred while connecting to the internet. Please check your internet connection.")
                         .setPositiveButton("Try Again") { _, _ ->
-                            CoroutineScope(Dispatchers.IO).launch {
-                                viewModel.performSentimentAnalysis(viewModel.responseString.toString())
-                            }
+                            viewModel.onButtonNextClicked()
                         }
                         .setNegativeButton("Skip This Question") { _, _ ->
                             viewModel.skipCurrentQuestion()
@@ -124,10 +120,10 @@ class PersonalityTestFragment : Fragment() {
                         .create()
                         .show()
                 }
-                PersonalityTestViewModel.NLUError.BAD_RESPONSE -> {
+                BAD_RESPONSE -> {
                     AlertDialog.Builder(requireContext())
-                        .setTitle("Unable to Analyze")
-                        .setMessage("Please check to make sure you have not made any spelling mistakes.")
+                        .setTitle("Error")
+                        .setMessage("An error occurred while analyzing the text. Please try again.")
                         .setPositiveButton("Okay", null)
                         .setNegativeButton("Skip This Question") { _, _ ->
                             viewModel.skipCurrentQuestion()
@@ -135,7 +131,7 @@ class PersonalityTestFragment : Fragment() {
                         .create()
                         .show()
                 }
-                PersonalityTestViewModel.NLUError.INSUFFICIENT_INPUT -> {
+                INSUFFICIENT_INPUT -> {
                     AlertDialog.Builder(requireContext())
                         .setTitle("Insufficient Input")
                         .setMessage("Please enter more text to analyze it.")
