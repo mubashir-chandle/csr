@@ -45,4 +45,8 @@
     <string name="okay">Okay</string>
     <string name="quit_test">Quit Test</string>
     <string name="close">Close</string>
+
+    <string name="instructions">Instructions</string>
+    <string name="aptitude_test_instructions">All the questions in the test are optional. If you want to skip any question, you can do so.\n\nEach question requires you to provide the answer as well as confidence you have regarding your answer. Your confidence will effect how much effect the question will have on you final score. The more confident you are for a correct answer, the more score you will get. Similarly, the more confident you are for a wrong answer, the more negative score you will get. So, answer each question carefully.\n\nYou can mark a question so that you can later visit it before submitting the test. To switch questions, you can use the dropdown menu which displays the current question number.\n\nThe color of the questions denotes their state, red is unaswerd, yellow is marked and green is answered.\n\nIf you do not submit your test before the time limit, it will get auto sumitted as soon as the timer reaches zero.\n\nAll the best!</string>
+    <string name="start">Start</string>
 </resources>

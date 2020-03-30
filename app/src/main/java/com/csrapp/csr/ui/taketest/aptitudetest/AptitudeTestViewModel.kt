@@ -13,7 +13,7 @@ class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQues
 
     val questionsPerCategory = 1
 
-    private val testDuration = 1 * 6 * 1000L                // 30 Minutes
+    private val testDuration = 30 * 60 * 1000L                // 30 Minutes
     private val questions = getRandomQuestions()
     private var spinnerAdapter: SpinnerQuestionAdapter? = null
 
@@ -39,7 +39,7 @@ class AptitudeTestViewModel(private val aptitudeQuestionRepository: AptitudeQues
         }
     }
 
-    init {
+    fun startTest() {
         timer.start()
     }
 

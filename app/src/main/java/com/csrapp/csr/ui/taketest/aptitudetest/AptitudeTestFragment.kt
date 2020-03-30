@@ -28,6 +28,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     private lateinit var navController: NavController
     private lateinit var viewModel: AptitudeTestViewModel
     private lateinit var spinnerAdapter: SpinnerQuestionAdapter
+    private lateinit var instructionsDialog: AlertDialog
     private var finishTestDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,12 +81,33 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
         assignActionListeners()
         updateButtons()
+
+        instructionsDialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.instructions)
+            .setMessage(R.string.aptitude_test_instructions)
+            .setPositiveButton(R.string.okay, null)
+            .create()
+
+        // Use a slightly different instructions dialog at start.
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.instructions)
+            .setMessage(R.string.aptitude_test_instructions)
+            .setPositiveButton(R.string.start, null)
+            .setOnDismissListener() {
+                viewModel.startTest()
+                remainingTime.visibility = View.VISIBLE
+            }
+            .create()
+            .show()
     }
 
     private fun assignActionListeners() {
         btnNext.setOnClickListener(this)
         btnMark.setOnClickListener(this)
         btnClear.setOnClickListener(this)
+        fabAptitudeInstructions.setOnClickListener(this)
+
+        // Show instructions for the test.
 
         optionGroup.setOnCheckedChangeListener(this)
 
@@ -220,7 +242,10 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
     // Next/Mark/Skip Button clicked.
     override fun onClick(v: View?) {
-        when (v!!.id) {
+        when (v?.id) {
+            R.id.fabAptitudeInstructions -> {
+                instructionsDialog.show()
+            }
             R.id.btnNext -> {
                 if (getSelectedOption() != null) {
                     val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
