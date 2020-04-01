@@ -27,6 +27,9 @@ data class AptitudeQuestionEntity(
     @ColumnInfo(name = "option_4")
     val option4: String,
 
+    @ColumnInfo(name = "option_5")
+    val option5: String?,
+
     @ColumnInfo(name = "correct_option")
     val correctOption: Int,
 

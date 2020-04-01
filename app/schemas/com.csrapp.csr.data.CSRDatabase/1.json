@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c411cf92d7b9d4892a91cb07d05ca566",
+    "identityHash": "4ae44ba26fa0f6af06c7306a22635b25",
     "entities": [
       {
         "tableName": "stream",
@@ -76,7 +76,7 @@
       },
       {
         "tableName": "aptitude_question",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `category` TEXT NOT NULL, `text` TEXT NOT NULL, `option_1` TEXT NOT NULL, `option_2` TEXT NOT NULL, `option_3` TEXT NOT NULL, `option_4` TEXT NOT NULL, `correct_option` INTEGER NOT NULL, `reference_image` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `category` TEXT NOT NULL, `text` TEXT NOT NULL, `option_1` TEXT NOT NULL, `option_2` TEXT NOT NULL, `option_3` TEXT NOT NULL, `option_4` TEXT NOT NULL, `option_5` TEXT, `correct_option` INTEGER NOT NULL, `reference_image` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -119,6 +119,12 @@
             "columnName": "option_4",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "option5",
+            "columnName": "option_5",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "correctOption",
@@ -216,7 +222,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c411cf92d7b9d4892a91cb07d05ca566')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4ae44ba26fa0f6af06c7306a22635b25')"
     ]
   }
 }

@@ -117,6 +117,8 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     }
 
     private fun updateUI() {
+        // This function is also automatically called when test is first loaded as spinner selected item is changed.
+
         questionScrollView.smoothScrollTo(0, 0)
         spinnerQuestions.setSelection(viewModel.currentQuestionIndex)
 
@@ -141,6 +143,13 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         option3.text = question.option3
         option4.text = question.option4
 
+        if (!question.option5.isNullOrBlank()) {
+            option5.visibility = View.VISIBLE
+            option5.text = question.option5
+        } else {
+            option5.visibility = View.GONE
+        }
+
         // Check if this question was answered previously.
         if (questionAndResponseHolder.optionSelected == null) {
             optionGroup.clearCheck()
@@ -151,6 +160,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
                 2 -> optionGroup.check(R.id.option2)
                 3 -> optionGroup.check(R.id.option3)
                 4 -> optionGroup.check(R.id.option4)
+                5 -> optionGroup.check(R.id.option5)
             }
         }
 
@@ -321,6 +331,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             R.id.option2 -> 2
             R.id.option3 -> 3
             R.id.option4 -> 4
+            R.id.option5 -> 5
             else -> throw Exception("Selected option invalid")
         }
     }
