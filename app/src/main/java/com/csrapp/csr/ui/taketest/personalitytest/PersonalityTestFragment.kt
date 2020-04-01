@@ -21,9 +21,10 @@ import com.csrapp.csr.R
 import com.csrapp.csr.databinding.FragmentPersonalityTestBinding
 import com.csrapp.csr.nlu.NLUService.NLUError.*
 import com.csrapp.csr.utils.InjectorUtils
+import kotlinx.android.synthetic.main.fragment_personality_test.*
 import kotlin.math.roundToInt
 
-class PersonalityTestFragment : Fragment() {
+class PersonalityTestFragment : Fragment(), View.OnClickListener {
 
     private lateinit var navController: NavController
     private lateinit var viewModel: PersonalityTestViewModel
@@ -31,6 +32,7 @@ class PersonalityTestFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private var loadingDialog: AlertDialog? = null
+    private lateinit var instructionsDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,6 +150,22 @@ class PersonalityTestFragment : Fragment() {
                 hideKeyboard()
             }
         }
+
+        instructionsDialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.instructions)
+            .setMessage(R.string.personality_test_instructions)
+            .setPositiveButton(R.string.okay, null)
+            .create()
+
+        // Use a slightly different instructions dialog at start.
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.instructions)
+            .setMessage(R.string.personality_test_instructions)
+            .setPositiveButton(R.string.start, null)
+            .create()
+            .show()
+
+        fabPersonalityInstructions.setOnClickListener(this)
     }
 
     private fun hideKeyboard() {
@@ -188,5 +206,13 @@ class PersonalityTestFragment : Fragment() {
         }
 
         return result
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.fabPersonalityInstructions -> {
+                instructionsDialog.show()
+            }
+        }
     }
 }

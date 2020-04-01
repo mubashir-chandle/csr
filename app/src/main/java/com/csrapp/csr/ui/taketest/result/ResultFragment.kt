@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -14,10 +15,11 @@ import com.csrapp.csr.R
 import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_result.*
 
-class ResultFragment : Fragment() {
+class ResultFragment : Fragment(), View.OnClickListener {
 
     private lateinit var navController: NavController
     private lateinit var viewModel: ResultViewModel
+    private lateinit var instructionsDialog: AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -95,6 +97,23 @@ class ResultFragment : Fragment() {
             adapter = personalityScoresAdapter
             layoutManager = LinearLayoutManager(requireContext())
             isNestedScrollingEnabled = false
+        }
+
+        instructionsDialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.instructions)
+            .setMessage(R.string.view_result_instructions)
+            .setPositiveButton(R.string.okay, null)
+            .create()
+
+        instructionsDialog.show()
+        fabResultInstructions.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.fabResultInstructions -> {
+                instructionsDialog.show()
+            }
         }
     }
 }

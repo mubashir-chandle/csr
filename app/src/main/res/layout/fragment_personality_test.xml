@@ -135,6 +135,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/questionResponseText"
                 app:layout_constraintVertical_bias="1.0" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabPersonalityInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_help"
+                app:backgroundTint="@color/colorAccent"
+                app:fabSize="mini"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@android:color/white" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
