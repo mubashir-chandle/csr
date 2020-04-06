@@ -1,9 +1,6 @@
 package com.csrapp.csr.ui.taketest.personalitytest
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.csrapp.csr.R
 import com.csrapp.csr.data.PersonalityQuestionEntity
 import com.csrapp.csr.data.PersonalityQuestionEntity.Companion.getPersonalityQuestionType
@@ -25,51 +22,45 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
     private val sentimentalQuestionsSkipped = mutableMapOf<String, Int>()
 
     private var _nluErrorOccurred = MutableLiveData<NLUService.NLUError?>(null)
-    val nluErrorOccurred: LiveData<NLUService.NLUError?>
-        get() = _nluErrorOccurred
+    val nluErrorOccurred: LiveData<NLUService.NLUError?> = _nluErrorOccurred
 
 
     private var _currentQuestionIndex = MutableLiveData(0)
-    val currentQuestionIndex: LiveData<Int>
-        get() = _currentQuestionIndex
+    val currentQuestionIndex: LiveData<Int> = _currentQuestionIndex
 
-    val currentQuestionNumberDisplay: LiveData<String> =
-        Transformations.switchMap(currentQuestionIndex) { index ->
-            MutableLiveData(currentQuestionNumber(index))
-        }
+    val currentQuestionNumberDisplay = currentQuestionIndex.switchMap {
+        liveData { emit(currentQuestionNumber(it)) }
+    }
 
     private var _testFinished = MutableLiveData(false)
-    val testFinished: LiveData<Boolean>
-        get() = _testFinished
+    val testFinished: LiveData<Boolean> = _testFinished
 
-    val btnNextText: LiveData<String> = Transformations.switchMap(currentQuestionIndex) { index ->
-        val text = when (index) {
+    val btnNextText = currentQuestionIndex.switchMap {
+        val text = when (it) {
             questionsAndResponses.lastIndex -> (ResourceProvider.getString(R.string.finish))
             else -> ResourceProvider.getString(R.string.next)
         }
-        MutableLiveData(text)
+        liveData { emit(text) }
     }
 
     var sliderValue = MutableLiveData<Int>()
-    val sliderValueText: LiveData<String> = Transformations.switchMap(sliderValue) {
-        MutableLiveData(ResourceProvider.getString(R.string.percent, it))
+    val sliderValueText = sliderValue.switchMap {
+        liveData { emit(ResourceProvider.getString(R.string.percent, it)) }
     }
 
-    val currentQuestion: LiveData<PersonalityQuestionEntity> = Transformations
-        .switchMap(currentQuestionIndex) { index ->
-            MutableLiveData(questionsAndResponses[index].question)
-        }
+    val currentQuestion = currentQuestionIndex.switchMap {
+        liveData { emit(questionsAndResponses[it].question) }
+    }
 
     var responseString = MutableLiveData<String>()
 
-    val isTextualQuestion: LiveData<Boolean> = Transformations
-        .switchMap(currentQuestion) {
-            val textual = when (getPersonalityQuestionType(it)) {
-                Textual -> true
-                else -> false
-            }
-            MutableLiveData(textual)
+    val isTextualQuestion = currentQuestion.switchMap {
+        val textual = when (getPersonalityQuestionType(it)) {
+            Textual -> true
+            else -> false
         }
+        liveData { emit(textual) }
+    }
 
     private var questionsAndResponses: List<PersonalityQuestionAndResponseHolder>
 
