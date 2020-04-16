@@ -1,5 +1,7 @@
 package com.csrapp.csr.ui.viewstreams.jobdetail
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,5 +41,20 @@ class JobDetailFragment : Fragment() {
 
         jobTitle.text = job.title
         jobDescription.text = job.description
+
+        if (job.reference.isNullOrBlank()) {
+            textViewViewSource.visibility = View.INVISIBLE
+            btnViewSource.visibility = View.INVISIBLE
+        } else {
+            textViewViewSource.visibility = View.VISIBLE
+            btnViewSource.visibility = View.VISIBLE
+            btnViewSource.text = job.reference
+
+            btnViewSource.setOnClickListener {
+                val uri = Uri.parse(job.reference)
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4ae44ba26fa0f6af06c7306a22635b25",
+    "identityHash": "b7684b7fe7f987bcbbdb16bb0841d945",
     "entities": [
       {
         "tableName": "stream",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "job",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `stream` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `stream` TEXT NOT NULL, `reference` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -63,6 +63,12 @@
             "columnName": "stream",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "reference",
+            "columnName": "reference",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -222,7 +228,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4ae44ba26fa0f6af06c7306a22635b25')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b7684b7fe7f987bcbbdb16bb0841d945')"
     ]
   }
 }

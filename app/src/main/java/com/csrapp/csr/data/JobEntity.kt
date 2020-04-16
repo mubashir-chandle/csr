@@ -16,5 +16,8 @@ data class JobEntity(
     val description: String,
 
     @ColumnInfo(name = "stream")
-    val stream: String
+    val stream: String,
+
+    @ColumnInfo(name = "reference")
+    val reference: String? = null
 )
