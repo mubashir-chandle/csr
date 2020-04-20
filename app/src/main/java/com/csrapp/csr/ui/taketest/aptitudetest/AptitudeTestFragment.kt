@@ -16,10 +16,10 @@ import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.csrapp.csr.R
+import com.csrapp.csr.ui.taketest.aptitudetest.AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED
 import com.csrapp.csr.utils.InjectorUtils
 import com.csrapp.csr.utils.ResourceProvider
 import kotlinx.android.synthetic.main.fragment_aptitude_test.*
-import kotlin.math.roundToInt
 
 class AptitudeTestFragment : Fragment(), View.OnClickListener,
     RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener,
@@ -217,25 +217,11 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
     }
 
     private fun saveScores() {
-        val scores = mutableMapOf<String, Double>()
         val questionsPerCategory = viewModel.questionsPerCategory
+        val questionsAndResponseHolder = spinnerAdapter.getQuestionAndResponseHolders()
 
-        for (i in 0 until spinnerAdapter.count) {
-            val questionHolder = spinnerAdapter.getItem(i)!!
-            if (questionHolder.responseType == AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED)
-                continue
-
-            val questionScore =
-                if (questionHolder.question.correctOption == questionHolder.optionSelected) {
-                    // Convert to double to avoid integer division.
-                    (questionHolder.confidence!!).toDouble() / questionsPerCategory
-                } else {
-                    (-questionHolder.confidence!!).toDouble() / questionsPerCategory
-                }
-
-            val previousScore = scores[questionHolder.question.category] ?: 0.0
-            scores[questionHolder.question.category] = previousScore + questionScore
-        }
+        val scores =
+            AptitudeTestHelper.generateScores(questionsPerCategory, questionsAndResponseHolder)
 
         val sharedPreferences = requireActivity().getSharedPreferences(
             getString(R.string.shared_preferences_filename),
@@ -244,7 +230,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
         with(sharedPreferences.edit()) {
             putBoolean(getString(R.string.shared_preferences_aptitude_test_completed), true)
             scores.forEach { (category, score) ->
-                putInt(category, score.roundToInt())
+                putInt(category, score)
             }
             commit()
         }
@@ -306,7 +292,7 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
             R.id.btnClear -> {
                 val questionHolder = spinnerAdapter.getItem(viewModel.currentQuestionIndex)!!
                 questionHolder.responseType =
-                    AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED
+                    UNANSWERED
                 questionHolder.optionSelected = null
                 questionHolder.confidence = 0
 

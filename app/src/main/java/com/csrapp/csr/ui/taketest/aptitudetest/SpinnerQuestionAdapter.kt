@@ -12,18 +12,21 @@ import com.csrapp.csr.utils.ResourceProvider
 
 class SpinnerQuestionAdapter(val context: Context, questions: List<AptitudeQuestionEntity>) :
     BaseAdapter() {
-    private var questionHolders: Array<AptitudeQuestionAndResponseHolder?> =
-        arrayOfNulls(questions.size)
+    private var questionHolders = mutableListOf<AptitudeQuestionAndResponseHolder>()
     private val layoutInflater = LayoutInflater.from(context)
 
     init {
         for (i in questions.indices) {
-            questionHolders[i] = AptitudeQuestionAndResponseHolder(
-                questions[i],
-                AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED
+            questionHolders.add(
+                AptitudeQuestionAndResponseHolder(
+                    questions[i],
+                    AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED
+                )
             )
         }
     }
+
+    fun getQuestionAndResponseHolders() = questionHolders
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View
@@ -39,7 +42,7 @@ class SpinnerQuestionAdapter(val context: Context, questions: List<AptitudeQuest
 
         viewHolder.questionNumber!!.text =
             ResourceProvider.getString(R.string.spinner_question_number, position + 1)
-        val color = when (questionHolders[position]!!.responseType) {
+        val color = when (questionHolders[position].responseType) {
             AptitudeQuestionAndResponseHolder.QuestionResponseType.ANSWERED -> R.color.spinnerItemQuestionAnswered
             AptitudeQuestionAndResponseHolder.QuestionResponseType.MARKED -> R.color.spinnerItemQuestionMarked
             AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED -> R.color.spinnerItemQuestionSkipped
