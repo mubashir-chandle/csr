@@ -22,7 +22,6 @@ import com.csrapp.csr.databinding.FragmentPersonalityTestBinding
 import com.csrapp.csr.nlu.NLUService.NLUError.*
 import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_personality_test.*
-import kotlin.math.roundToInt
 
 class PersonalityTestFragment : Fragment(), View.OnClickListener {
 
@@ -80,7 +79,7 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
 
         val testFinishObserver = Observer<Boolean> { testFinished ->
             if (testFinished) {
-                generateResult()
+                saveScore()
 
                 val testCompletionDialog = AlertDialog.Builder(requireContext())
                     .setTitle("Personality Test Completed")
@@ -174,38 +173,26 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    private fun generateResult(): Map<String, Double> {
-        val result = mutableMapOf<String, Double>()
-        viewModel.getStreams().forEach { stream ->
-            result[stream] = 0.0
-        }
+    private fun saveScore() {
+        val streams = viewModel.getStreams()
+        val skippedQuestions = viewModel.getQuestionsSkippedInEachStream()
+        val questionAndResponseHolder = viewModel.getQuestionsAndResponses()
+        val questionsPerStream = viewModel.questionsPerStream
 
-        val questionsSkippedInEachStream = viewModel.getQuestionsSkippedInEachStream()
-
-        val questionsAndResponses = viewModel.getQuestionsAndResponses()
-        questionsAndResponses.forEach { questionAndResponse ->
-            val question = questionAndResponse.question
-            val questionsAnswered =
-                viewModel.questionsPerStream - questionsSkippedInEachStream[question.stream]!!
-            var currentScore = (questionAndResponse.score!!).toDouble() / questionsAnswered
-
-            // Score can be NaN if all the questions of a stream are skipped.
-            if (currentScore.isNaN())
-                currentScore = 0.0
-
-            val previousScore = result[question.stream]!!
-            result[question.stream!!] = previousScore + currentScore
-        }
+        val result = PersonalityTestHelper.generateScore(
+            streams,
+            skippedQuestions,
+            questionAndResponseHolder,
+            questionsPerStream
+        )
 
         with(sharedPreferences.edit()) {
             putBoolean(getString(R.string.shared_preferences_personality_test_completed), true)
             result.forEach { (stream, score) ->
-                putInt(stream, score.roundToInt())
+                putInt(stream, score)
             }
             commit()
         }
-
-        return result
     }
 
     override fun onClick(v: View?) {
