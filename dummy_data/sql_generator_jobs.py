@@ -17,5 +17,5 @@ with open('generated_sql_jobs.txt', 'w') as f:
             stream_id = stream[0]
             stream_title = f'{stream[1]} {i}'
             description = f'Description of {stream_title}'
-            f.write(f'INSERT INTO job VALUES({counter}, "{stream_title}", "{description}", "{stream_id}");\n')
+            f.write(f'INSERT INTO job("id", "title", "description", "stream") VALUES({counter}, "{stream_title}", "{description}", "{stream_id}");\n')
             counter += 1
