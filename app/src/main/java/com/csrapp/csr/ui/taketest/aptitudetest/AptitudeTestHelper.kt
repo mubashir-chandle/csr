@@ -12,8 +12,11 @@ class AptitudeTestHelper {
 
             for (i in questionsAndResponseHolder.indices) {
                 val questionHolder = questionsAndResponseHolder[i]
-                if (questionHolder.responseType == AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED)
+                if (questionHolder.responseType == AptitudeQuestionAndResponseHolder.QuestionResponseType.UNANSWERED) {
+                    if (!scores.containsKey(questionHolder.question.category))
+                        scores[questionHolder.question.category] = 0.0
                     continue
+                }
 
                 val questionScore =
                     if (questionHolder.question.correctOption == questionHolder.optionSelected) {
