@@ -20,11 +20,12 @@ class PersonalityTestHelper {
                 val question = questionAndResponse.question
                 val questionsAnswered =
                     questionsPerStream - numOfQuestionsSkipped[question.stream]!!
-                var currentScore = (questionAndResponse.score ?: 0.0).toDouble() / questionsAnswered
-
-                // Score can be NaN if all the questions of a stream are skipped.
-                if (currentScore.isNaN())
-                    currentScore = 0.0
+                val currentScore = if (questionsAnswered == 0) {
+                    // Avoid division by zero.
+                    0.0
+                } else {
+                    (questionAndResponse.score ?: 0.0).toDouble() / questionsAnswered
+                }
 
                 val previousScore = result[question.stream]!!
                 result[question.stream!!] = previousScore + currentScore
