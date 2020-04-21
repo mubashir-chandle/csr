@@ -90,14 +90,14 @@ class AptitudeTestUnitTest {
     fun generateScore_allSkipped() {
         val questionsAndResponsesHolder = mutableListOf<AptitudeQuestionAndResponseHolder>()
         with(questionsAndResponsesHolder) {
-            add(AptitudeQuestionAndResponseHolder(fakeQuestions[0], UNANSWERED, 4, 50))
-            add(AptitudeQuestionAndResponseHolder(fakeQuestions[1], UNANSWERED, 4, 50))
-            add(AptitudeQuestionAndResponseHolder(fakeQuestions[2], UNANSWERED, 3, 50))
-            add(AptitudeQuestionAndResponseHolder(fakeQuestions[3], UNANSWERED, 3, 50))
-            add(AptitudeQuestionAndResponseHolder(fakeQuestions[4], UNANSWERED, 2, 50))
-            add(AptitudeQuestionAndResponseHolder(fakeQuestions[5], UNANSWERED, 2, 50))
-            add(AptitudeQuestionAndResponseHolder(fakeQuestions[6], UNANSWERED, 1, 50))
-            add(AptitudeQuestionAndResponseHolder(fakeQuestions[7], UNANSWERED, 1, 50))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[0], UNANSWERED, null, 50))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[1], UNANSWERED, null, 50))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[2], UNANSWERED, null, 50))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[3], UNANSWERED, null, 50))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[4], UNANSWERED, null, 50))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[5], UNANSWERED, null, 50))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[6], UNANSWERED, null, 50))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[7], UNANSWERED, null, 50))
         }
 
         val scores = AptitudeTestHelper.generateScores(2, questionsAndResponsesHolder)
@@ -105,5 +105,26 @@ class AptitudeTestUnitTest {
         assertEquals(scores["numerical"], 0)
         assertEquals(scores["spatial"], 0)
         assertEquals(scores["verbal"], 0)
+    }
+
+    @Test
+    fun generateScore_mixed() {
+        val questionsAndResponsesHolder = mutableListOf<AptitudeQuestionAndResponseHolder>()
+        with(questionsAndResponsesHolder) {
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[0], ANSWERED, 4, 59))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[1], UNANSWERED, null, 0))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[2], MARKED, 2, 30))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[3], ANSWERED, 2, 100))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[4], UNANSWERED, null, 0))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[5], UNANSWERED, null, 0))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[6], MARKED, 3, 78))
+            add(AptitudeQuestionAndResponseHolder(fakeQuestions[7], MARKED, 4, 33))
+        }
+
+        val scores = AptitudeTestHelper.generateScores(2, questionsAndResponsesHolder)
+        assertEquals(scores["logical"], -29)
+        assertEquals(scores["numerical"], 65)
+        assertEquals(scores["spatial"], 0)
+        assertEquals(scores["verbal"], -22)
     }
 }
