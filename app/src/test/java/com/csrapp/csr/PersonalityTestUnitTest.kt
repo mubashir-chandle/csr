@@ -85,9 +85,10 @@ class PersonalityTestUnitTest {
     @Test
     fun generateScore_mixed() {
         val numOfQuestionsSkipped = mutableMapOf<String, Int>()
-        streams.forEach { stream ->
-            numOfQuestionsSkipped[stream] = 0
-        }
+        numOfQuestionsSkipped["stream 1"] = 1
+        numOfQuestionsSkipped["stream 2"] = 0
+        numOfQuestionsSkipped["stream 3"] = 2
+        numOfQuestionsSkipped["stream 4"] = 0
 
         val fakeResponses = mutableListOf<PersonalityQuestionAndResponseHolder>()
         with(fakeResponses) {
@@ -104,7 +105,7 @@ class PersonalityTestUnitTest {
         val result =
             PersonalityTestHelper.generateScore(streams, numOfQuestionsSkipped, fakeResponses, 2)
 
-        assertEquals(result["stream 1"], 22)
+        assertEquals(result["stream 1"], 45)
         assertEquals(result["stream 2"], 35)
         assertEquals(result["stream 3"], 0)
         assertEquals(result["stream 4"], 100)
