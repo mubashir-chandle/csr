@@ -2,10 +2,12 @@ package com.csrapp.csr.ui.taketest.personalitytest
 
 import androidx.lifecycle.*
 import com.csrapp.csr.R
-import com.csrapp.csr.data.PersonalityQuestionEntity
-import com.csrapp.csr.data.PersonalityQuestionEntity.Companion.getPersonalityQuestionType
-import com.csrapp.csr.data.PersonalityQuestionEntity.PersonalityQuestionType.Textual
-import com.csrapp.csr.data.PersonalityQuestionRepository
+import com.csrapp.csr.data.BasePersonalityQuestionEntity.Companion.getPersonalityQuestionType
+import com.csrapp.csr.data.BasePersonalityQuestionEntity.PersonalityQuestionType.Textual
+import com.csrapp.csr.data.BasePersonalityQuestionRepository
+import com.csrapp.csr.data.StreamQuestionEntity
+import com.csrapp.csr.data.StreamQuestionRepository
+import com.csrapp.csr.data.StreamRepository
 import com.csrapp.csr.nlu.NLUService
 import com.csrapp.csr.utils.ResourceProvider
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +15,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.collections.set
 
-class PersonalityTestViewModel(private val personalityQuestionRepository: PersonalityQuestionRepository) :
+class PersonalityTestViewModel(
+    private val streamRepository: StreamRepository,
+    private val basePersonalityQuestionRepository: BasePersonalityQuestionRepository,
+    private val streamQuestionRepository: StreamQuestionRepository
+) :
     ViewModel() {
 
     val questionsPerStream = 1
@@ -52,28 +58,32 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         liveData { emit(questionsAndResponses[it].question) }
     }
 
+    val currentBaseQuestion = currentQuestion.switchMap {
+        liveData { emit(getBaseQuestionFromId(it.baseQuestionId)) }
+    }
+
     var responseString = MutableLiveData<String>()
 
     val isTextualQuestion = currentQuestion.switchMap {
-        val textual = when (getPersonalityQuestionType(it)) {
+        val textual = when (getPersonalityQuestionType(currentBaseQuestion.value!!)) {
             Textual -> true
             else -> false
         }
         liveData { emit(textual) }
     }
 
-    private var questionsAndResponses: List<PersonalityQuestionAndResponseHolder>
+    private var questionsAndResponses: List<StreamQuestionAndResponseHolder>
 
     var loading = MutableLiveData(false)
 
     init {
         val questions = getRandomizedQuestions()
-        val tempQuestionHolders = mutableListOf<PersonalityQuestionAndResponseHolder>()
+        val tempQuestionHolders = mutableListOf<StreamQuestionAndResponseHolder>()
         for (i in questions.indices) {
-            tempQuestionHolders.add(PersonalityQuestionAndResponseHolder(questions[i]))
+            tempQuestionHolders.add(StreamQuestionAndResponseHolder(questions[i]))
         }
 
-        for (stream in getStreams()) {
+        for (stream in getAllStreams()) {
             sentimentalQuestionsSkipped[stream] = 0
         }
 
@@ -83,7 +93,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
 
     fun skipCurrentQuestion() {
-        val stream = currentQuestion.value!!.stream!!
+        val stream = currentQuestion.value!!.stream
         val previousSkipped = sentimentalQuestionsSkipped[stream]!!
         sentimentalQuestionsSkipped[stream] = previousSkipped + 1
 
@@ -120,7 +130,7 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         CoroutineScope(Dispatchers.Main).launch {
             val score: Double?
 
-            when (getPersonalityQuestionType(currentQuestion.value!!)) {
+            when (getPersonalityQuestionType(currentBaseQuestion.value!!)) {
                 Textual -> {
                     if (responseString.value!!.length < 5) {
                         _nluErrorOccurred.value = NLUService.NLUError.INSUFFICIENT_INPUT
@@ -141,15 +151,11 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
         }
     }
 
-    private fun getRandomizedQuestions(): List<PersonalityQuestionEntity> {
-        val questions = mutableListOf<PersonalityQuestionEntity>()
-        val streams = personalityQuestionRepository.getStreams()
-        streams.forEach { stream ->
+    private fun getRandomizedQuestions(): List<StreamQuestionEntity> {
+        val questions = mutableListOf<StreamQuestionEntity>()
+        getAllStreams().forEach { stream ->
             questions.addAll(
-                personalityQuestionRepository.getQuestionsByStream(
-                    stream,
-                    questionsPerStream
-                )
+                streamQuestionRepository.getQuestionsByStream(stream)
             )
         }
         return questions
@@ -164,7 +170,17 @@ class PersonalityTestViewModel(private val personalityQuestionRepository: Person
 
     fun getQuestionsAndResponses() = questionsAndResponses
 
-    fun getStreams() = personalityQuestionRepository.getStreams()
+    fun getAllStreams(): List<String> {
+        val streams = mutableListOf<String>()
+        streamRepository.getAllStreams().forEach { stream ->
+            streams.add(stream.id)
+        }
+
+        return streams
+    }
 
     fun getQuestionsSkippedInEachStream() = sentimentalQuestionsSkipped
+
+    private fun getBaseQuestionFromId(id: Int) =
+        basePersonalityQuestionRepository.getQuestionById(id)
 }

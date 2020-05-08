@@ -4,13 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "personality_question")
-class PersonalityQuestionEntity(
+@Entity(tableName = "base_personality_question")
+class BasePersonalityQuestionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
-
-    @ColumnInfo(name = "stream")
-    val stream: String?,
 
     @ColumnInfo(name = "text")
     val text: String?,
@@ -23,8 +20,8 @@ class PersonalityQuestionEntity(
     }
 
     companion object {
-        fun getPersonalityQuestionType(personalityQuestionEntity: PersonalityQuestionEntity): PersonalityQuestionType {
-            return when (personalityQuestionEntity.type) {
+        fun getPersonalityQuestionType(basePersonalityQuestionEntity: BasePersonalityQuestionEntity): PersonalityQuestionType {
+            return when (basePersonalityQuestionEntity.type) {
                 "textual" -> PersonalityQuestionType.Textual
                 "slider" -> PersonalityQuestionType.Slider
                 else -> throw Exception("Unsupported personality question type")

@@ -174,7 +174,7 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
     }
 
     private fun saveScore() {
-        val streams = viewModel.getStreams()
+        val streams = viewModel.getAllStreams()
         val skippedQuestions = viewModel.getQuestionsSkippedInEachStream()
         val questionAndResponseHolder = viewModel.getQuestionsAndResponses()
         val questionsPerStream = viewModel.questionsPerStream

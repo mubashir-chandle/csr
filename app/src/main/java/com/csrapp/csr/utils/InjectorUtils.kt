@@ -19,25 +19,43 @@ object InjectorUtils {
     }
 
     fun providePersonalityTestViewModelFactory(context: Context): PersonalityTestViewModelFactory {
-        val repository = PersonalityQuestionRepository.getInstance(
+        val streamQuestionRepository = StreamQuestionRepository.getInstance(
+            CSRDatabase.getInstance(context.applicationContext).streamQuestionDao()
+        )
+        val personalityQuestionRepository = BasePersonalityQuestionRepository.getInstance(
             CSRDatabase.getInstance(context.applicationContext).personalityQuestionDao()
         )
-        return PersonalityTestViewModelFactory(repository)
+
+        val streamRepository = StreamRepository.getInstance(
+            CSRDatabase.getInstance(context.applicationContext).streamDao()
+        )
+
+        return PersonalityTestViewModelFactory(
+            streamRepository,
+            personalityQuestionRepository,
+            streamQuestionRepository
+        )
     }
 
     fun provideResultViewModelFactory(context: Context): ResultViewModelFactory {
         val aptitudeCategoryRepository =
-            AptitudeCategoryRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).aptitudeCategoryDao())
+            AptitudeCategoryRepository.getInstance(
+                CSRDatabase.getInstance(context.applicationContext).aptitudeCategoryDao()
+            )
 
         val streamRepository =
-            StreamRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).streamDao())
+            StreamRepository.getInstance(
+                CSRDatabase.getInstance(context.applicationContext).streamDao()
+            )
 
         return ResultViewModelFactory(aptitudeCategoryRepository, streamRepository)
     }
 
     fun provideStreamSelectionViewModelFactory(context: Context): StreamSelectionViewModelFactory {
         val repository =
-            StreamRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).streamDao())
+            StreamRepository.getInstance(
+                CSRDatabase.getInstance(context.applicationContext).streamDao()
+            )
         return StreamSelectionViewModelFactory(repository)
     }
 
@@ -46,7 +64,9 @@ object InjectorUtils {
             JobRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).jobDao())
 
         val streamRepository =
-            StreamRepository.getInstance(CSRDatabase.getInstance(context.applicationContext).streamDao())
+            StreamRepository.getInstance(
+                CSRDatabase.getInstance(context.applicationContext).streamDao()
+            )
 
         return JobSelectionViewModelFactory(jobRepository, streamRepository)
     }

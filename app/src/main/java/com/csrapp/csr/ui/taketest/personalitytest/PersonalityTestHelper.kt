@@ -7,7 +7,7 @@ class PersonalityTestHelper {
         fun generateScore(
             streams: List<String>,
             numOfQuestionsSkipped: Map<String, Int>,
-            questionsAndResponses: List<PersonalityQuestionAndResponseHolder>,
+            questionsAndResponses: List<StreamQuestionAndResponseHolder>,
             questionsPerStream: Int
         ): Map<String, Int> {
 
@@ -28,7 +28,7 @@ class PersonalityTestHelper {
                 }
 
                 val previousScore = result[question.stream]!!
-                result[question.stream!!] = previousScore + currentScore
+                result[question.stream] = previousScore + currentScore
             }
 
             val roundedScore = mutableMapOf<String, Int>()

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b7684b7fe7f987bcbbdb16bb0841d945",
+    "identityHash": "e55ca7beae742e0db1ae30fea3acc15e",
     "entities": [
       {
         "tableName": "stream",
@@ -155,19 +155,13 @@
         "foreignKeys": []
       },
       {
-        "tableName": "personality_question",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `stream` TEXT, `text` TEXT, `type` TEXT)",
+        "tableName": "base_personality_question",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `text` TEXT, `type` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "stream",
-            "columnName": "stream",
-            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -181,6 +175,44 @@
             "columnName": "type",
             "affinity": "TEXT",
             "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "stream_question",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `base_question_id` INTEGER NOT NULL, `stream` TEXT NOT NULL, `importance` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "baseQuestionId",
+            "columnName": "base_question_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stream",
+            "columnName": "stream",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importance",
+            "columnName": "importance",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -228,7 +260,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b7684b7fe7f987bcbbdb16bb0841d945')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e55ca7beae742e0db1ae30fea3acc15e')"
     ]
   }
 }
