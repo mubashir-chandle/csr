@@ -31,7 +31,7 @@ abstract class CSRDatabase : RoomDatabase() {
             "csr_data.db"
         )
             .allowMainThreadQueries()
-            .createFromAsset("database/csr_data.db")
+            .createFromAsset("database/test_data.db")
             .build()
     }
 }

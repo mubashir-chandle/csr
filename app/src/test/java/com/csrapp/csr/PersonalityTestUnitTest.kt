@@ -1,8 +1,8 @@
 package com.csrapp.csr
 
 import com.csrapp.csr.data.BasePersonalityQuestionEntity
+import com.csrapp.csr.ui.taketest.personalitytest.BasePersonalityQuestionAndResponseHolder
 import com.csrapp.csr.ui.taketest.personalitytest.PersonalityTestHelper
-import com.csrapp.csr.ui.taketest.personalitytest.StreamQuestionAndResponseHolder
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -33,16 +33,16 @@ class PersonalityTestUnitTest {
             numOfQuestionsSkipped[stream] = 0
         }
 
-        val fakeResponses = mutableListOf<StreamQuestionAndResponseHolder>()
+        val fakeResponses = mutableListOf<BasePersonalityQuestionAndResponseHolder>()
         with(fakeResponses) {
-            add(StreamQuestionAndResponseHolder(fakeQuestions[0], 50.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[1], 50.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[2], 50.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[3], 50.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[4], 50.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[5], 50.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[6], 50.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[7], 50.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[0], 50.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[1], 50.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[2], 50.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[3], 50.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[4], 50.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[5], 50.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[6], 50.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[7], 50.0))
         }
 
         val result =
@@ -61,16 +61,16 @@ class PersonalityTestUnitTest {
             numOfQuestionsSkipped[stream] = 2
         }
 
-        val fakeResponses = mutableListOf<StreamQuestionAndResponseHolder>()
+        val fakeResponses = mutableListOf<BasePersonalityQuestionAndResponseHolder>()
         with(fakeResponses) {
-            add(StreamQuestionAndResponseHolder(fakeQuestions[0], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[1], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[2], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[3], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[4], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[5], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[6], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[7], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[0], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[1], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[2], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[3], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[4], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[5], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[6], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[7], null))
         }
 
         val result =
@@ -90,16 +90,16 @@ class PersonalityTestUnitTest {
         numOfQuestionsSkipped["stream 3"] = 2
         numOfQuestionsSkipped["stream 4"] = 0
 
-        val fakeResponses = mutableListOf<StreamQuestionAndResponseHolder>()
+        val fakeResponses = mutableListOf<BasePersonalityQuestionAndResponseHolder>()
         with(fakeResponses) {
-            add(StreamQuestionAndResponseHolder(fakeQuestions[0], 44.5))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[1], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[2], 25.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[3], 45.0))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[4], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[5], null))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[6], 99.5))
-            add(StreamQuestionAndResponseHolder(fakeQuestions[7], 99.5))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[0], 44.5))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[1], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[2], 25.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[3], 45.0))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[4], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[5], null))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[6], 99.5))
+            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[7], 99.5))
         }
 
         val result =

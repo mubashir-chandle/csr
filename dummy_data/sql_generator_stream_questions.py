@@ -16,7 +16,7 @@ base_question_id = 1
 
 with open('generated_sql_stream_questions.txt', 'w') as f:
     for stream in streams:
-        for i in range(10):
+        for i in range(1):
             if question_id % 3 == 1:
                 importance = 'low'
             elif question_id % 3 == 2:

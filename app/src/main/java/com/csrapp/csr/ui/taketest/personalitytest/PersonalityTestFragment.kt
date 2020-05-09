@@ -145,7 +145,7 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
                 }
             }
 
-            viewModel.currentQuestionIndex.observe(viewLifecycleOwner) {
+            viewModel.currentQuestion.observe(viewLifecycleOwner) {
                 hideKeyboard()
             }
         }
@@ -174,14 +174,9 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
     }
 
     private fun saveScore() {
-        val streams = viewModel.getAllStreams()
-        val skippedQuestions = viewModel.getQuestionsSkippedInEachStream()
-        val questionAndResponseHolder = viewModel.getQuestionsAndResponses()
-        val questionsPerStream = viewModel.questionsPerStream
-
         val result = PersonalityTestHelper.generateScore(
-            streams,
-            questionAndResponseHolder
+            viewModel.getUserScores(),
+            viewModel.getStreamQuestions()
         )
 
         with(sharedPreferences.edit()) {

@@ -3,7 +3,20 @@ package com.csrapp.csr.datastructure
 import kotlin.math.min
 
 class FuzzySet {
+
     private val data = mutableMapOf<Int, Double>()
+    val keys: Set<Int>
+        get() {
+            return data.keys
+        }
+
+    fun get(key: Int): Double {
+        if (key !in data.keys) {
+            throw IllegalArgumentException("Key not present in the fuzzy set")
+        }
+
+        return data[key]!!
+    }
 
     fun add(key: Int, degree: Double) {
         if (degree < 0 || degree > 1) {
@@ -80,6 +93,14 @@ class FuzzySet {
         }
 
         return true
+    }
+
+    fun copy(): FuzzySet {
+        val c = FuzzySet()
+        for (key in data.keys)
+            c.add(key, data[key]!!)
+
+        return c
     }
 
     override

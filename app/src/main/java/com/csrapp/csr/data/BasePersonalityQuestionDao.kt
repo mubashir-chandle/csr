@@ -7,4 +7,7 @@ import androidx.room.Query
 interface BasePersonalityQuestionDao {
     @Query("SELECT * FROM base_personality_question WHERE id=:id")
     fun getQuestionById(id: Int): BasePersonalityQuestionEntity
+
+    @Query("SELECT * FROM base_personality_question")
+    fun getAllQuestions(): List<BasePersonalityQuestionEntity>
 }
