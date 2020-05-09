@@ -181,9 +181,7 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
 
         val result = PersonalityTestHelper.generateScore(
             streams,
-            skippedQuestions,
-            questionAndResponseHolder,
-            questionsPerStream
+            questionAndResponseHolder
         )
 
         with(sharedPreferences.edit()) {

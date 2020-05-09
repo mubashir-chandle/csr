@@ -64,7 +64,7 @@ class PersonalityTestViewModel(
 
     var responseString = MutableLiveData<String>()
 
-    val isTextualQuestion = currentQuestion.switchMap {
+    val isTextualQuestion = currentBaseQuestion.switchMap {
         val textual = when (getPersonalityQuestionType(currentBaseQuestion.value!!)) {
             Textual -> true
             else -> false
@@ -97,7 +97,7 @@ class PersonalityTestViewModel(
         val previousSkipped = sentimentalQuestionsSkipped[stream]!!
         sentimentalQuestionsSkipped[stream] = previousSkipped + 1
 
-        saveScoreGoToNextQuestion(0.0)
+        saveScoreGoToNextQuestion(null)
     }
 
     private fun saveScoreGoToNextQuestion(score: Double?) {
@@ -132,7 +132,7 @@ class PersonalityTestViewModel(
 
             when (getPersonalityQuestionType(currentBaseQuestion.value!!)) {
                 Textual -> {
-                    if (responseString.value!!.length < 5) {
+                    if (responseString.value == null || responseString.value!!.length < 5) {
                         _nluErrorOccurred.value = NLUService.NLUError.INSUFFICIENT_INPUT
                         return@launch
                     }
@@ -155,7 +155,8 @@ class PersonalityTestViewModel(
         val questions = mutableListOf<StreamQuestionEntity>()
         getAllStreams().forEach { stream ->
             questions.addAll(
-                streamQuestionRepository.getQuestionsByStream(stream)
+                // TODO: Use all the questions instead of just sublist.
+                streamQuestionRepository.getQuestionsByStream(stream).subList(0, 1)
             )
         }
         return questions

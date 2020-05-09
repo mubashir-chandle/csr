@@ -26,6 +26,13 @@ class StreamQuestionEntity(
         else -> throw Exception("Question importance must be one of: low, medium, high. Found $importance")
     }
 
+    fun getNumericalImportanceValue() = when (importance) {
+        "low" -> 0.3
+        "medium" -> 0.5
+        "high" -> 0.7
+        else -> throw Exception("Question importance must be one of: low, medium, high. Found $importance")
+    }
+
     enum class Importance {
         Low, Medium, High
     }
