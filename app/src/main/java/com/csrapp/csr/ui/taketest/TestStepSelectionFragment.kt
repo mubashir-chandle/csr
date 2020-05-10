@@ -43,13 +43,10 @@ class TestStepSelectionFragment : Fragment(), View.OnClickListener {
             false
         )
 
-        // TODO: Uncomment after debugging.
-/*
         btnAptitudeTest.isEnabled = !isAptitudeTestCompleted
         btnPersonalityTest.isEnabled = isAptitudeTestCompleted && !isPersonalityTestCompleted
+        btnViewResult.isEnabled = isPersonalityTestCompleted
         btnResetProgress.isEnabled = isAptitudeTestCompleted
-*/
-        btnViewResult.isEnabled = isPersonalityTestCompleted && isAptitudeTestCompleted
 
         btnAptitudeTest.setOnClickListener(this)
         btnPersonalityTest.setOnClickListener(this)
@@ -83,8 +80,7 @@ class TestStepSelectionFragment : Fragment(), View.OnClickListener {
                             commit()
                         }
                         btnAptitudeTest.isEnabled = true
-                        // TODO: Disable personality test button after debugging.
-                        btnPersonalityTest.isEnabled = true
+                        btnPersonalityTest.isEnabled = false
                         btnViewResult.isEnabled = false
                         btnResetProgress.isEnabled = false
                     }
