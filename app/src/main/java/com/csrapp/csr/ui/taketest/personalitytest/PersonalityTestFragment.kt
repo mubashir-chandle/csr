@@ -181,8 +181,8 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
 
         with(sharedPreferences.edit()) {
             putBoolean(getString(R.string.shared_preferences_personality_test_completed), true)
-            result.forEach { (stream, score) ->
-                putInt(stream, score)
+            result.forEach { (stream, recommendationIntensity) ->
+                putFloat(stream, recommendationIntensity)
             }
             commit()
         }

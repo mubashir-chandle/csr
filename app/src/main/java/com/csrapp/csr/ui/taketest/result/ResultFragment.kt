@@ -55,12 +55,11 @@ class ResultFragment : Fragment(), View.OnClickListener {
             throw Exception("Result Screen started before completing both the test steps")
         }
 
-        val aptitudeScores = mutableListOf<ResultItem>()
+        val aptitudeScores = mutableListOf<AptitudeResultItem>()
         viewModel.getAllCategories().forEach { categoryEntity ->
             val score = sharedPreferences.getInt(categoryEntity.id, 0)
             aptitudeScores.add(
-                ResultItem(
-                    ResultItem.ResultItemType.APTITUDE,
+                AptitudeResultItem(
                     categoryEntity.id,
                     categoryEntity.title,
                     categoryEntity.description,
@@ -68,7 +67,7 @@ class ResultFragment : Fragment(), View.OnClickListener {
                 )
             )
         }
-        val aptitudeScoresAdapter = ResultAdapter(aptitudeScores, requireContext(), navController)
+        val aptitudeScoresAdapter = AptitudeResultAdapter(aptitudeScores, requireContext())
 
         recyclerViewAptitudeScores.apply {
             adapter = aptitudeScoresAdapter
@@ -76,22 +75,39 @@ class ResultFragment : Fragment(), View.OnClickListener {
             isNestedScrollingEnabled = false
         }
 
-        val personalityScores = mutableListOf<ResultItem>()
+        val personalityScores = mutableListOf<RecommendationResultItem>()
         viewModel.getAllStreams().forEach { streamEntity ->
-            val score = sharedPreferences.getInt(streamEntity.id, 0)
+            val recommendationIntensity = sharedPreferences.getFloat(streamEntity.id, 0.0f)
 
-            personalityScores.add(
-                ResultItem(
-                    ResultItem.ResultItemType.PERSONALITY,
-                    streamEntity.id,
-                    streamEntity.title,
-                    streamEntity.description,
-                    score
+            if (recommendationIntensity != 0f) {
+                personalityScores.add(
+                    RecommendationResultItem(
+                        streamEntity.id,
+                        streamEntity.title,
+                        streamEntity.description,
+                        recommendationIntensity
+                    )
                 )
-            )
+            }
+            personalityScores.sortWith(Comparator { o1, o2 ->
+                when {
+                    // If both the streams have RI of 1, or both have RI of < 1, sort by their title
+                    (o1.recommendationIntensity == 1f && o2.recommendationIntensity == 1f)
+                            || (o1.recommendationIntensity < 1f && o2.recommendationIntensity < 1f) -> {
+                        o1.title.compareTo(o2.title)
+                    }
+                    // Else, only one of the stream will have RI of 1. So, display it earilier.
+                    else -> {
+                        if (o1.recommendationIntensity == 1f)
+                            -1
+                        else
+                            1
+                    }
+                }
+            })
         }
         val personalityScoresAdapter =
-            ResultAdapter(personalityScores, requireContext(), navController)
+            RecommendedStreamAdapter(personalityScores, requireContext(), navController)
 
         recyclerViewPersonalityScores.apply {
             adapter = personalityScoresAdapter

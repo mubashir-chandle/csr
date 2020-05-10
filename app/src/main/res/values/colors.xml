@@ -21,6 +21,9 @@
     <color name="whiteText">#FFFFFF</color>
     <color name="whiteTextDisabled">#666666</color>
 
+    <color name="lessRecommendedStream">#FFC107</color>
+    <color name="recommendedStream">@color/colorPrimary</color>
+
     <color name="spinnerItemQuestionSkipped">#F43636</color>
     <color name="spinnerItemQuestionMarked">#FFC107</color>
     <color name="spinnerItemQuestionAnswered">#4CAF50</color>

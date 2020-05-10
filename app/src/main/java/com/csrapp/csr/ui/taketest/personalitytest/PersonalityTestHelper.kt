@@ -1,14 +1,13 @@
 package com.csrapp.csr.ui.taketest.personalitytest
 
 import com.csrapp.csr.datastructure.FuzzySet
-import kotlin.math.roundToInt
 
 class PersonalityTestHelper {
     companion object {
         fun generateScore(
             userTestScores: Map<Int, Double?>,
             streamRequirementFuzzySets: Map<String, FuzzySet>
-        ): Map<String, Int> {
+        ): Map<String, Float> {
 
             // Make a mutable copy of stream questions.
             val requiredFuzzySets = mutableMapOf<String, FuzzySet>()
@@ -19,7 +18,7 @@ class PersonalityTestHelper {
             val userScoreFuzzySets = mutableMapOf<String, FuzzySet>()
             val intersectedFuzzySets = mutableMapOf<String, FuzzySet>()
             val scaledFuzzySets = mutableMapOf<String, FuzzySet>()
-            val result = mutableMapOf<String, Double>()
+            val result = mutableMapOf<String, Float>()
 
             for (stream in requiredFuzzySets.keys) {
                 userScoreFuzzySets[stream] = FuzzySet()
@@ -41,17 +40,21 @@ class PersonalityTestHelper {
                 scaledFuzzySets[stream] =
                     intersectedFuzzySets[stream]!!.divide(requiredFuzzySets[stream]!!)
 
-                // TODO: Remove the multiplication by 100.
-                result[stream] = scaledFuzzySets[stream]!!.arithmeticMean() * 100
+                val mean = scaledFuzzySets[stream]!!.arithmeticMean()
+                when {
+                    mean > 0.7 -> {
+                        result[stream] = 1f
+                    }
+                    mean < 0.5 -> {
+                        result[stream] = 0f
+                    }
+                    else -> {
+                        result[stream] = ((0.7 - mean) / (0.7 - 0.5)).toFloat()
+                    }
+                }
             }
 
-            // TODO: Remove score rounding.
-            val roundedScore = mutableMapOf<String, Int>()
-            result.forEach { (stream, score) ->
-                roundedScore[stream] = score.roundToInt()
-            }
-
-            return roundedScore
+            return result
         }
     }
 }
