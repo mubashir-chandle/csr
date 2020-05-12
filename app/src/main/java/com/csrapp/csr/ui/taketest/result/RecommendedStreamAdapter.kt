@@ -62,7 +62,7 @@ class RecommendedStreamAdapter(
         fun bind(receivedItem: RecommendationResultItem) {
             itemView.textViewRecommendedStreamTitle.text = receivedItem.title
 
-            if (receivedItem.recommendationIntensity < 1f) {
+            if (receivedItem.recommendationResult == RecommendationResult.Maybe) {
                 itemView.recommendedStreamWarningLine.setImageDrawable(
                     ResourceProvider.getDrawable(
                         R.drawable.line_less_recommended_stream

@@ -75,7 +75,7 @@ class PersonalityTestViewModel(
     }
 
     private fun saveScoreGoToNextQuestion(score: Double?) {
-        userScore[currentQuestion.value!!.id!!] = score
+        userScore[currentQuestion.value!!.id!!] = score?.div(100)
 
         if (questionNumber.value == questions.size - 1) {
             _testFinished.value = true

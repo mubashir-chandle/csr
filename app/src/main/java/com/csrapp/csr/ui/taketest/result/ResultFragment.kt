@@ -75,39 +75,47 @@ class ResultFragment : Fragment(), View.OnClickListener {
             isNestedScrollingEnabled = false
         }
 
-        val personalityScores = mutableListOf<RecommendationResultItem>()
+        val yesStreams = mutableListOf<RecommendationResultItem>()
+        val maybeStreams = mutableListOf<RecommendationResultItem>()
         viewModel.getAllStreams().forEach { streamEntity ->
-            val recommendationIntensity = sharedPreferences.getFloat(streamEntity.id, 0.0f)
+            val recommendationResult = RecommendationResult.intToRecommendationResult(
+                sharedPreferences.getInt(
+                    streamEntity.id,
+                    0
+                )
+            )
 
-            if (recommendationIntensity != 0f) {
-                personalityScores.add(
+            if (recommendationResult == RecommendationResult.Yes) {
+                yesStreams.add(
                     RecommendationResultItem(
                         streamEntity.id,
                         streamEntity.title,
                         streamEntity.description,
-                        recommendationIntensity
+                        recommendationResult
+                    )
+                )
+            } else if (recommendationResult == RecommendationResult.Maybe) {
+                maybeStreams.add(
+                    RecommendationResultItem(
+                        streamEntity.id,
+                        streamEntity.title,
+                        streamEntity.description,
+                        recommendationResult
                     )
                 )
             }
-            personalityScores.sortWith(Comparator { o1, o2 ->
-                when {
-                    // If both the streams have RI of 1, or both have RI of < 1, sort by their title
-                    (o1.recommendationIntensity == 1f && o2.recommendationIntensity == 1f)
-                            || (o1.recommendationIntensity < 1f && o2.recommendationIntensity < 1f) -> {
-                        o1.title.compareTo(o2.title)
-                    }
-                    // Else, only one of the stream will have RI of 1. So, display it earilier.
-                    else -> {
-                        if (o1.recommendationIntensity == 1f)
-                            -1
-                        else
-                            1
-                    }
-                }
-            })
+
         }
+        val allResults = mutableListOf<RecommendationResultItem>()
+        yesStreams.forEach {
+            allResults.add(it)
+        }
+        maybeStreams.forEach {
+            allResults.add(it)
+        }
+
         val personalityScoresAdapter =
-            RecommendedStreamAdapter(personalityScores, requireContext(), navController)
+            RecommendedStreamAdapter(allResults, requireContext(), navController)
 
         recyclerViewPersonalityScores.apply {
             adapter = personalityScoresAdapter

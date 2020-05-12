@@ -20,6 +20,7 @@ import androidx.navigation.Navigation
 import com.csrapp.csr.R
 import com.csrapp.csr.databinding.FragmentPersonalityTestBinding
 import com.csrapp.csr.nlu.NLUService.NLUError.*
+import com.csrapp.csr.ui.taketest.result.RecommendationResult
 import com.csrapp.csr.utils.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_personality_test.*
 
@@ -181,8 +182,8 @@ class PersonalityTestFragment : Fragment(), View.OnClickListener {
 
         with(sharedPreferences.edit()) {
             putBoolean(getString(R.string.shared_preferences_personality_test_completed), true)
-            result.forEach { (stream, recommendationIntensity) ->
-                putFloat(stream, recommendationIntensity)
+            result.forEach { (stream, recommendationResult) ->
+                putInt(stream, RecommendationResult.recommendationResultToInt(recommendationResult))
             }
             commit()
         }

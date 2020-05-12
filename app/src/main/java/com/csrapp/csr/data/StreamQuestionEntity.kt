@@ -19,18 +19,19 @@ class StreamQuestionEntity(
     val importance: String
 ) {
 
-    fun getImportanceValue() = when (importance) {
-        "low" -> Importance.Low
-        "medium" -> Importance.Medium
-        "high" -> Importance.High
-        else -> throw Exception("Question importance must be one of: low, medium, high. Found $importance")
-    }
-
     fun getNumericalImportanceValue() = when (importance) {
         "low" -> 0.3
         "medium" -> 0.5
         "high" -> 0.7
         else -> throw Exception("Question importance must be one of: low, medium, high. Found $importance")
+    }
+
+    companion object {
+        fun getNumerialImportanceValue(importance: Importance) = when (importance) {
+            Importance.Low -> 0.3
+            Importance.Medium -> 0.5
+            Importance.High -> 0.7
+        }
     }
 
     enum class Importance {
