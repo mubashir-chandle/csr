@@ -1,113 +1,80 @@
 package com.csrapp.csr
 
-import com.csrapp.csr.data.BasePersonalityQuestionEntity
-import com.csrapp.csr.ui.taketest.personalitytest.BasePersonalityQuestionAndResponseHolder
+import com.csrapp.csr.data.StreamQuestionEntity.Companion.getNumerialImportanceValue
+import com.csrapp.csr.data.StreamQuestionEntity.Importance
+import com.csrapp.csr.datastructure.FuzzySet
 import com.csrapp.csr.ui.taketest.personalitytest.PersonalityTestHelper
+import com.csrapp.csr.ui.taketest.result.RecommendationResult
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class PersonalityTestUnitTest {
     companion object {
-        private val streams = listOf("stream 1", "stream 2", "stream 3", "stream 4")
+        private val streamQuestions by lazy {
+            val q = mutableMapOf<String, FuzzySet>()
 
-        private val fakeQuestions by lazy {
-            val q = mutableListOf<BasePersonalityQuestionEntity>()
-            with(q) {
-                add(BasePersonalityQuestionEntity(1, "stream 1", "", "slider"))
-                add(BasePersonalityQuestionEntity(2, "stream 1", "", "slider"))
-                add(BasePersonalityQuestionEntity(3, "stream 2", "", "slider"))
-                add(BasePersonalityQuestionEntity(4, "stream 2", "", "slider"))
-                add(BasePersonalityQuestionEntity(5, "stream 3", "", "slider"))
-                add(BasePersonalityQuestionEntity(6, "stream 3", "", "slider"))
-                add(BasePersonalityQuestionEntity(7, "stream 4", "", "slider"))
-                add(BasePersonalityQuestionEntity(8, "stream 4", "", "slider"))
-            }
+            q["stream 1"] = FuzzySet()
+            q["stream 2"] = FuzzySet()
+            q["stream 3"] = FuzzySet()
+            q["stream 4"] = FuzzySet()
+
+            q["stream 1"]?.add(1, getNumerialImportanceValue(Importance.Low))
+            q["stream 2"]?.add(2, getNumerialImportanceValue(Importance.Medium))
+            q["stream 3"]?.add(3, getNumerialImportanceValue(Importance.High))
+            q["stream 4"]?.add(4, getNumerialImportanceValue(Importance.Low))
+
+            // Add an extra question which is also used for some other stream.
+            q["stream 4"]?.add(3, getNumerialImportanceValue(Importance.Medium))
+
             q
         }
     }
 
     @Test
-    fun generateScore_all50() {
-        val numOfQuestionsSkipped = mutableMapOf<String, Int>()
-        streams.forEach { stream ->
-            numOfQuestionsSkipped[stream] = 0
-        }
+    fun generateScore_mixed() {
+        val userScores = mutableMapOf<Int, Double>()
+        userScores[1] = getNumerialImportanceValue(Importance.Low) / 2
+        userScores[2] = getNumerialImportanceValue(Importance.Medium)
+        userScores[3] = getNumerialImportanceValue(Importance.High) / 2
+        userScores[4] = getNumerialImportanceValue(Importance.Low) / 2
 
-        val fakeResponses = mutableListOf<BasePersonalityQuestionAndResponseHolder>()
-        with(fakeResponses) {
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[0], 50.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[1], 50.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[2], 50.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[3], 50.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[4], 50.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[5], 50.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[6], 50.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[7], 50.0))
-        }
+        val result = PersonalityTestHelper.generateScore(userScores, streamQuestions)
 
-        val result =
-            PersonalityTestHelper.generateScore(streams, numOfQuestionsSkipped, fakeResponses, 2)
-
-        assertEquals(result["stream 1"], 50)
-        assertEquals(result["stream 2"], 50)
-        assertEquals(result["stream 3"], 50)
-        assertEquals(result["stream 4"], 50)
+        assertEquals(result["stream 1"], RecommendationResult.No)
+        assertEquals(result["stream 2"], RecommendationResult.Yes)
+        assertEquals(result["stream 3"], RecommendationResult.No)
+        assertEquals(result["stream 4"], RecommendationResult.Maybe)
     }
 
     @Test
     fun generateScore_allSkipped() {
-        val numOfQuestionsSkipped = mutableMapOf<String, Int>()
-        streams.forEach { stream ->
-            numOfQuestionsSkipped[stream] = 2
-        }
+        val userScores = mutableMapOf<Int, Double>()
+        userScores[1] = 0.0
+        userScores[2] = 0.0
+        userScores[3] = 0.0
+        userScores[4] = 0.0
 
-        val fakeResponses = mutableListOf<BasePersonalityQuestionAndResponseHolder>()
-        with(fakeResponses) {
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[0], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[1], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[2], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[3], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[4], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[5], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[6], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[7], null))
-        }
+        val result = PersonalityTestHelper.generateScore(userScores, streamQuestions)
 
-        val result =
-            PersonalityTestHelper.generateScore(streams, numOfQuestionsSkipped, fakeResponses, 2)
-
-        assertEquals(result["stream 1"], 0)
-        assertEquals(result["stream 2"], 0)
-        assertEquals(result["stream 3"], 0)
-        assertEquals(result["stream 4"], 0)
+        assertEquals(result["stream 1"], RecommendationResult.No)
+        assertEquals(result["stream 2"], RecommendationResult.No)
+        assertEquals(result["stream 3"], RecommendationResult.No)
+        assertEquals(result["stream 4"], RecommendationResult.No)
     }
 
     @Test
-    fun generateScore_mixed() {
-        val numOfQuestionsSkipped = mutableMapOf<String, Int>()
-        numOfQuestionsSkipped["stream 1"] = 1
-        numOfQuestionsSkipped["stream 2"] = 0
-        numOfQuestionsSkipped["stream 3"] = 2
-        numOfQuestionsSkipped["stream 4"] = 0
+    fun generateScore_all100() {
+        val userScores = mutableMapOf<Int, Double>()
+        userScores[1] = 1.0
+        userScores[2] = 1.0
+        userScores[3] = 1.0
+        userScores[4] = 1.0
 
-        val fakeResponses = mutableListOf<BasePersonalityQuestionAndResponseHolder>()
-        with(fakeResponses) {
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[0], 44.5))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[1], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[2], 25.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[3], 45.0))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[4], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[5], null))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[6], 99.5))
-            add(BasePersonalityQuestionAndResponseHolder(fakeQuestions[7], 99.5))
-        }
+        val result = PersonalityTestHelper.generateScore(userScores, streamQuestions)
 
-        val result =
-            PersonalityTestHelper.generateScore(streams, numOfQuestionsSkipped, fakeResponses, 2)
-
-        assertEquals(result["stream 1"], 45)
-        assertEquals(result["stream 2"], 35)
-        assertEquals(result["stream 3"], 0)
-        assertEquals(result["stream 4"], 100)
+        assertEquals(result["stream 1"], RecommendationResult.Yes)
+        assertEquals(result["stream 2"], RecommendationResult.Yes)
+        assertEquals(result["stream 3"], RecommendationResult.Yes)
+        assertEquals(result["stream 4"], RecommendationResult.Yes)
     }
 }
