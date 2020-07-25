@@ -26,7 +26,8 @@ class PersonalityTestViewModel(
 
     private var questionNumber = MutableLiveData(0)
 
-    private var questions = basePersonalityQuestionRepository.getAllQuestions()
+    private var questions = basePersonalityQuestionRepository.getAllQuestions().shuffled()
+
 
     val currentQuestionNumberDisplay = questionNumber.switchMap {
         liveData { emit(currentQuestionNumber(it)) }
