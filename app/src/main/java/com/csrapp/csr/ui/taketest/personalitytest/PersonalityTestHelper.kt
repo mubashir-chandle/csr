@@ -24,7 +24,7 @@ class PersonalityTestHelper {
             for (stream in requiredFuzzySets.keys) {
                 userScoreFuzzySets[stream] = FuzzySet()
 
-                for (questionId in requiredFuzzySets[stream]!!.keys) {
+                for (questionId in requiredFuzzySets[stream]!!.copy().keys) {
                     val userScore = userTestScores[questionId]
 
                     // Remove skipped questions before calculating score.
