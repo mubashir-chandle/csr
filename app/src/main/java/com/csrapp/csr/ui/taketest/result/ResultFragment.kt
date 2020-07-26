@@ -123,6 +123,14 @@ class ResultFragment : Fragment(), View.OnClickListener {
             isNestedScrollingEnabled = false
         }
 
+        if (allResults.size == 0) {
+            noStreamRecommendedMsg.visibility = View.VISIBLE
+            recyclerViewPersonalityScores.visibility = View.GONE
+        } else {
+            noStreamRecommendedMsg.visibility = View.GONE
+            recyclerViewPersonalityScores.visibility = View.VISIBLE
+        }
+
         instructionsDialog = AlertDialog.Builder(requireContext())
             .setTitle(R.string.instructions)
             .setMessage(R.string.view_result_instructions)
