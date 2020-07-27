@@ -31,6 +31,7 @@ abstract class CSRDatabase : RoomDatabase() {
             "csr_data.db"
         )
             .allowMainThreadQueries()
+            .fallbackToDestructiveMigration()
             .createFromAsset("database/csr_data.db")
             .build()
     }
