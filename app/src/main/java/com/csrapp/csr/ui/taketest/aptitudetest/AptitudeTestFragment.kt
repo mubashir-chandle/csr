@@ -84,14 +84,14 @@ class AptitudeTestFragment : Fragment(), View.OnClickListener,
 
         instructionsDialog = AlertDialog.Builder(requireContext())
             .setTitle(R.string.instructions)
-            .setMessage(R.string.aptitude_test_instructions)
+            .setView(R.layout.instructions_aptitude)
             .setPositiveButton(R.string.okay, null)
             .create()
 
         // Use a slightly different instructions dialog at start.
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.instructions)
-            .setMessage(R.string.aptitude_test_instructions)
+            .setView(R.layout.instructions_aptitude)
             .setPositiveButton(R.string.start, null)
             .setOnDismissListener() {
                 viewModel.startTest()
