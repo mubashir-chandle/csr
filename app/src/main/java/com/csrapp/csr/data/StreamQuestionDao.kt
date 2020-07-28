@@ -5,6 +5,6 @@ import androidx.room.Query
 
 @Dao
 interface StreamQuestionDao {
-    @Query("SELECT * FROM stream_question WHERE stream=:stream")
+     @Query("SELECT * FROM stream_question WHERE stream=:stream ORDER BY id")
     fun getQuestionsByStream(stream: String): List<StreamQuestionEntity>
 }

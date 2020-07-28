@@ -5,7 +5,7 @@ import androidx.room.Query
 
 @Dao
 interface StreamDao {
-    @Query("SELECT * FROM stream")
+    @Query("SELECT * FROM stream ORDER BY title")
     fun getAllStreams(): List<StreamEntity>
 
     @Query("SELECT * FROM stream WHERE id=:id")

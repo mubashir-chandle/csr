@@ -5,6 +5,6 @@ import androidx.room.Query
 
 @Dao
 interface AptitudeCategoryDao {
-    @Query("SELECT * FROM aptitude_category")
+    @Query("SELECT * FROM aptitude_category ORDER BY id")
     fun getAllCategories(): List<AptitudeCategoryEntity>
 }

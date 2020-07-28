@@ -8,6 +8,6 @@ interface BasePersonalityQuestionDao {
     @Query("SELECT * FROM base_personality_question WHERE id=:id")
     fun getQuestionById(id: Int): BasePersonalityQuestionEntity
 
-    @Query("SELECT * FROM base_personality_question")
+    @Query("SELECT * FROM base_personality_question ORDER BY id")
     fun getAllQuestions(): List<BasePersonalityQuestionEntity>
 }
