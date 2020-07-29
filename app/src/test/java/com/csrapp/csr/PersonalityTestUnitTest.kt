@@ -1,6 +1,6 @@
 package com.csrapp.csr
 
-import com.csrapp.csr.data.StreamQuestionEntity.Companion.getNumerialImportanceValue
+import com.csrapp.csr.data.StreamQuestionEntity.Companion.getNumericalImportanceValue
 import com.csrapp.csr.data.StreamQuestionEntity.Importance
 import com.csrapp.csr.datastructure.FuzzySet
 import com.csrapp.csr.ui.taketest.personalitytest.PersonalityTestHelper
@@ -18,13 +18,13 @@ class PersonalityTestUnitTest {
             q["stream 3"] = FuzzySet()
             q["stream 4"] = FuzzySet()
 
-            q["stream 1"]?.add(1, getNumerialImportanceValue(Importance.Low))
-            q["stream 2"]?.add(2, getNumerialImportanceValue(Importance.Medium))
-            q["stream 3"]?.add(3, getNumerialImportanceValue(Importance.High))
-            q["stream 4"]?.add(4, getNumerialImportanceValue(Importance.Low))
+            q["stream 1"]?.add(1, getNumericalImportanceValue(Importance.Low))
+            q["stream 2"]?.add(2, getNumericalImportanceValue(Importance.Medium))
+            q["stream 3"]?.add(3, getNumericalImportanceValue(Importance.High))
+            q["stream 4"]?.add(4, getNumericalImportanceValue(Importance.Low))
 
             // Add an extra question which is also used for some other stream.
-            q["stream 4"]?.add(3, getNumerialImportanceValue(Importance.Medium))
+            q["stream 4"]?.add(3, getNumericalImportanceValue(Importance.Medium))
 
             q
         }
@@ -33,10 +33,10 @@ class PersonalityTestUnitTest {
     @Test
     fun generateScore_mixed() {
         val userScores = mutableMapOf<Int, Double>()
-        userScores[1] = getNumerialImportanceValue(Importance.Low) / 2
-        userScores[2] = getNumerialImportanceValue(Importance.Medium)
-        userScores[3] = getNumerialImportanceValue(Importance.High) / 2
-        userScores[4] = getNumerialImportanceValue(Importance.Low) / 2
+        userScores[1] = getNumericalImportanceValue(Importance.Low) / 2
+        userScores[2] = getNumericalImportanceValue(Importance.Medium)
+        userScores[3] = getNumericalImportanceValue(Importance.High) / 2
+        userScores[4] = getNumericalImportanceValue(Importance.Low) / 2
 
         val result = PersonalityTestHelper.generateScore(userScores, streamQuestions)
 

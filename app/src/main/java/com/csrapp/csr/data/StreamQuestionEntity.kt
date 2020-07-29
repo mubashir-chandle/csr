@@ -27,7 +27,7 @@ class StreamQuestionEntity(
     }
 
     companion object {
-        fun getNumerialImportanceValue(importance: Importance) = when (importance) {
+        fun getNumericalImportanceValue(importance: Importance) = when (importance) {
             Importance.Low -> 0.3
             Importance.Medium -> 0.5
             Importance.High -> 0.7
